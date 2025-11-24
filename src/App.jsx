@@ -6,10 +6,12 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION (MOBILE NAV FIX)
- * * Aesthetic: "Alive Luxury" / "Rolex Green & Gold"
- * - Fix: Strictly hiding desktop navigation links on mobile to prevent overlap.
- * - Fix: Z-Index adjustments to ensure Mobile Menu covers the header text perfectly.
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL POLISH
+ * * Fixes: 
+ * - Logo Shapes: Changed square logo containers to 'rounded-full' (Circles).
+ * - Logo Fit: Changed 'object-cover' to 'object-contain' with padding so the shield isn't cut off.
+ * - Desktop: Changed h-screen to min-h-screen to prevent content cutoff on smaller laptops.
+ * - Mobile: Solid navbar bar + solid menu background.
  */
 
 // --- Components ---
@@ -74,16 +76,18 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-700 ${
-      scrolled ? 'bg-[#fdfbf7]/95 backdrop-blur-xl shadow-lg py-3 md:py-4 border-b border-[#0b2b20]/10' : 'bg-[#fdfbf7]/80 backdrop-blur-md py-4 md:py-8'
+    <nav className={`fixed w-full z-50 transition-all duration-700 border-b border-[#0b2b20]/10 ${
+      scrolled 
+        ? 'bg-[#fdfbf7]/95 backdrop-blur-xl shadow-sm py-3 md:py-4' 
+        : 'bg-[#fdfbf7] md:bg-transparent py-4 md:py-8 shadow-sm md:shadow-none'
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
         
         {/* Logo + Name Section */}
-        <a href="#" className="flex items-center gap-3 md:gap-4 z-[55] relative group">
-           {/* Navbar Logo */}
-           <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-sm overflow-hidden p-0.5 transition-transform duration-500 group-hover:scale-105">
-              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover" />
+        <a href="#" className="flex items-center gap-3 md:gap-4 z-[60] relative group">
+           {/* Navbar Logo - Circular Badge */}
+           <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-full overflow-hidden p-1 transition-transform duration-500 group-hover:scale-105">
+              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
            </div>
            <div className="flex flex-col">
               <span className="font-serif text-lg md:text-2xl tracking-widest text-[#0b2b20] font-semibold leading-tight">
@@ -113,37 +117,51 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* Mobile Toggle Button */}
+        {/* Mobile Toggle Button - High Z-Index to stay on top */}
         <button 
-          className="md:hidden z-[60] text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059] p-2" 
+          className="md:hidden z-[60] text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059] p-2 relative" 
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle Menu"
         >
           {isOpen ? <X size={32} /> : <Menu size={32} />}
         </button>
 
-        {/* Mobile Menu Overlay - High Z-Index to cover everything */}
-        <div className={`fixed inset-0 bg-[#fdfbf7] z-[58] flex flex-col items-center justify-center space-y-8 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+        {/* Mobile Menu Overlay */}
+        <div className={`fixed inset-0 bg-[#fdfbf7] z-[58] flex flex-col items-center justify-start pt-40 space-y-8 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
-           {/* Texture Overlay for Menu */}
+           {/* Solid Background to prevent bleed-through */}
+           <div className="absolute inset-0 bg-[#fdfbf7]"></div>
+           
+           {/* Texture Overlay */}
            <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
            
-           {/* Menu Logo */}
-           <div className="w-20 h-20 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-sm overflow-hidden p-0.5 mb-8 shadow-xl">
-              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover" />
-           </div>
+           {/* Mobile Menu Content */}
+           <div className="relative z-10 flex flex-col items-center space-y-8">
+             {/* Menu Logo */}
+             <div className="w-20 h-20 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-full overflow-hidden p-2 mb-4 shadow-xl">
+                <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
+             </div>
 
-          {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="font-serif text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors relative z-10"
-            >
-              {link.name}
-            </a>
-          ))}
+             {navLinks.map((link) => (
+                <a 
+                  key={link.name} 
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="font-serif text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors"
+                >
+                  {link.name}
+                </a>
+              ))}
+              <div className="w-16 h-1 bg-[#c5a059] my-4"></div>
+              <a 
+                href="#contact"
+                onClick={() => setIsOpen(false)}
+                className="text-sm uppercase tracking-[0.2em] font-bold text-[#0b2b20]"
+              >
+                Start a Conversation
+              </a>
+           </div>
         </div>
       </div>
     </nav>
@@ -153,7 +171,7 @@ const Navbar = () => {
 // 3. Hero Section
 const Hero = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-28 md:pt-0">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-32 md:pt-0">
       
       {/* --- LIVING BACKGROUND --- */}
       <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] via-[#f4f1ea] to-[#e6e2d6] z-0"></div>
@@ -177,13 +195,16 @@ const Hero = () => {
           <div className="absolute top-0 bottom-0 right-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#c5a059]/30 to-transparent hidden md:block"></div>
       </div>
 
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto py-12 md:py-24">
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pb-16 md:py-24">
         
-        {/* LOGO HERO */}
+        {/* LOGO HERO - UPDATED: Circular, object-contain */}
         <Reveal>
-          <div className="mx-auto mb-8 md:mb-12 w-32 h-32 md:w-48 md:h-48 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-sm p-0 animate-float-subtle">
+          <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-4 md:p-6 animate-float-subtle">
+             {/* Shine effect */}
              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/10 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
-             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-cover relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
+             
+             {/* Actual Image Logo - Contained within the circle */}
+             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
           </div>
         </Reveal>
 
@@ -254,8 +275,9 @@ const BioSection = () => {
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 
-                <div className="absolute -bottom-12 -left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-32 h-32 md:w-40 md:h-40 flex items-center justify-center overflow-hidden z-30 transition-transform duration-500 hover:scale-105">
-                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-cover opacity-100" />
+                {/* Logo Badge - UPDATED: Circular, object-contain */}
+                <div className="absolute -bottom-12 -left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-4 transition-transform duration-500 hover:scale-105">
+                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-contain opacity-100" />
                 </div>
             </div>
         </Reveal>
@@ -504,7 +526,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
              {/* Small Logo Icon - UPDATED to Gold/Black */}
-            <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] overflow-hidden p-0.5">
+            <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] overflow-hidden p-0.5 rounded-full">
                 <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-cover" />
             </div>
             <h3 className="font-serif text-3xl text-[#fdfbf7] tracking-widest mb-4">BRADEN BRACCIO</h3>
