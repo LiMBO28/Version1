@@ -6,10 +6,10 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION (MOBILE MENU FIX)
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION (MOBILE NAV FIX)
  * * Aesthetic: "Alive Luxury" / "Rolex Green & Gold"
- * - Fix: Z-Index adjustments to ensure Mobile Menu covers the header text.
- * - Fix: Toggle button remains on top for accessibility.
+ * - Fix: Strictly hiding desktop navigation links on mobile to prevent overlap.
+ * - Fix: Z-Index adjustments to ensure Mobile Menu covers the header text perfectly.
  */
 
 // --- Components ---
@@ -57,6 +57,15 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isOpen]);
+
   const navLinks = [
     { name: 'Philosophy', href: '#philosophy' },
     { name: 'For Buyers', href: '#buyers' },
@@ -66,11 +75,12 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-700 ${
-      scrolled ? 'bg-[#fdfbf7]/90 backdrop-blur-xl shadow-lg py-3 md:py-4 border-b border-[#0b2b20]/10' : 'bg-[#fdfbf7]/50 backdrop-blur-sm py-4 md:py-8'
+      scrolled ? 'bg-[#fdfbf7]/95 backdrop-blur-xl shadow-lg py-3 md:py-4 border-b border-[#0b2b20]/10' : 'bg-[#fdfbf7]/80 backdrop-blur-md py-4 md:py-8'
     }`}>
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        {/* Logo + Name Section (z-50, stays under mobile menu now) */}
-        <a href="#" className="flex items-center gap-3 md:gap-4 z-50 relative group">
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
+        
+        {/* Logo + Name Section */}
+        <a href="#" className="flex items-center gap-3 md:gap-4 z-[55] relative group">
            {/* Navbar Logo */}
            <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-sm overflow-hidden p-0.5 transition-transform duration-500 group-hover:scale-105">
               <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover" />
@@ -85,7 +95,7 @@ const Navbar = () => {
            </div>
         </a>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav - STRICTLY HIDDEN ON MOBILE */}
         <div className="hidden md:flex space-x-10 items-center">
           {navLinks.map((link) => (
             <a 
@@ -103,20 +113,24 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* Mobile Toggle Button (Increased Z-Index to 60 so it floats ABOVE the menu) */}
-        <button className="md:hidden z-[60] text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059]" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        {/* Mobile Toggle Button */}
+        <button 
+          className="md:hidden z-[60] text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059] p-2" 
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle Menu"
+        >
+          {isOpen ? <X size={32} /> : <Menu size={32} />}
         </button>
 
-        {/* Mobile Menu (Increased Z-Index to 55 so it covers the Navbar text) */}
-        <div className={`fixed inset-0 bg-[#fdfbf7] z-[55] flex flex-col items-center justify-center space-y-8 transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+        {/* Mobile Menu Overlay - High Z-Index to cover everything */}
+        <div className={`fixed inset-0 bg-[#fdfbf7] z-[58] flex flex-col items-center justify-center space-y-8 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
            {/* Texture Overlay for Menu */}
            <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
            
-           {/* Menu Logo (Optional, adds branding inside the menu) */}
-           <div className="w-16 h-16 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-sm overflow-hidden p-0.5 mb-8 shadow-xl">
+           {/* Menu Logo */}
+           <div className="w-20 h-20 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-sm overflow-hidden p-0.5 mb-8 shadow-xl">
               <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover" />
            </div>
 
@@ -125,7 +139,7 @@ const Navbar = () => {
               key={link.name} 
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="font-serif text-3xl md:text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors relative z-10"
+              className="font-serif text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors relative z-10"
             >
               {link.name}
             </a>
@@ -139,19 +153,13 @@ const Navbar = () => {
 // 3. Hero Section
 const Hero = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-20 md:pt-0">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-28 md:pt-0">
       
       {/* --- LIVING BACKGROUND --- */}
-      
-      {/* 1. Base Gradient */}
       <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] via-[#f4f1ea] to-[#e6e2d6] z-0"></div>
-
-      {/* 2. Moving Aurora Gradients */}
       <div className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#0b2b20] opacity-[0.08] blur-[100px] animate-aurora-1 mix-blend-multiply"></div>
       <div className="absolute bottom-[-20%] right-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#c5a059] opacity-[0.12] blur-[120px] animate-aurora-2 mix-blend-multiply"></div>
       <div className="absolute top-[40%] left-[50%] transform -translate-x-1/2 w-[40vw] h-[40vw] rounded-full bg-[#c5a059] opacity-[0.05] blur-[80px] animate-pulse-slow"></div>
-
-      {/* 3. Grain Animation */}
       <div className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none animate-grain" 
            style={{ 
              backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")',
@@ -161,27 +169,20 @@ const Hero = () => {
       
       {/* 4. Decorative Border Frame */}
       <div className="absolute inset-4 md:inset-8 border border-[#0b2b20]/5 z-0 pointer-events-none">
-          {/* Animated Corner Accents */}
-          <div className="absolute top-0 left-0 w-24 h-24 md:w-40 md:h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
-          <div className="absolute top-4 left-4 w-20 h-20 md:w-32 md:h-32 border-t border-l border-[#c5a059]/50 animate-fade-in-delayed"></div>
-          
-          <div className="absolute bottom-0 right-0 w-24 h-24 md:w-40 md:h-40 border-b-[3px] border-r-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
-          <div className="absolute bottom-4 right-4 w-20 h-20 md:w-32 md:h-32 border-b border-r border-[#c5a059]/50 animate-fade-in-delayed"></div>
-
-          {/* Vertical Gold Lines */}
+          <div className="absolute top-0 left-0 w-16 h-16 md:w-40 md:h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
+          <div className="absolute top-4 left-4 w-12 h-12 md:w-32 md:h-32 border-t border-l border-[#c5a059]/50 animate-fade-in-delayed"></div>
+          <div className="absolute bottom-0 right-0 w-16 h-16 md:w-40 md:h-40 border-b-[3px] border-r-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
+          <div className="absolute bottom-4 right-4 w-12 h-12 md:w-32 md:h-32 border-b border-r border-[#c5a059]/50 animate-fade-in-delayed"></div>
           <div className="absolute top-0 bottom-0 left-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#c5a059]/30 to-transparent hidden md:block"></div>
           <div className="absolute top-0 bottom-0 right-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#c5a059]/30 to-transparent hidden md:block"></div>
       </div>
 
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto py-8 md:py-24">
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto py-12 md:py-24">
         
         {/* LOGO HERO */}
         <Reveal>
-          <div className="mx-auto mb-8 md:mb-12 w-28 h-28 md:w-48 md:h-48 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-sm p-0 animate-float-subtle">
-             {/* Shine effect */}
+          <div className="mx-auto mb-8 md:mb-12 w-32 h-32 md:w-48 md:h-48 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-sm p-0 animate-float-subtle">
              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/10 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
-             
-             {/* Actual Image Logo */}
              <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-cover relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
           </div>
         </Reveal>
@@ -235,18 +236,14 @@ const Hero = () => {
 const BioSection = () => {
   return (
     <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20 overflow-hidden">
-      {/* Moving Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#fdfbf7] to-[#f4f1ea] z-0"></div>
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c5a059]/5 rounded-full blur-[100px] mix-blend-multiply animate-pulse-slow"></div>
-
-      {/* Grain */}
       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
 
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center relative z-10">
         <Reveal className="relative flex justify-center md:justify-end">
             {/* HEADSHOT CONTAINER */}
             <div className="relative w-full max-w-md group">
-                {/* Image Frame */}
                 <div className="aspect-[3/4] bg-[#f0f0f0] relative overflow-hidden shadow-2xl border border-[#0b2b20]/10 z-10">
                     <img 
                       src="agent.jpg" 
@@ -254,11 +251,9 @@ const BioSection = () => {
                       className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105 sepia-[0.05]"
                     />
                 </div>
-                {/* Decorative Frame Elements - Parallax Feel */}
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 
-                {/* Logo Badge */}
                 <div className="absolute -bottom-12 -left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-32 h-32 md:w-40 md:h-40 flex items-center justify-center overflow-hidden z-30 transition-transform duration-500 hover:scale-105">
                     <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-cover opacity-100" />
                 </div>
