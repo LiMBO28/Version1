@@ -6,12 +6,12 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - MOBILE MENU FIX
- * * Critical Fix: Moved Mobile Menu OUTSIDE the 'nav' element.
- * - Why: The 'backdrop-blur' on the nav element creates a new stacking context, 
- * which traps the 'fixed' mobile menu inside the nav bar's height, causing 
- * the background to disappear and text to overlap page content.
- * - Solution: Render MobileMenu as a sibling to the Nav bar.
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL POLISH
+ * * Fixes: 
+ * - Mobile Menu Button: Added dedicated Close (X) button INSIDE the high-z-index menu layer so it's never hidden.
+ * - Mobile Layout: Adjusted padding to push menu items higher (top-aligned) rather than centered/middle.
+ * - Spacing: Increased spacing to "fill out" the menu visually.
+ * - Logo Blending: Preserved black logo filter.
  */
 
 // --- Components ---
@@ -123,19 +123,19 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Mobile Toggle Button */}
+          {/* Mobile Toggle Button (Hamburger) */}
           <button 
-            className="md:hidden text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059] p-2 relative z-[110]" 
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle Menu"
+            className={`md:hidden text-[#0b2b20] transition-opacity duration-300 hover:text-[#c5a059] p-2 relative z-[40] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} 
+            onClick={() => setIsOpen(true)}
+            aria-label="Open Menu"
           >
-            {isOpen ? <X size={32} /> : <Menu size={32} />}
+            <Menu size={32} />
           </button>
         </div>
       </nav>
 
       {/* --- FULL SCREEN MOBILE MENU OVERLAY (MOVED OUTSIDE NAV) --- */}
-      <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-start pt-32 space-y-6 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+      <div className={`fixed inset-0 z-[100] flex flex-col items-center pt-24 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
          {/* Solid Background - Prevents page content from bleeding through */}
@@ -144,29 +144,41 @@ const Navbar = () => {
          {/* Texture Overlay */}
          <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
          
+         {/* CLOSE BUTTON - Placed explicitly inside this layer so it is always visible */}
+         <button 
+            className="absolute top-6 right-6 text-[#0b2b20] p-2 hover:text-[#c5a059] transition-colors z-50"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close Menu"
+         >
+            <X size={36} />
+         </button>
+         
          {/* Scrollable Container for Content */}
          <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center pb-20">
            {/* Menu Logo */}
-           <div className="w-24 h-24 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-full overflow-hidden p-0 mb-8 shadow-xl shrink-0">
+           <div className="w-24 h-24 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-full overflow-hidden p-0 mb-10 shadow-xl shrink-0">
               <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover contrast-125 brightness-90" />
            </div>
 
-           <div className="flex flex-col items-center space-y-8">
+           {/* Navigation Links - Increased spacing to 'fill out' the menu */}
+           <div className="flex flex-col items-center space-y-10">
              {navLinks.map((link) => (
                 <a 
                   key={link.name} 
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="font-serif text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors"
+                  className="font-serif text-4xl md:text-5xl text-[#0b2b20] hover:text-[#c5a059] transition-colors"
                 >
                   {link.name}
                 </a>
               ))}
-              <div className="w-16 h-1 bg-[#c5a059] my-2"></div>
+              
+              <div className="w-24 h-1 bg-[#c5a059]/50 my-4"></div>
+              
               <a 
                 href="#contact"
                 onClick={() => setIsOpen(false)}
-                className="text-sm uppercase tracking-[0.2em] font-bold text-[#0b2b20] mt-4 px-8 py-4 border border-[#0b2b20] hover:bg-[#0b2b20] hover:text-[#fdfbf7] transition-all"
+                className="text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] mt-4 px-10 py-5 border border-[#0b2b20] hover:bg-[#0b2b20] hover:text-[#fdfbf7] transition-all"
               >
                 Start a Conversation
               </a>
