@@ -6,11 +6,11 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION (MOBILE FIXES)
  * * Aesthetic: "Alive Luxury" / "Rolex Green & Gold"
- * - Logo: Restored to original Gold/Black (removed invert filter).
- * - Background: Stronger gradients, moving aurora effects.
- * - Animation: Parallax, breathing elements, grain.
+ * - Logo: Restored to original Gold/Black.
+ * - Mobile Fix: Added padding-top to Hero to prevent navbar overlap.
+ * - Mobile Fix: Adjusted logo sizes for smaller screens.
  */
 
 // --- Components ---
@@ -67,20 +67,20 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-700 ${
-      scrolled ? 'bg-[#fdfbf7]/80 backdrop-blur-xl shadow-lg py-4 border-b border-[#0b2b20]/10' : 'bg-transparent py-8'
+      scrolled ? 'bg-[#fdfbf7]/90 backdrop-blur-xl shadow-lg py-3 md:py-4 border-b border-[#0b2b20]/10' : 'bg-[#fdfbf7]/50 backdrop-blur-sm py-4 md:py-8'
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Logo + Name Section */}
-        <a href="#" className="flex items-center gap-4 z-50 relative group">
-           {/* Navbar Logo - FIXED: Removed Invert, added Gold Border */}
-           <div className="w-12 h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-sm overflow-hidden p-0.5 transition-transform duration-500 group-hover:scale-105">
+        <a href="#" className="flex items-center gap-3 md:gap-4 z-50 relative group">
+           {/* Navbar Logo */}
+           <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-sm overflow-hidden p-0.5 transition-transform duration-500 group-hover:scale-105">
               <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover" />
            </div>
            <div className="flex flex-col">
-              <span className="font-serif text-xl md:text-2xl tracking-widest text-[#0b2b20] font-semibold">
+              <span className="font-serif text-lg md:text-2xl tracking-widest text-[#0b2b20] font-semibold leading-tight">
                 BRADEN BRACCIO
               </span>
-              <span className="block text-[0.65rem] font-sans tracking-[0.25em] text-[#c5a059] uppercase group-hover:text-[#0b2b20] transition-colors font-bold mt-1">
+              <span className="block text-[0.6rem] md:text-[0.65rem] font-sans tracking-[0.2em] text-[#c5a059] uppercase group-hover:text-[#0b2b20] transition-colors font-bold mt-0.5">
                 Real Estate Agent
               </span>
            </div>
@@ -121,7 +121,7 @@ const Navbar = () => {
               key={link.name} 
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className="font-serif text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors relative z-10"
+              className="font-serif text-3xl md:text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors relative z-10"
             >
               {link.name}
             </a>
@@ -132,17 +132,17 @@ const Navbar = () => {
   );
 };
 
-// 3. Hero Section (Redesigned: STRONGER GRADIENTS + ALIVE ANIMATION)
+// 3. Hero Section (Updated for Mobile Spacing)
 const Hero = () => {
   return (
-    <div className="relative h-screen min-h-[800px] flex items-center justify-center overflow-hidden bg-[#fdfbf7]">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-28 md:pt-0">
       
       {/* --- LIVING BACKGROUND --- */}
       
-      {/* 1. Base Gradient (Stronger White/Cream) */}
+      {/* 1. Base Gradient */}
       <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] via-[#f4f1ea] to-[#e6e2d6] z-0"></div>
 
-      {/* 2. Moving Aurora Gradients (The "Alive" Feel) */}
+      {/* 2. Moving Aurora Gradients */}
       <div className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#0b2b20] opacity-[0.08] blur-[100px] animate-aurora-1 mix-blend-multiply"></div>
       <div className="absolute bottom-[-20%] right-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#c5a059] opacity-[0.12] blur-[120px] animate-aurora-2 mix-blend-multiply"></div>
       <div className="absolute top-[40%] left-[50%] transform -translate-x-1/2 w-[40vw] h-[40vw] rounded-full bg-[#c5a059] opacity-[0.05] blur-[80px] animate-pulse-slow"></div>
@@ -158,52 +158,52 @@ const Hero = () => {
       {/* 4. Decorative Border Frame */}
       <div className="absolute inset-4 md:inset-8 border border-[#0b2b20]/5 z-0 pointer-events-none">
           {/* Animated Corner Accents */}
-          <div className="absolute top-0 left-0 w-40 h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
-          <div className="absolute top-4 left-4 w-32 h-32 border-t border-l border-[#c5a059]/50 animate-fade-in-delayed"></div>
+          <div className="absolute top-0 left-0 w-24 h-24 md:w-40 md:h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
+          <div className="absolute top-4 left-4 w-20 h-20 md:w-32 md:h-32 border-t border-l border-[#c5a059]/50 animate-fade-in-delayed"></div>
           
-          <div className="absolute bottom-0 right-0 w-40 h-40 border-b-[3px] border-r-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
-          <div className="absolute bottom-4 right-4 w-32 h-32 border-b border-r border-[#c5a059]/50 animate-fade-in-delayed"></div>
+          <div className="absolute bottom-0 right-0 w-24 h-24 md:w-40 md:h-40 border-b-[3px] border-r-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
+          <div className="absolute bottom-4 right-4 w-20 h-20 md:w-32 md:h-32 border-b border-r border-[#c5a059]/50 animate-fade-in-delayed"></div>
 
           {/* Vertical Gold Lines */}
           <div className="absolute top-0 bottom-0 left-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#c5a059]/30 to-transparent hidden md:block"></div>
           <div className="absolute top-0 bottom-0 right-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#c5a059]/30 to-transparent hidden md:block"></div>
       </div>
 
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-12 py-16 md:py-24">
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto py-8 md:py-24">
         
-        {/* LOGO HERO - Restored Gold/Black */}
+        {/* LOGO HERO - Resized for Mobile */}
         <Reveal>
-          <div className="mx-auto mb-12 w-36 h-36 md:w-48 md:h-48 border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-sm p-0 animate-float-subtle">
+          <div className="mx-auto mb-8 md:mb-12 w-28 h-28 md:w-48 md:h-48 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-sm p-0 animate-float-subtle">
              {/* Shine effect */}
              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/10 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
              
-             {/* Actual Image Logo - No Invert */}
+             {/* Actual Image Logo */}
              <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-cover relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
           </div>
         </Reveal>
 
         <Reveal delay={200}>
-          <div className="flex justify-center items-center gap-6 mb-10">
-             <span className="w-16 h-[2px] bg-[#0b2b20]/20"></span>
-             <p className="text-[#0b2b20] uppercase tracking-[0.3em] text-[11px] md:text-xs font-bold">
+          <div className="flex justify-center items-center gap-4 md:gap-6 mb-8 md:mb-10">
+             <span className="w-10 md:w-16 h-[2px] bg-[#0b2b20]/20"></span>
+             <p className="text-[#0b2b20] uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs font-bold">
                Est. 2024 &bull; Colorado
              </p>
-             <span className="w-16 h-[2px] bg-[#0b2b20]/20"></span>
+             <span className="w-10 md:w-16 h-[2px] bg-[#0b2b20]/20"></span>
           </div>
         </Reveal>
         
         <Reveal delay={400}>
-          <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl text-[#0b2b20] mb-10 leading-[1.1] tracking-wide drop-shadow-sm font-medium">
-            <span className="block text-[#0b2b20] italic font-normal text-5xl md:text-6xl mb-4 opacity-80">A Higher</span>
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-[#0b2b20] mb-8 md:mb-10 leading-[1.1] tracking-wide drop-shadow-sm font-medium">
+            <span className="block text-[#0b2b20] italic font-normal text-4xl md:text-6xl mb-4 opacity-80">A Higher</span>
             Standard of Living
           </h1>
         </Reveal>
         
         <Reveal delay={600}>
-          <p className="text-[#0b2b20]/80 text-lg md:text-2xl font-normal mb-12 max-w-3xl mx-auto leading-relaxed font-serif relative">
-            <span className="absolute -top-6 -left-4 text-6xl text-[#c5a059]/20 font-serif">"</span>
+          <p className="text-[#0b2b20]/80 text-base md:text-2xl font-normal mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed font-serif relative px-2">
+            <span className="absolute -top-6 -left-2 md:-left-4 text-4xl md:text-6xl text-[#c5a059]/20 font-serif">"</span>
             Moving from one home to the next is an important moment in life. We bring the experience, care, and effort you need.
-            <span className="absolute -bottom-10 -right-4 text-6xl text-[#c5a059]/20 font-serif">"</span>
+            <span className="absolute -bottom-8 md:-bottom-10 -right-2 md:-right-4 text-4xl md:text-6xl text-[#c5a059]/20 font-serif">"</span>
           </p>
         </Reveal>
         
@@ -211,14 +211,14 @@ const Hero = () => {
           <div className="flex flex-col items-center gap-6">
             <a 
               href="#contact" 
-              className="group relative inline-block overflow-hidden border-[1.5px] border-[#0b2b20] px-14 py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] transition-colors duration-500 hover:text-[#fdfbf7] shadow-lg hover:shadow-2xl"
+              className="group relative inline-block overflow-hidden border-[1.5px] border-[#0b2b20] px-10 md:px-14 py-4 md:py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] transition-colors duration-500 hover:text-[#fdfbf7] shadow-lg hover:shadow-2xl"
             >
               <span className="absolute inset-0 translate-y-[101%] bg-[#0b2b20] transition-transform duration-500 group-hover:translate-y-0"></span>
               <span className="relative z-10">Start the Conversation</span>
             </a>
             
-            <a href="#philosophy" className="animate-bounce mt-8 text-[#0b2b20]/40 hover:text-[#c5a059] transition-colors">
-              <ChevronDown size={32} strokeWidth={1} />
+            <a href="#philosophy" className="animate-bounce mt-4 md:mt-8 text-[#0b2b20]/40 hover:text-[#c5a059] transition-colors">
+              <ChevronDown size={28} md:size={32} strokeWidth={1} />
             </a>
           </div>
         </Reveal>
@@ -254,8 +254,8 @@ const BioSection = () => {
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 
-                {/* Logo Badge - FIXED: No padding, pure Black Card aesthetic */}
-                <div className="absolute -bottom-12 -left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-40 h-40 flex items-center justify-center overflow-hidden z-30 transition-transform duration-500 hover:scale-105">
+                {/* Logo Badge */}
+                <div className="absolute -bottom-12 -left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-32 h-32 md:w-40 md:h-40 flex items-center justify-center overflow-hidden z-30 transition-transform duration-500 hover:scale-105">
                     <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-cover opacity-100" />
                 </div>
             </div>
@@ -265,7 +265,7 @@ const BioSection = () => {
           <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold flex items-center gap-3 mb-6">
             <span className="w-12 h-[2px] bg-[#0b2b20]"></span> About Braden
           </span>
-          <h2 className="font-serif text-5xl md:text-6xl text-[#0b2b20] mb-8 leading-tight font-medium">
+          <h2 className="font-serif text-4xl md:text-6xl text-[#0b2b20] mb-8 leading-tight font-medium">
             My Approach
           </h2>
           <div className="space-y-8 text-[#1c1c1c]/90 font-normal leading-relaxed text-lg font-sans">
@@ -375,20 +375,20 @@ const ProcessSection = () => {
         <div className="text-center mb-16">
           <Reveal>
             <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold">The Methodology</span>
-            <h2 className="font-serif text-5xl md:text-6xl mt-6 text-[#fdfbf7] font-medium">Concierge Real Estate</h2>
+            <h2 className="font-serif text-4xl md:text-6xl mt-6 text-[#fdfbf7] font-medium">Concierge Real Estate</h2>
             <div className="w-24 h-1 bg-[#c5a059] mx-auto mt-8"></div>
           </Reveal>
           
-          <Reveal delay={200} className="flex justify-center mt-12 space-x-12">
+          <Reveal delay={200} className="flex justify-center mt-12 space-x-6 md:space-x-12">
             <button 
               onClick={() => setActiveTab('buyer')}
-              className={`text-sm uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'buyer' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
+              className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'buyer' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
             >
               Buying
             </button>
             <button 
               onClick={() => setActiveTab('seller')}
-              className={`text-sm uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'seller' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
+              className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'seller' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
             >
               Selling
             </button>
@@ -429,11 +429,11 @@ const Contact = () => {
       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
 
       <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <div className="bg-white/80 backdrop-blur-md p-12 md:p-24 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[#0b2b20]/10 relative">
+        <div className="bg-white/80 backdrop-blur-md p-8 md:p-24 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[#0b2b20]/10 relative">
           
           <div className="text-center">
             <Reveal>
-               <h2 className="font-serif text-5xl md:text-6xl text-[#0b2b20] mb-8 font-medium">Let's Work Together</h2>
+               <h2 className="font-serif text-4xl md:text-6xl text-[#0b2b20] mb-8 font-medium">Let's Work Together</h2>
                <p className="text-[#1c1c1c]/80 mb-12 max-w-lg mx-auto font-normal">
                  Whether you are looking to acquire your next home or list a property, expect a seamless, disciplined experience.
                </p>
@@ -444,14 +444,14 @@ const Contact = () => {
                 <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
                   <Phone className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
                   <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Call or Text</span>
-                  <a href="tel:720-885-1613" className="font-serif text-2xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium">
+                  <a href="tel:720-885-1613" className="font-serif text-xl md:text-2xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium">
                     720-885-1613
                   </a>
                 </div>
                 <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
                   <Mail className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
                   <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Email</span>
-                  <a href="mailto:bradenbraccio@yourcastle.com" className="font-serif text-xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium">
+                  <a href="mailto:bradenbraccio@yourcastle.com" className="font-serif text-lg md:text-xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium break-all">
                     bradenbraccio@<br className="md:hidden"/>yourcastle.com
                   </a>
                 </div>
@@ -617,6 +617,11 @@ const App = () => {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
+        
+        @keyframes fade-in-delayed {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
 
         .animate-float {
             animation: float 10s ease-in-out infinite;
@@ -635,6 +640,9 @@ const App = () => {
         }
         .animate-float-subtle {
             animation: float-subtle 6s ease-in-out infinite;
+        }
+        .animate-fade-in-delayed {
+            animation: fade-in-delayed 2s ease-out forwards;
         }
       `}</style>
 
