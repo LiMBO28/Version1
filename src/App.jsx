@@ -6,11 +6,10 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION (MOBILE FIXES)
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION (MOBILE MENU FIX)
  * * Aesthetic: "Alive Luxury" / "Rolex Green & Gold"
- * - Logo: Restored to original Gold/Black.
- * - Mobile Fix: Added padding-top to Hero to prevent navbar overlap.
- * - Mobile Fix: Adjusted logo sizes for smaller screens.
+ * - Fix: Z-Index adjustments to ensure Mobile Menu covers the header text.
+ * - Fix: Toggle button remains on top for accessibility.
  */
 
 // --- Components ---
@@ -70,7 +69,7 @@ const Navbar = () => {
       scrolled ? 'bg-[#fdfbf7]/90 backdrop-blur-xl shadow-lg py-3 md:py-4 border-b border-[#0b2b20]/10' : 'bg-[#fdfbf7]/50 backdrop-blur-sm py-4 md:py-8'
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        {/* Logo + Name Section */}
+        {/* Logo + Name Section (z-50, stays under mobile menu now) */}
         <a href="#" className="flex items-center gap-3 md:gap-4 z-50 relative group">
            {/* Navbar Logo */}
            <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-sm overflow-hidden p-0.5 transition-transform duration-500 group-hover:scale-105">
@@ -104,17 +103,22 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* Mobile Toggle */}
-        <button className="md:hidden z-50 text-[#0b2b20]" onClick={() => setIsOpen(!isOpen)}>
+        {/* Mobile Toggle Button (Increased Z-Index to 60 so it floats ABOVE the menu) */}
+        <button className="md:hidden z-[60] text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059]" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
-        {/* Mobile Menu */}
-        <div className={`fixed inset-0 bg-[#fdfbf7] z-40 flex flex-col items-center justify-center space-y-8 transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+        {/* Mobile Menu (Increased Z-Index to 55 so it covers the Navbar text) */}
+        <div className={`fixed inset-0 bg-[#fdfbf7] z-[55] flex flex-col items-center justify-center space-y-8 transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
            {/* Texture Overlay for Menu */}
            <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+           
+           {/* Menu Logo (Optional, adds branding inside the menu) */}
+           <div className="w-16 h-16 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-sm overflow-hidden p-0.5 mb-8 shadow-xl">
+              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover" />
+           </div>
 
           {navLinks.map((link) => (
             <a 
@@ -132,10 +136,10 @@ const Navbar = () => {
   );
 };
 
-// 3. Hero Section (Updated for Mobile Spacing)
+// 3. Hero Section
 const Hero = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-28 md:pt-0">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-20 md:pt-0">
       
       {/* --- LIVING BACKGROUND --- */}
       
@@ -171,7 +175,7 @@ const Hero = () => {
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto py-8 md:py-24">
         
-        {/* LOGO HERO - Resized for Mobile */}
+        {/* LOGO HERO */}
         <Reveal>
           <div className="mx-auto mb-8 md:mb-12 w-28 h-28 md:w-48 md:h-48 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-sm p-0 animate-float-subtle">
              {/* Shine effect */}
