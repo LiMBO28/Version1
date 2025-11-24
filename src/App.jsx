@@ -1,620 +1,611 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Phone, Mail, MapPin, ArrowRight, CheckCircle, Award, Home, BookOpen, Users, Key, Star, Diamond } from 'lucide-react';
+import { 
+  Menu, X, Phone, Mail, Instagram, MapPin, 
+  Home, Key, TrendingUp, CheckCircle, ArrowRight,
+  Shield, Award, Clock
+} from 'lucide-react';
 
-// --- Custom Hooks ---
+/**
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - READABLE LUXURY EDITION
+ * * Aesthetic: "Alive Luxury".
+ * - Typography: Playfair Display (Easier to read serif) + Lato (Clean sans).
+ * - Animation: Moving film grain texture + floating ambient light.
+ * - Palette: Cream (#fdfbf7), Deep Rolex Green (#0b2b20), Antique Gold (#c5a059).
+ * - Assets: Includes user uploaded logo.jpg and agent.jpg
+ */
 
-const useElementOnScreen = (options) => {
-  const containerRef = useRef(null);
+// --- Components ---
+
+// 1. Reveal on Scroll Component
+const Reveal = ({ children, className = "", delay = 0 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const [entry] = entries;
-      if (entry.isIntersecting) setIsVisible(true);
-    }, options);
-    
-    if (containerRef.current) observer.observe(containerRef.current);
-    
-    return () => {
-      if (containerRef.current) observer.unobserve(containerRef.current);
-    };
-  }, [containerRef, options]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
 
-  return [containerRef, isVisible];
-};
-
-// --- Animated Components ---
-
-const FadeIn = ({ children, delay = 0 }) => {
-  const [ref, isVisible] = useElementOnScreen({ threshold: 0.1 });
-  
   return (
-    <div 
-      ref={ref} 
-      className={`transition-all duration-1000 ease-out transform ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
-      }`}
+    <div
+      ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-1000 ease-out transform ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+      } ${className}`}
     >
       {children}
     </div>
   );
 };
 
-// --- "Cinematic" Background Components ---
+// 2. Navigation
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-const CinematicGrain = () => (
-  <div className="fixed inset-0 pointer-events-none z-[5] opacity-[0.03]" 
-       style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}>
-  </div>
-);
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-const LivingAurora = () => {
+  const navLinks = [
+    { name: 'Philosophy', href: '#philosophy' },
+    { name: 'For Buyers', href: '#buyers' },
+    { name: 'For Sellers', href: '#sellers' },
+    { name: 'Contact', href: '#contact' },
+  ];
+
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-      {/* Cream Base */}
-      <div className="absolute inset-0 bg-[#F9F7F2]"></div>
+    <nav className={`fixed w-full z-50 transition-all duration-700 ${
+      scrolled ? 'bg-[#fdfbf7]/90 backdrop-blur-xl shadow-sm py-4 border-b border-[#0b2b20]/10' : 'bg-transparent py-8'
+    }`}>
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        {/* Logo + Name Section */}
+        <a href="#" className="flex items-center gap-4 z-50 relative group">
+           {/* Navbar Logo */}
+           <div className="w-12 h-12 border-[1.5px] border-[#0b2b20] flex items-center justify-center bg-[#fdfbf7] transition-all duration-500 group-hover:bg-[#0b2b20] group-hover:border-[#c5a059] shadow-md rounded-sm overflow-hidden p-1">
+              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain filter group-hover:brightness-0 group-hover:invert transition-all" />
+           </div>
+           <div className="flex flex-col">
+              <span className="font-serif text-xl md:text-2xl tracking-widest text-[#0b2b20] font-semibold">
+                BRADEN BRACCIO
+              </span>
+              <span className="block text-[0.65rem] font-sans tracking-[0.25em] text-[#c5a059] uppercase group-hover:text-[#0b2b20] transition-colors font-bold mt-1">
+                Real Estate Agent
+              </span>
+           </div>
+        </a>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex space-x-10 items-center">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href}
+              className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group"
+            >
+              {link.name}
+              <span className="absolute -bottom-2 left-1/2 w-0 h-[2px] bg-[#c5a059] transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+            </a>
+          ))}
+          <a href="#contact" className="border-[1.5px] border-[#0b2b20] text-[#0b2b20] px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold hover:bg-[#0b2b20] hover:text-[#c5a059] hover:border-[#0b2b20] transition-all duration-500 shadow-sm hover:shadow-lg">
+            Inquire
+          </a>
+        </div>
+
+        {/* Mobile Toggle */}
+        <button className="md:hidden z-50 text-[#0b2b20]" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+
+        {/* Mobile Menu */}
+        <div className={`fixed inset-0 bg-[#fdfbf7] z-40 flex flex-col items-center justify-center space-y-8 transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}>
+           {/* Texture Overlay for Menu */}
+           <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className="font-serif text-4xl text-[#0b2b20] hover:text-[#c5a059] transition-colors relative z-10"
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+// 3. Hero Section (Redesigned: "Alive" Luxury with readable fonts)
+const Hero = () => {
+  return (
+    <div className="relative h-screen min-h-[800px] flex items-center justify-center overflow-hidden bg-[#fdfbf7]">
       
-      {/* Moving Aurora Blobs - Emerald & Gold */}
-      <div className="absolute top-[-20%] left-[-20%] w-[90vw] h-[90vw] bg-[#012619] rounded-full mix-blend-multiply filter blur-[120px] opacity-5 animate-blob"></div>
-      <div className="absolute top-[10%] right-[-30%] w-[80vw] h-[80vw] bg-[#C5A059] rounded-full mix-blend-multiply filter blur-[120px] opacity-10 animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-[-30%] left-[10%] w-[70vw] h-[70vw] bg-[#012619] rounded-full mix-blend-multiply filter blur-[150px] opacity-5 animate-blob animation-delay-4000"></div>
+      {/* --- LIVING BACKGROUND --- */}
       
-      {/* Grid Overlay - Dark Green Lines */}
-      <div className="absolute inset-0 opacity-[0.03]" 
+      {/* 1. Base Paper Texture */}
+      <div className="absolute inset-0 opacity-[0.6] z-0 pointer-events-none mix-blend-multiply" 
+           style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}>
+      </div>
+
+      {/* 2. Grain Animation (The "Alive" Feel) */}
+      <div className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none animate-grain" 
            style={{ 
-             backgroundImage: 'linear-gradient(#012619 1px, transparent 1px), linear-gradient(90deg, #012619 1px, transparent 1px)', 
-             backgroundSize: '80px 80px' 
+             backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")',
+             backgroundSize: '200px 200px'
            }}>
+      </div>
+      
+      {/* 3. Ambient Light Blobs */}
+      {/* Deep Green Pulse */}
+      <div className="absolute top-[-10%] right-[-5%] w-[60vw] h-[60vw] rounded-full bg-[#0b2b20] opacity-[0.06] blur-[120px] animate-pulse-slow"></div>
+      {/* Gold Drift */}
+      <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#c5a059] opacity-[0.08] blur-[140px] animate-float"></div>
+
+      {/* 4. Decorative Border Frame with Gold Accents */}
+      <div className="absolute inset-4 md:inset-10 border border-[#0b2b20]/10 z-0 pointer-events-none">
+          {/* Animated Corner Accents */}
+          <div className="absolute top-0 left-0 w-40 h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20"></div>
+          <div className="absolute top-4 left-4 w-32 h-32 border-t border-l border-[#c5a059]/50"></div>
+          
+          <div className="absolute bottom-0 right-0 w-40 h-40 border-b-[3px] border-r-[3px] border-[#0b2b20]/20"></div>
+          <div className="absolute bottom-4 right-4 w-32 h-32 border-b border-r border-[#c5a059]/50"></div>
+
+          {/* Vertical Gold Lines */}
+          <div className="absolute top-0 bottom-0 left-[12%] w-[1px] bg-[#c5a059]/30 hidden md:block"></div>
+          <div className="absolute top-0 bottom-0 right-[12%] w-[1px] bg-[#c5a059]/30 hidden md:block"></div>
+      </div>
+
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-12 py-16 md:py-24">
+        
+        {/* LOGO HERO */}
+        <Reveal>
+          <div className="mx-auto mb-12 w-32 h-32 md:w-40 md:h-40 border-[2px] border-[#0b2b20] flex items-center justify-center bg-[#fdfbf7] shadow-[0_20px_50px_-12px_rgba(11,43,32,0.15)] relative group overflow-hidden transition-all duration-700 hover:border-[#c5a059] rounded-sm p-6">
+             {/* Background reveal effect */}
+             <div className="absolute inset-0 bg-[#0b2b20] scale-0 group-hover:scale-100 transition-transform duration-700 rounded-full opacity-5"></div>
+             
+             {/* Actual Image Logo */}
+             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-700 group-hover:scale-105" />
+          </div>
+        </Reveal>
+
+        <Reveal delay={200}>
+          <div className="flex justify-center items-center gap-6 mb-10">
+             <span className="w-16 h-[2px] bg-[#0b2b20]/20"></span>
+             <p className="text-[#0b2b20] uppercase tracking-[0.3em] text-[11px] md:text-xs font-bold">
+               Est. 2024 &bull; Colorado
+             </p>
+             <span className="w-16 h-[2px] bg-[#0b2b20]/20"></span>
+          </div>
+        </Reveal>
+        
+        <Reveal delay={400}>
+          {/* Switched to Playfair Display for better readability */}
+          <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl text-[#0b2b20] mb-10 leading-[1.1] tracking-wide drop-shadow-sm font-medium">
+            <span className="block text-[#0b2b20] italic font-normal text-5xl md:text-6xl mb-2">A Higher</span>
+            Standard of Living
+          </h1>
+        </Reveal>
+        
+        <Reveal delay={600}>
+          <p className="text-[#0b2b20]/90 text-lg md:text-2xl font-normal mb-12 max-w-3xl mx-auto leading-relaxed font-serif">
+            "Moving from one home to the next is an important moment in life. We bring the experience, care, and effort you need."
+          </p>
+        </Reveal>
+        
+        <Reveal delay={800}>
+          <a 
+            href="#contact" 
+            className="group relative inline-block overflow-hidden border-[1.5px] border-[#0b2b20] px-14 py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] transition-colors duration-500 hover:text-[#fdfbf7] shadow-lg hover:shadow-xl"
+          >
+            <span className="absolute inset-0 translate-y-[101%] bg-[#0b2b20] transition-transform duration-500 group-hover:translate-y-0"></span>
+            <span className="relative z-10">Start the Conversation</span>
+          </a>
+        </Reveal>
       </div>
     </div>
   );
 };
 
-const FloatingParticles = () => {
+// 4. Bio / Philosophy Section
+const BioSection = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none z-[1]">
-      {[...Array(20)].map((_, i) => (
-        <div
-          key={i}
-          className={`absolute rounded-full opacity-40 animate-float ${i % 2 === 0 ? 'bg-[#C5A059]' : 'bg-[#012619]'}`}
-          style={{
-            width: Math.random() * 3 + 1 + 'px',
-            height: Math.random() * 3 + 1 + 'px',
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            animationDuration: Math.random() * 20 + 10 + 's',
-            animationDelay: Math.random() * 5 + 's',
-          }}
-        />
-      ))}
-    </div>
+    <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20">
+      {/* Light Paper Texture */}
+      <div className="absolute inset-0 opacity-[0.3] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+      {/* Grain */}
+      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
+
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center relative z-10">
+        <Reveal className="relative flex justify-center md:justify-end">
+            {/* HEADSHOT CONTAINER */}
+            <div className="relative w-full max-w-md">
+                <div className="aspect-[3/4] bg-[#f0f0f0] relative overflow-hidden shadow-2xl border border-[#0b2b20]/10">
+                    <img 
+                      src="agent.jpg" 
+                      alt="Braden Braccio" 
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-[2s] sepia-[0.05]"
+                    />
+                </div>
+                {/* Decorative Frame Elements */}
+                <div className="absolute -top-6 -left-6 w-32 h-32 border-t-2 border-l-2 border-[#0b2b20] opacity-100"></div>
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100"></div>
+                
+                {/* Logo Badge - UPDATED: No padding, full fill */}
+                <div className="absolute -bottom-10 -left-10 bg-[#0b2b20] shadow-2xl border border-[#c5a059] w-32 h-32 flex items-center justify-center overflow-hidden">
+                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-cover filter invert opacity-90" />
+                </div>
+            </div>
+        </Reveal>
+        
+        <Reveal delay={200}>
+          <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold flex items-center gap-3 mb-6">
+            <span className="w-12 h-[2px] bg-[#0b2b20]"></span> About Braden
+          </span>
+          <h2 className="font-serif text-5xl md:text-6xl text-[#0b2b20] mb-8 leading-tight font-medium">
+            My Approach
+          </h2>
+          <div className="space-y-8 text-[#1c1c1c]/90 font-normal leading-relaxed text-lg font-sans">
+            <p>
+              Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.
+            </p>
+            <p>
+              As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and quiet strength to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
+            </p>
+            <p>
+              To Braden, luxury is not just about the property. It is about the peace of mind that comes from working with someone who truly listens, anticipates your needs, and guides you with patience and precision from the first meeting to the closing table and beyond.
+            </p>
+            <p className="font-serif italic text-xl text-[#0b2b20] mt-4">
+              "You deserve an experience that feels as exceptional as the home itself. This is My Approach."
+            </p>
+          </div>
+          
+          <div className="mt-12 grid grid-cols-2 gap-8 border-t border-[#0b2b20]/10 pt-8">
+            <div className="group">
+               <Shield className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" size={32} strokeWidth={1.5} />
+               <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">US Veteran</h4>
+               <p className="text-sm text-[#1c1c1c]/70 font-medium">Disciplined approach.</p>
+            </div>
+            <div className="group">
+               <MapPin className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" size={32} strokeWidth={1.5} />
+               <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">Colorado Expert</h4>
+               <p className="text-sm text-[#1c1c1c]/70 font-medium">Deep local knowledge.</p>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
   );
 };
 
-// --- 3D Page Tilt Wrapper ---
-const Page3DWrapper = ({ children }) => {
-  return (
-    <div className="relative z-10">
-      {children}
-    </div>
-  );
-};
+// 5. Interactive Process Section (Tabs)
+const ProcessSection = () => {
+  const [activeTab, setActiveTab] = useState('buyer');
 
-// --- Components ---
-
-const EstateGateDivider = ({ flip = false }) => (
-  <div className={`w-full h-16 md:h-24 relative z-20 ${flip ? 'transform rotate-180 -mt-1' : '-mb-1'}`}>
-    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full preserve-3d drop-shadow-sm">
-      <path d="M0 80H1440V0C1440 0 1320 30 1180 30H260C120 30 0 0 0 0V80Z" fill="#F9F7F2"/>
-      <path d="M0 5C0 5 120 35 260 35H1180C1320 35 1440 5 1440 5" stroke="#C5A059" strokeWidth="1.5" strokeOpacity="0.8" fill="none"/>
-      <path d="M100 5C100 5 200 25 280 25H1160C1240 25 1340 5 1340 5" stroke="#012619" strokeWidth="0.5" strokeOpacity="0.2" fill="none"/>
-      {!flip && (
-        <rect x="718" y="35" width="4" height="45" fill="#C5A059" opacity="0.6" />
-      )}
-    </svg>
-  </div>
-);
-
-const App = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [imageError, setImageError] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const phases = [
+  // Data extracted from PDFs
+  const buyerPhases = [
     {
       id: 1,
-      title: "Phase I: The Foundation",
-      subtitle: "Strategy & Insight",
-      icon: <BookOpen size={32} />,
-      content: [
-        {
-          header: "Defining Success",
-          points: [
-            "Clarifying motivation & legacy goals.",
-            "Establishing ideal transition timelines.",
-            "Identifying your next chapter.",
-            "Prioritizing family imperatives."
-          ]
-        },
-        {
-          header: "Market Intelligence",
-          points: [
-            "Macro vs. Micro dynamics.",
-            "Supply & Demand balancing.",
-            "Market forecasting & trends.",
-            "Analysis of comparable estates."
-          ]
-        },
-        {
-          header: "The Strategic Plan",
-          points: [
-            "Architectural feature highlighting.",
-            "Key differentiator analysis.",
-            "Target buyer profiling.",
-            "Bespoke attraction strategy."
-          ]
-        }
-      ]
+      title: "Identifying Goals",
+      desc: "We clarify your motivation, timeline, and must-haves. This includes selecting a lender, obtaining approval, and signing our exclusive agreement.",
+      icon: <CheckCircle />
     },
     {
       id: 2,
-      title: "Phase II: The Curation",
-      subtitle: "Preparation & Listing",
-      icon: <Home size={32} />,
-      content: [
-        {
-          header: "Listing Refinement",
-          points: [
-            "Comprehensive documentation.",
-            "Property enhancement consult.",
-            "Signature staging strategy.",
-            "Architectural photography."
-          ]
-        },
-        {
-          header: "Preparing for Debut",
-          points: [
-            "Premium launch materials.",
-            "Print & publication ads.",
-            "Curated digital plan.",
-            "Social media positioning."
-          ]
-        },
-        {
-          header: "Community Outreach",
-          points: [
-            "'Real Advantage' network.",
-            "Exclusive open house events.",
-            "Direct mail campaigns.",
-            "Community engagement."
-          ]
-        }
-      ]
+      title: "Sourcing The Home",
+      desc: "Access to on and off-market listings. We attend open houses, analyze micro-market trends, and draft a winning offer strategy.",
+      icon: <Home />
     },
     {
       id: 3,
-      title: "Phase III: The Negotiation",
-      subtitle: "Marketing & Offers",
-      icon: <Users size={32} />,
-      content: [
-        {
-          header: "The Grand Introduction",
-          points: [
-            "Launching the marketing plan.",
-            "Vetting potential buyers.",
-            "Private showings & tours.",
-            "Monitoring interest & feedback."
-          ]
-        },
-        {
-          header: "Stewardship",
-          points: [
-            "Weekly executive reports.",
-            "Proactive market adaptation.",
-            "Strategic updates."
-          ]
-        },
-        {
-          header: "The Art of Agreement",
-          points: [
-            "Offer collection & analysis.",
-            "Strategic counter-offers.",
-            "Optimizing price & terms.",
-            "Managing multiple offers."
-          ]
-        }
-      ]
+      title: "Negotiation & Inspection",
+      desc: "We present your offer to win. Once accepted, we navigate inspections, disclosures, and negotiate repairs to protect your investment.",
+      icon: <Shield />
     },
     {
       id: 4,
-      title: "Phase IV: The Culmination",
-      subtitle: "Closing & Transition",
-      icon: <Key size={32} />,
-      content: [
-        {
-          header: "The Closing Process",
-          points: [
-            "Executing final contracts.",
-            "Completing disclosures.",
-            "Managing contingencies.",
-            "Fiduciary fulfillment."
-          ]
-        },
-        {
-          header: "The Transition",
-          points: [
-            "Transition assistance.",
-            "Final documentation review.",
-            "Closing day celebration."
-          ]
-        },
-        {
-          header: "An Enduring Partnership",
-          points: [
-            "Continued relationship.",
-            "Investment resources.",
-            "Referral-based practice.",
-            "Client appreciation."
-          ]
-        }
-      ]
+      title: "Closing & Beyond",
+      desc: "Final walk-throughs, signing, and celebration. But it doesn't end there; we provide resources for your new home and stay in touch.",
+      icon: <Key />
     }
   ];
 
+  const sellerPhases = [
+    {
+      id: 1,
+      title: "Defining A Win",
+      desc: "Understanding your motivation and ideal moving date. We analyze supply vs. demand and create a strategic plan for your target buyer.",
+      icon: <TrendingUp />
+    },
+    {
+      id: 2,
+      title: "Listing & Launch",
+      desc: "Staging strategy, professional photography, and creating 'The Real Advantage'. We work backwards from the launch date to ensure perfection.",
+      icon: <Award />
+    },
+    {
+      id: 3,
+      title: "Marketing & Showing",
+      desc: "Digital plans, social media strategy, and open houses. We monitor feedback weekly and adapt to changes in the marketplace.",
+      icon: <Instagram />
+    },
+    {
+      id: 4,
+      title: "Negotiation to Close",
+      desc: "Deep offer analysis and multiple offer strategies. We maximize your price and terms, managing the contingency periods smoothly.",
+      icon: <Clock />
+    }
+  ];
+
+  const activePhases = activeTab === 'buyer' ? buyerPhases : sellerPhases;
+
   return (
-    <div className="min-h-screen bg-[#F9F7F2] text-[#012619] font-sans selection:bg-[#C5A059] selection:text-[#F9F7F2] overflow-x-hidden">
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@300;400;600&display=swap');
+    <section id="process" className="py-24 bg-[#0b2b20] text-[#fdfbf7] overflow-hidden relative border-t-4 border-[#c5a059]">
+      {/* Texture overlay - kept dark for contrast in this specific section */}
+      <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
+      {/* Moving Grain Overlay - Light version for dark background */}
+      <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <Reveal>
+            <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold">The Methodology</span>
+            <h2 className="font-serif text-5xl md:text-6xl mt-6 text-[#fdfbf7] font-medium">Concierge Real Estate</h2>
+            <div className="w-24 h-1 bg-[#c5a059] mx-auto mt-8"></div>
+          </Reveal>
           
-          :root {
-            --cream-bg: #F9F7F2;
-            --green-deep: #012619;
-            --gold-accent: #C5A059;
-          }
-
-          .font-title { font-family: 'Cinzel Decorative', serif; }
-          .font-heading { font-family: 'Playfair Display', serif; }
-          .font-body { font-family: 'Manrope', sans-serif; }
-          
-          /* Metallic Gold Text Texture - Darker for Light Background */
-          .text-metallic-gold {
-            background: linear-gradient(
-              to bottom,
-              #D4AF37 0%,
-              #B38728 25%,
-              #FCD34D 50%,
-              #B38728 75%,
-              #926F1B 100%
-            );
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            filter: drop-shadow(0 1px 0px rgba(0,0,0,0.1));
-          }
-
-          /* Animation Keyframes */
-          @keyframes shine { to { background-position: 200% center; } }
-          @keyframes blob {
-            0% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0px, 0px) scale(1); }
-          }
-          .animate-blob { animation: blob 20s infinite; }
-          .animation-delay-2000 { animation-delay: 2s; }
-          .animation-delay-4000 { animation-delay: 4s; }
-
-          @keyframes float {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-100px) translateX(20px); opacity: 0; }
-          }
-          .animate-float { animation: float 20s ease-in-out infinite; }
-
-          /* Card Style - Light Paper */
-          .card-paper {
-            background-color: #FFFFFF;
-            border: 1px solid rgba(1, 38, 25, 0.1);
-            box-shadow: 0 10px 30px -10px rgba(1, 38, 25, 0.05);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-          }
-
-          .card-paper:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px -10px rgba(197, 160, 89, 0.2);
-            border-color: #C5A059;
-          }
-
-          /* Diamond Divider */
-          .diamond-divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-          }
-          .diamond-divider::before, .diamond-divider::after {
-            content: '';
-            height: 1px;
-            width: 60px;
-            background: linear-gradient(90deg, transparent, #C5A059, transparent);
-            opacity: 0.6;
-          }
-
-          ::-webkit-scrollbar { width: 8px; }
-          ::-webkit-scrollbar-track { background: #F9F7F2; }
-          ::-webkit-scrollbar-thumb { background: #012619; border-radius: 4px; }
-        `}
-      </style>
-
-      <LivingAurora />
-      <FloatingParticles />
-      <CinematicGrain />
-
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-700 ${scrolled ? 'bg-[#F9F7F2]/95 shadow-md py-3 border-b border-[#012619]/10' : 'bg-transparent py-6'}`}>
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center space-x-4 animate-[fadeIn_1s_ease-out]">
-            <img 
-              src="/logo.jpg" 
-              alt="Braden Braccio"
-              className="h-10 w-10 md:h-12 md:w-12 object-contain border border-[#C5A059]/50 rounded-lg shadow-sm"
-            />
-            <span className={`font-heading tracking-[0.2em] text-xs md:text-sm font-semibold transition-colors ${scrolled ? 'text-[#012619]' : 'text-[#012619]'}`}>Braden Braccio</span>
-          </div>
-          
-          <div className="hidden md:flex space-x-12">
-            {['Strategy', 'Listing', 'Marketing', 'Closing'].map((item, idx) => (
-              <a 
-                key={item} 
-                href={`#phase-${idx + 1}`}
-                className={`font-body text-sm tracking-widest uppercase transition-all duration-300 hover:text-[#C5A059] font-medium ${scrolled ? 'text-[#012619]/80' : 'text-[#012619]/80'}`}
-                style={{ animation: `fadeIn 1s ease-out ${idx * 0.1}s backwards` }}
-              >
-                {item}
-              </a>
-            ))}
-          </div>
-
-          <a href="#contact" className="animate-[fadeIn_1s_ease-out_0.5s_backwards] border border-[#012619] text-[#012619] px-6 py-2 md:px-8 font-heading text-[10px] tracking-[0.2em] hover:bg-[#012619] hover:text-[#F9F7F2] transition-all duration-300 font-bold rounded-sm">
-            Inquire
-          </a>
-        </div>
-      </nav>
-
-      {/* 3D Page Wrapper */}
-      <Page3DWrapper>
-        
-        {/* Hero Section */}
-        <header className="relative min-h-screen flex items-center justify-center">
-          <FadeIn>
-            {/* The Hero Card - Cream Paper Style */}
-            <div className="relative z-20 p-8 md:p-28 border border-[#012619]/10 max-w-6xl mx-4 bg-white shadow-xl mt-20 md:mt-0 overflow-hidden">
-              
-              {/* Architectural Grid Overlay */}
-              <div className="absolute inset-0 opacity-[0.03]" 
-                   style={{ 
-                     backgroundImage: 'linear-gradient(#012619 1px, transparent 1px), linear-gradient(90deg, #012619 1px, transparent 1px)', 
-                     backgroundSize: '40px 40px' 
-                   }}>
-              </div>
-
-              {/* Decorative Corners - Green */}
-              <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 border-t-[3px] border-l-[3px] border-[#012619]"></div>
-              <div className="absolute top-0 right-0 w-12 h-12 md:w-20 md:h-20 border-t-[3px] border-r-[3px] border-[#012619]"></div>
-              <div className="absolute bottom-0 left-0 w-12 h-12 md:w-20 md:h-20 border-b-[3px] border-l-[3px] border-[#012619]"></div>
-              <div className="absolute bottom-0 right-0 w-12 h-12 md:w-20 md:h-20 border-b-[3px] border-r-[3px] border-[#012619]"></div>
-
-              <div className="text-center space-y-8 md:space-y-12 relative z-30">
-                <div className="flex items-center justify-center gap-4 md:gap-6 mb-4 md:mb-8">
-                  <div className="h-[1px] w-12 md:w-24 bg-[#C5A059]"></div>
-                  <span className="font-heading text-[10px] md:text-xs tracking-[0.4em] text-[#C5A059] uppercase font-bold">Est. 2025</span>
-                  <div className="h-[1px] w-12 md:w-24 bg-[#C5A059]"></div>
-                </div>
-
-                <h1 className="flex flex-col items-center leading-none tracking-tight relative">
-                  <span className="font-heading text-[#012619] text-2xl md:text-5xl mb-6 font-normal tracking-[0.2em] uppercase italic opacity-90">The Art of</span>
-                  <span className="font-title text-5xl md:text-8xl lg:text-9xl text-metallic-gold drop-shadow-sm relative z-10">Real Estate</span>
-                </h1>
-
-                <p className="font-body text-lg md:text-3xl text-[#012619]/70 max-w-3xl mx-auto font-light leading-relaxed px-4 tracking-wide">
-                  "Exclusive Client Compendium"
-                </p>
-
-                <div className="pt-8 md:pt-12 flex justify-center">
-                   <div className="p-3 md:p-4 border border-[#012619]/20 rounded-full animate-bounce hover:bg-[#012619] group transition-colors cursor-pointer">
-                      <ArrowRight className="text-[#012619] group-hover:text-[#F9F7F2] transition-colors" size={24} />
-                   </div>
-                </div>
-              </div>
-            </div>
-          </FadeIn>
-        </header>
-
-        <EstateGateDivider />
-
-        {/* Introduction */}
-        <section className="py-20 md:py-32 px-6 relative z-10">
-          <div className="max-w-5xl mx-auto text-center">
-            <FadeIn>
-              <div className="mb-8 md:mb-12 flex justify-center">
-                <div className="p-5 md:p-6 rounded-full border border-[#C5A059]/40 bg-[#C5A059]/10">
-                  <Award className="text-[#C5A059]" strokeWidth={1.5} size={48} />
-                </div>
-              </div>
-              <h2 className="font-heading text-3xl md:text-5xl text-[#012619] mb-8 md:mb-14 tracking-wide font-medium">A Standard of Excellence</h2>
-              
-              <p className="font-body text-xl md:text-3xl text-[#012619]/80 leading-loose mb-12 md:mb-20 max-w-4xl mx-auto font-light">
-                Closing one chapter and composing the next is a delicate art. It demands uncommon expertise, unflinching discretion, and a singular devotion to protecting and advancing your family’s legacy.
-              </p>
-              
-              <div className="flex flex-col items-center gap-4">
-                <span className="font-heading text-2xl md:text-4xl text-[#C5A059] font-bold border-b-2 border-[#C5A059]/60 pb-2 px-10">Braden Braccio</span>
-                <span className="font-heading text-xs md:text-sm tracking-[0.3em] text-[#012619]/60 uppercase font-bold mt-2">Your Castle Real Estate</span>
-              </div>
-            </FadeIn>
-          </div>
-        </section>
-
-        <EstateGateDivider flip={true} />
-
-        {/* Phases Grid */}
-        <div className="relative py-20 md:py-32 px-4">
-          <div className="container mx-auto max-w-7xl relative z-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
-              
-              {phases.map((phase, index) => (
-                <FadeIn key={phase.id} delay={index * 200}>
-                  <div className="card-paper rounded-xl p-8 md:p-16 h-full group relative overflow-hidden">
-                    
-                    {/* Phase Number Watermark */}
-                    <div className="absolute top-4 right-6 text-[80px] md:text-[120px] font-heading font-bold text-[#012619]/5 pointer-events-none select-none leading-none">
-                      {phase.id}
-                    </div>
-
-                    <div className="text-center mb-10 md:mb-14 relative z-10">
-                      <div className="flex justify-center mb-8 md:mb-10 text-[#C5A059]">
-                        <div className="p-5 md:p-6 border border-[#012619]/10 rounded-full bg-[#F9F7F2] group-hover:border-[#C5A059] group-hover:scale-110 transition-all duration-500 shadow-sm text-[#012619]">
-                          {phase.icon}
-                        </div>
-                      </div>
-                      <div className="font-heading text-xs tracking-[0.4em] text-[#C5A059] mb-4 uppercase font-bold">Phase 0{phase.id}</div>
-                      <h3 className="font-heading text-3xl md:text-4xl text-[#012619] mb-4 group-hover:text-[#C5A059] transition-colors">{phase.title.split(': ')[1]}</h3>
-                      <p className="font-body text-lg md:text-xl text-[#012619]/70 font-light">{phase.subtitle}</p>
-                    </div>
-
-                    <div className="space-y-8 md:space-y-10 relative z-10">
-                      {phase.content.map((block, idx) => (
-                        <div key={idx}>
-                          <div className="flex items-center gap-4 mb-4">
-                            <Diamond size={10} className="text-[#C5A059] fill-[#C5A059]" />
-                            <h4 className="font-heading text-lg md:text-xl text-[#012619] tracking-wide font-bold">{block.header}</h4>
-                            <div className="h-[1px] flex-grow bg-[#012619]/10"></div>
-                          </div>
-                          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-6">
-                            {block.points.map((point, pIdx) => (
-                              <li key={pIdx} className="font-body text-[#012619]/80 text-base md:text-lg flex items-start gap-3 group-hover:text-[#012619] transition-colors duration-500 font-light">
-                                <span className="text-[#C5A059] mt-1.5 text-[8px]">●</span>
-                                {point}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </FadeIn>
-              ))}
-
-            </div>
-          </div>
+          <Reveal delay={200} className="flex justify-center mt-12 space-x-12">
+            <button 
+              onClick={() => setActiveTab('buyer')}
+              className={`text-sm uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'buyer' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
+            >
+              Buying
+            </button>
+            <button 
+              onClick={() => setActiveTab('seller')}
+              className={`text-sm uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'seller' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
+            >
+              Selling
+            </button>
+          </Reveal>
         </div>
 
-        <EstateGateDivider />
-
-        {/* Agent Profile */}
-        <section className="py-20 md:py-32 relative">
-          <div className="container mx-auto px-6 max-w-6xl relative z-10">
-            <FadeIn>
-              <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
+        <div className="grid md:grid-cols-4 gap-6">
+          {activePhases.map((phase, index) => (
+            <Reveal key={phase.id} delay={index * 150}>
+              <div className="bg-[#163a2c]/40 backdrop-blur-sm p-8 h-full border border-[#c5a059]/20 hover:border-[#c5a059] transition-all duration-500 group shadow-lg hover:shadow-[0_0_30px_rgba(197,160,89,0.15)] relative overflow-hidden">
+                {/* Hover Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#c5a059]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
-                <div className="w-full md:w-5/12">
-                  <div className="relative p-3 bg-white shadow-xl border border-[#012619]/10 transition-transform duration-700 hover:scale-105">
-                    <div className="relative aspect-[3/4] overflow-hidden bg-[#012619]">
-                      {!imageError ? (
-                        <img 
-                          src="/agent.jpg" 
-                          alt="Braden Braccio" 
-                          className="w-full h-full object-cover filter contrast-105 brightness-100"
-                          onError={() => setImageError(true)}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-[#012619]">
-                           <div className="text-[#C5A059] font-heading text-6xl mb-4">B</div>
-                           <p className="text-[#F9F7F2]/60 font-heading tracking-widest text-xs">Image Unavailable</p>
-                        </div>
-                      )}
+                <div className="relative z-10">
+                    <div className="text-[#c5a059] mb-6 group-hover:scale-110 transition-transform duration-500 origin-left">
+                    {phase.icon}
                     </div>
-                    
-                    {/* Logo Watermark - Full Frame Bottom Right */}
-                    <div className="absolute -bottom-6 right-0 md:-bottom-8 md:-right-8 z-30 drop-shadow-2xl">
-                        <img 
-                          src="/logo.jpg" 
-                          alt="Braden Braccio"
-                          className="w-24 h-24 md:w-32 md:h-32 object-contain"
-                        />
-                    </div>
-                  </div>
+                    <h3 className="font-serif text-2xl mb-2 text-[#fdfbf7] font-medium"><span className="text-[#c5a059] text-[10px] font-sans block mb-2 tracking-[0.3em] font-bold uppercase">Phase 0{phase.id}</span> {phase.title}</h3>
+                    <p className="text-[#e6e4dc]/80 text-sm leading-relaxed mt-4 font-normal">
+                    {phase.desc}
+                    </p>
                 </div>
-
-                <div className="w-full md:w-7/12 text-center md:text-left">
-                  <h2 className="font-heading text-3xl md:text-5xl text-[#012619] mb-8 md:mb-12">
-                    The Gentleman's Approach
-                  </h2>
-                  
-                  <div className="space-y-6 md:space-y-10 font-body text-lg md:text-2xl text-[#012619]/80 leading-loose text-justify font-light">
-                    <p>
-                      Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.
-                    </p>
-                    <p>
-                      As a former U.S. Veteran, he brings the same discipline, integrity, and quiet strength to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
-                    </p>
-                    <p>
-                      To Braden, luxury is not just about the property. It is about the peace of mind that comes from working with someone who truly listens, anticipates your needs, and guides you with patience and precision from the first meeting to the closing table and beyond.
-                    </p>
-                    <div className="relative py-6 md:py-8 pl-6 md:pl-8 border-l-2 border-[#C5A059] bg-[#C5A059]/10 rounded-r-lg">
-                      <p className="text-[#012619] font-semibold italic text-xl md:text-2xl relative z-10 font-heading">
-                        "You deserve an experience that feels as exceptional as the home itself. That is the Gentleman’s Approach."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
               </div>
-            </FadeIn>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// 6. Contact / CTA Section
+const Contact = () => {
+  return (
+    <section id="contact" className="py-24 bg-[#fdfbf7] relative">
+      <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
+
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
+        <div className="bg-white p-12 md:p-24 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[#0b2b20]/10">
+          
+          <div className="text-center">
+            <Reveal>
+               <h2 className="font-serif text-5xl md:text-6xl text-[#0b2b20] mb-8 font-medium">Let's Work Together</h2>
+               <p className="text-[#1c1c1c]/80 mb-12 max-w-lg mx-auto font-normal">
+                 Whether you are looking to acquire your next home or list a property, expect a seamless, disciplined experience.
+               </p>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <div className="grid md:grid-cols-2 gap-8 mb-16">
+                <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] group">
+                  <Phone className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Call or Text</span>
+                  <a href="tel:720-885-1613" className="font-serif text-2xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium">
+                    720-885-1613
+                  </a>
+                </div>
+                <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] group">
+                  <Mail className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Email</span>
+                  <a href="mailto:bradenbraccio@yourcastle.com" className="font-serif text-xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium">
+                    bradenbraccio@<br className="md:hidden"/>yourcastle.com
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={300}>
+              <form className="space-y-8 text-left max-w-2xl mx-auto">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="relative">
+                    <input type="text" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="name" placeholder="Name" />
+                    <label htmlFor="name" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Name</label>
+                  </div>
+                  <div className="relative">
+                    <input type="tel" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="phone" placeholder="Phone" />
+                    <label htmlFor="phone" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Phone</label>
+                  </div>
+                </div>
+                <div className="relative">
+                    <input type="email" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="email" placeholder="Email" />
+                    <label htmlFor="email" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Email</label>
+                </div>
+                <div className="relative">
+                    <textarea rows="4" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="msg" placeholder="Message"></textarea>
+                    <label htmlFor="msg" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Message</label>
+                </div>
+                <div className="text-center mt-12">
+                  <button type="button" className="bg-[#0b2b20] text-[#fdfbf7] px-14 py-5 text-xs uppercase tracking-[0.2em] font-bold hover:bg-[#163a2c] transition-all duration-300 shadow-xl w-full md:w-auto border border-[#0b2b20] hover:shadow-[0_10px_30px_-5px_rgba(11,43,32,0.3)]">
+                    Send Message
+                  </button>
+                </div>
+              </form>
+            </Reveal>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
+  );
+};
 
-        {/* Footer */}
-        <footer id="contact" className="relative pt-32 pb-16 px-6 bg-[#012619] border-t border-[#C5A059]/30">
-          <FadeIn>
-            <div className="container mx-auto max-w-3xl text-center relative z-20">
-              <div className="diamond-divider">
-                <Diamond size={20} className="text-[#C5A059] fill-[#C5A059]" />
-              </div>
-              
-              <h2 className="font-heading text-3xl md:text-5xl text-[#F9F7F2] mb-8">Begin The Conversation</h2>
-              <p className="font-body text-xl md:text-2xl text-[#F9F7F2]/70 mb-16 italic font-light">Personal. Professional. Always in your corner.</p>
+// 7. Footer
+const Footer = () => {
+  return (
+    <footer className="bg-[#0b2b20] text-[#e6e4dc] py-20 border-t border-[#c5a059]/50 relative">
+      {/* Footer Texture */}
+      <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
 
-              <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-8 mb-20">
-                <a href="mailto:bradenbraccio@yourcastle.com" className="group flex items-center justify-center gap-4 border border-[#C5A059]/50 px-12 py-6 hover:bg-[#C5A059] transition-all duration-300 bg-[#012619] w-full md:w-auto rounded-lg">
-                  <Mail size={20} className="text-[#C5A059] group-hover:text-[#012619]" />
-                  <span className="font-heading text-sm tracking-widest text-[#F9F7F2] group-hover:text-[#012619] transition-colors font-bold">EMAIL</span>
-                </a>
-                <a href="tel:720-885-1613" className="group flex items-center justify-center gap-4 border border-[#C5A059]/50 px-12 py-6 hover:bg-[#C5A059] transition-all duration-300 bg-[#012619] w-full md:w-auto rounded-lg">
-                  <Phone size={20} className="text-[#C5A059] group-hover:text-[#012619]" />
-                  <span className="font-heading text-sm tracking-widest text-[#F9F7F2] group-hover:text-[#012619] transition-colors font-bold">CALL</span>
-                </a>
-              </div>
-
-              <div className="text-[#F9F7F2]/40 font-heading text-[10px] tracking-[0.3em]">
-                <p className="mb-3">LIC #: FA.100107526</p>
-                <p>&copy; {new Date().getFullYear()} BRADEN BRACCIO. ALL RIGHTS RESERVED.</p>
-              </div>
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid md:grid-cols-3 gap-16 text-center md:text-left">
+          {/* Brand */}
+          <div className="flex flex-col items-center md:items-start">
+             {/* Small Logo Icon */}
+            <div className="mb-6 w-16 h-16 border border-[#c5a059] flex items-center justify-center bg-[#0b2b20] overflow-hidden p-2">
+                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-contain filter invert opacity-90" />
             </div>
-          </FadeIn>
-        </footer>
+            <h3 className="font-serif text-3xl text-[#fdfbf7] tracking-widest mb-4">BRADEN BRACCIO</h3>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#c5a059] mb-8 font-bold">Real Estate Agent</p>
+            <div className="flex space-x-6">
+              {/* UPDATED INSTAGRAM LINK */}
+              <a 
+                href="https://www.instagram.com/youragentbraden" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-[#c5a059] hover:text-white transition-colors transform hover:scale-110"
+              >
+                <Instagram size={24} strokeWidth={1.5} />
+              </a>
+              <a href="#" className="text-[#c5a059] hover:text-white transition-colors transform hover:scale-110"><Mail size={24} strokeWidth={1.5} /></a>
+            </div>
+          </div>
 
-      </Page3DWrapper>
+          {/* Brokerage Info */}
+          <div className="flex flex-col items-center md:items-start">
+            <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.2em] font-bold mb-6">Brokerage</h4>
+            <div className="space-y-2 text-[#e6e4dc]/80 font-light">
+                <p>Your Castle Real Estate</p>
+                <p>License #: FA.100107526</p>
+                <p>Colorado</p>
+            </div>
+          </div>
+
+          {/* Quick Contact */}
+          <div className="flex flex-col items-center md:items-start">
+             <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.2em] font-bold mb-6">Direct Contact</h4>
+             <div className="space-y-2 text-[#e6e4dc]/80 font-light">
+                <p className="text-lg">720-885-1613</p>
+                <p>bradenbraccio@yourcastle.com</p>
+                <p className="pt-2 text-[#c5a059]/60 text-xs tracking-widest">@YOURAGENTBRADEN</p>
+             </div>
+          </div>
+        </div>
+
+        <div className="border-t border-[#c5a059]/20 mt-16 pt-8 text-center text-[10px] uppercase tracking-widest text-[#e6e4dc]/40 flex flex-col md:flex-row justify-between items-center">
+          <p>&copy; {new Date().getFullYear()} Braden Braccio. All Rights Reserved.</p>
+          <div className="mt-4 md:mt-0 space-x-8">
+             <a href="#" className="hover:text-[#c5a059] transition-colors">Privacy Policy</a>
+             <a href="#" className="hover:text-[#c5a059] transition-colors">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+const App = () => {
+  return (
+    <div className="bg-[#fdfbf7] text-[#1c1c1c] font-sans selection:bg-[#c5a059] selection:text-[#0b2b20]">
+      {/* Global Font Imports via Google Fonts */}
+      {/* Replaced Bodoni Moda with Playfair Display for easier readability while keeping luxury */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+        
+        html {
+          scroll-behavior: smooth;
+        }
+        
+        .font-serif {
+          font-family: 'Playfair Display', serif;
+        }
+        
+        .font-sans {
+          font-family: 'Lato', sans-serif;
+        }
+
+        /* CUSTOM ANIMATIONS */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.06; transform: scale(1); }
+            50% { opacity: 0.1; transform: scale(1.05); }
+        }
+        @keyframes grain {
+            0%, 100% { transform: translate(0,0); }
+            10% { transform: translate(-5%, -10%); }
+            20% { transform: translate(-15%, 5%); }
+            30% { transform: translate(7%, -25%); }
+            40% { transform: translate(-5%, 25%); }
+            50% { transform: translate(-15%, 10%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 15%); }
+            80% { transform: translate(3%, 35%); }
+            90% { transform: translate(-10%, 10%); }
+        }
+
+        .animate-float {
+            animation: float 10s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 8s ease-in-out infinite;
+        }
+        .animate-grain {
+            animation: grain 8s steps(10) infinite;
+        }
+      `}</style>
+
+      <Navbar />
+      <Hero />
+      <BioSection />
+      <ProcessSection />
+      <Contact />
+      <Footer />
     </div>
   );
 };
