@@ -2,16 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, X, Phone, Mail, Instagram, MapPin, 
   Home, Key, TrendingUp, CheckCircle, ArrowRight,
-  Shield, Award, Clock
+  Shield, Award, Clock, ChevronDown
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - READABLE LUXURY EDITION
- * * Aesthetic: "Alive Luxury".
- * - Typography: Playfair Display (Easier to read serif) + Lato (Clean sans).
- * - Animation: Moving film grain texture + floating ambient light.
- * - Palette: Cream (#fdfbf7), Deep Rolex Green (#0b2b20), Antique Gold (#c5a059).
- * - Assets: Includes user uploaded logo.jpg and agent.jpg
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - ALIVE EDITION
+ * * Aesthetic: "Alive Luxury" / "Rolex Green & Gold"
+ * - Logo: Restored to original Gold/Black (removed invert filter).
+ * - Background: Stronger gradients, moving aurora effects.
+ * - Animation: Parallax, breathing elements, grain.
  */
 
 // --- Components ---
@@ -68,14 +67,14 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-700 ${
-      scrolled ? 'bg-[#fdfbf7]/90 backdrop-blur-xl shadow-sm py-4 border-b border-[#0b2b20]/10' : 'bg-transparent py-8'
+      scrolled ? 'bg-[#fdfbf7]/80 backdrop-blur-xl shadow-lg py-4 border-b border-[#0b2b20]/10' : 'bg-transparent py-8'
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Logo + Name Section */}
         <a href="#" className="flex items-center gap-4 z-50 relative group">
-           {/* Navbar Logo */}
-           <div className="w-12 h-12 border-[1.5px] border-[#0b2b20] flex items-center justify-center bg-[#fdfbf7] transition-all duration-500 group-hover:bg-[#0b2b20] group-hover:border-[#c5a059] shadow-md rounded-sm overflow-hidden p-1">
-              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain filter group-hover:brightness-0 group-hover:invert transition-all" />
+           {/* Navbar Logo - FIXED: Removed Invert, added Gold Border */}
+           <div className="w-12 h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-sm overflow-hidden p-0.5 transition-transform duration-500 group-hover:scale-105">
+              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover" />
            </div>
            <div className="flex flex-col">
               <span className="font-serif text-xl md:text-2xl tracking-widest text-[#0b2b20] font-semibold">
@@ -93,14 +92,15 @@ const Navbar = () => {
             <a 
               key={link.name} 
               href={link.href}
-              className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group"
+              className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden"
             >
-              {link.name}
-              <span className="absolute -bottom-2 left-1/2 w-0 h-[2px] bg-[#c5a059] transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+              <span className="relative z-10">{link.name}</span>
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
             </a>
           ))}
-          <a href="#contact" className="border-[1.5px] border-[#0b2b20] text-[#0b2b20] px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold hover:bg-[#0b2b20] hover:text-[#c5a059] hover:border-[#0b2b20] transition-all duration-500 shadow-sm hover:shadow-lg">
-            Inquire
+          <a href="#contact" className="relative px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0b2b20] border border-[#0b2b20] overflow-hidden group transition-all duration-300 hover:text-[#fdfbf7]">
+            <span className="absolute inset-0 w-full h-full bg-[#0b2b20] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></span>
+            <span className="relative z-10">Inquire</span>
           </a>
         </div>
 
@@ -132,56 +132,53 @@ const Navbar = () => {
   );
 };
 
-// 3. Hero Section (Redesigned: "Alive" Luxury with readable fonts)
+// 3. Hero Section (Redesigned: STRONGER GRADIENTS + ALIVE ANIMATION)
 const Hero = () => {
   return (
     <div className="relative h-screen min-h-[800px] flex items-center justify-center overflow-hidden bg-[#fdfbf7]">
       
       {/* --- LIVING BACKGROUND --- */}
       
-      {/* 1. Base Paper Texture */}
-      <div className="absolute inset-0 opacity-[0.6] z-0 pointer-events-none mix-blend-multiply" 
-           style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}>
-      </div>
+      {/* 1. Base Gradient (Stronger White/Cream) */}
+      <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] via-[#f4f1ea] to-[#e6e2d6] z-0"></div>
 
-      {/* 2. Grain Animation (The "Alive" Feel) */}
-      <div className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none animate-grain" 
+      {/* 2. Moving Aurora Gradients (The "Alive" Feel) */}
+      <div className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#0b2b20] opacity-[0.08] blur-[100px] animate-aurora-1 mix-blend-multiply"></div>
+      <div className="absolute bottom-[-20%] right-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#c5a059] opacity-[0.12] blur-[120px] animate-aurora-2 mix-blend-multiply"></div>
+      <div className="absolute top-[40%] left-[50%] transform -translate-x-1/2 w-[40vw] h-[40vw] rounded-full bg-[#c5a059] opacity-[0.05] blur-[80px] animate-pulse-slow"></div>
+
+      {/* 3. Grain Animation */}
+      <div className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none animate-grain" 
            style={{ 
              backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")',
              backgroundSize: '200px 200px'
            }}>
       </div>
       
-      {/* 3. Ambient Light Blobs */}
-      {/* Deep Green Pulse */}
-      <div className="absolute top-[-10%] right-[-5%] w-[60vw] h-[60vw] rounded-full bg-[#0b2b20] opacity-[0.06] blur-[120px] animate-pulse-slow"></div>
-      {/* Gold Drift */}
-      <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#c5a059] opacity-[0.08] blur-[140px] animate-float"></div>
-
-      {/* 4. Decorative Border Frame with Gold Accents */}
-      <div className="absolute inset-4 md:inset-10 border border-[#0b2b20]/10 z-0 pointer-events-none">
+      {/* 4. Decorative Border Frame */}
+      <div className="absolute inset-4 md:inset-8 border border-[#0b2b20]/5 z-0 pointer-events-none">
           {/* Animated Corner Accents */}
-          <div className="absolute top-0 left-0 w-40 h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20"></div>
-          <div className="absolute top-4 left-4 w-32 h-32 border-t border-l border-[#c5a059]/50"></div>
+          <div className="absolute top-0 left-0 w-40 h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
+          <div className="absolute top-4 left-4 w-32 h-32 border-t border-l border-[#c5a059]/50 animate-fade-in-delayed"></div>
           
-          <div className="absolute bottom-0 right-0 w-40 h-40 border-b-[3px] border-r-[3px] border-[#0b2b20]/20"></div>
-          <div className="absolute bottom-4 right-4 w-32 h-32 border-b border-r border-[#c5a059]/50"></div>
+          <div className="absolute bottom-0 right-0 w-40 h-40 border-b-[3px] border-r-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
+          <div className="absolute bottom-4 right-4 w-32 h-32 border-b border-r border-[#c5a059]/50 animate-fade-in-delayed"></div>
 
           {/* Vertical Gold Lines */}
-          <div className="absolute top-0 bottom-0 left-[12%] w-[1px] bg-[#c5a059]/30 hidden md:block"></div>
-          <div className="absolute top-0 bottom-0 right-[12%] w-[1px] bg-[#c5a059]/30 hidden md:block"></div>
+          <div className="absolute top-0 bottom-0 left-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#c5a059]/30 to-transparent hidden md:block"></div>
+          <div className="absolute top-0 bottom-0 right-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#c5a059]/30 to-transparent hidden md:block"></div>
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-12 py-16 md:py-24">
         
-        {/* LOGO HERO */}
+        {/* LOGO HERO - Restored Gold/Black */}
         <Reveal>
-          <div className="mx-auto mb-12 w-32 h-32 md:w-40 md:h-40 border-[2px] border-[#0b2b20] flex items-center justify-center bg-[#fdfbf7] shadow-[0_20px_50px_-12px_rgba(11,43,32,0.15)] relative group overflow-hidden transition-all duration-700 hover:border-[#c5a059] rounded-sm p-6">
-             {/* Background reveal effect */}
-             <div className="absolute inset-0 bg-[#0b2b20] scale-0 group-hover:scale-100 transition-transform duration-700 rounded-full opacity-5"></div>
+          <div className="mx-auto mb-12 w-36 h-36 md:w-48 md:h-48 border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-sm p-0 animate-float-subtle">
+             {/* Shine effect */}
+             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/10 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
              
-             {/* Actual Image Logo */}
-             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-700 group-hover:scale-105" />
+             {/* Actual Image Logo - No Invert */}
+             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-cover relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
           </div>
         </Reveal>
 
@@ -196,27 +193,34 @@ const Hero = () => {
         </Reveal>
         
         <Reveal delay={400}>
-          {/* Switched to Playfair Display for better readability */}
           <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl text-[#0b2b20] mb-10 leading-[1.1] tracking-wide drop-shadow-sm font-medium">
-            <span className="block text-[#0b2b20] italic font-normal text-5xl md:text-6xl mb-2">A Higher</span>
+            <span className="block text-[#0b2b20] italic font-normal text-5xl md:text-6xl mb-4 opacity-80">A Higher</span>
             Standard of Living
           </h1>
         </Reveal>
         
         <Reveal delay={600}>
-          <p className="text-[#0b2b20]/90 text-lg md:text-2xl font-normal mb-12 max-w-3xl mx-auto leading-relaxed font-serif">
-            "Moving from one home to the next is an important moment in life. We bring the experience, care, and effort you need."
+          <p className="text-[#0b2b20]/80 text-lg md:text-2xl font-normal mb-12 max-w-3xl mx-auto leading-relaxed font-serif relative">
+            <span className="absolute -top-6 -left-4 text-6xl text-[#c5a059]/20 font-serif">"</span>
+            Moving from one home to the next is an important moment in life. We bring the experience, care, and effort you need.
+            <span className="absolute -bottom-10 -right-4 text-6xl text-[#c5a059]/20 font-serif">"</span>
           </p>
         </Reveal>
         
         <Reveal delay={800}>
-          <a 
-            href="#contact" 
-            className="group relative inline-block overflow-hidden border-[1.5px] border-[#0b2b20] px-14 py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] transition-colors duration-500 hover:text-[#fdfbf7] shadow-lg hover:shadow-xl"
-          >
-            <span className="absolute inset-0 translate-y-[101%] bg-[#0b2b20] transition-transform duration-500 group-hover:translate-y-0"></span>
-            <span className="relative z-10">Start the Conversation</span>
-          </a>
+          <div className="flex flex-col items-center gap-6">
+            <a 
+              href="#contact" 
+              className="group relative inline-block overflow-hidden border-[1.5px] border-[#0b2b20] px-14 py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] transition-colors duration-500 hover:text-[#fdfbf7] shadow-lg hover:shadow-2xl"
+            >
+              <span className="absolute inset-0 translate-y-[101%] bg-[#0b2b20] transition-transform duration-500 group-hover:translate-y-0"></span>
+              <span className="relative z-10">Start the Conversation</span>
+            </a>
+            
+            <a href="#philosophy" className="animate-bounce mt-8 text-[#0b2b20]/40 hover:text-[#c5a059] transition-colors">
+              <ChevronDown size={32} strokeWidth={1} />
+            </a>
+          </div>
         </Reveal>
       </div>
     </div>
@@ -226,30 +230,33 @@ const Hero = () => {
 // 4. Bio / Philosophy Section
 const BioSection = () => {
   return (
-    <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20">
-      {/* Light Paper Texture */}
-      <div className="absolute inset-0 opacity-[0.3] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+    <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20 overflow-hidden">
+      {/* Moving Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fdfbf7] to-[#f4f1ea] z-0"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c5a059]/5 rounded-full blur-[100px] mix-blend-multiply animate-pulse-slow"></div>
+
       {/* Grain */}
       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
 
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center relative z-10">
         <Reveal className="relative flex justify-center md:justify-end">
             {/* HEADSHOT CONTAINER */}
-            <div className="relative w-full max-w-md">
-                <div className="aspect-[3/4] bg-[#f0f0f0] relative overflow-hidden shadow-2xl border border-[#0b2b20]/10">
+            <div className="relative w-full max-w-md group">
+                {/* Image Frame */}
+                <div className="aspect-[3/4] bg-[#f0f0f0] relative overflow-hidden shadow-2xl border border-[#0b2b20]/10 z-10">
                     <img 
                       src="agent.jpg" 
                       alt="Braden Braccio" 
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-[2s] sepia-[0.05]"
+                      className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105 sepia-[0.05]"
                     />
                 </div>
-                {/* Decorative Frame Elements */}
-                <div className="absolute -top-6 -left-6 w-32 h-32 border-t-2 border-l-2 border-[#0b2b20] opacity-100"></div>
-                <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100"></div>
+                {/* Decorative Frame Elements - Parallax Feel */}
+                <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 
-                {/* Logo Badge - UPDATED: No padding, full fill */}
-                <div className="absolute -bottom-10 -left-10 bg-[#0b2b20] shadow-2xl border border-[#c5a059] w-32 h-32 flex items-center justify-center overflow-hidden">
-                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-cover filter invert opacity-90" />
+                {/* Logo Badge - FIXED: No padding, pure Black Card aesthetic */}
+                <div className="absolute -bottom-12 -left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-40 h-40 flex items-center justify-center overflow-hidden z-30 transition-transform duration-500 hover:scale-105">
+                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-cover opacity-100" />
                 </div>
             </div>
         </Reveal>
@@ -269,23 +276,23 @@ const BioSection = () => {
               As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and quiet strength to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
             </p>
             <p>
-              To Braden, luxury is not just about the property. It is about the peace of mind that comes from working with someone who truly listens, anticipates your needs, and guides you with patience and precision from the first meeting to the closing table and beyond.
+              To Braden, luxury is not just about the property. It is about the peace of mind that comes from working with someone who truly listens, anticipates your needs, and guides you with patience and precision.
             </p>
-            <p className="font-serif italic text-xl text-[#0b2b20] mt-4">
-              "You deserve an experience that feels as exceptional as the home itself. This is My Approach."
+            <p className="font-serif italic text-xl text-[#0b2b20] mt-4 border-l-4 border-[#c5a059] pl-6 py-2 bg-gradient-to-r from-[#c5a059]/5 to-transparent">
+              "You deserve an experience that feels as exceptional as the home itself."
             </p>
           </div>
           
           <div className="mt-12 grid grid-cols-2 gap-8 border-t border-[#0b2b20]/10 pt-8">
-            <div className="group">
-               <Shield className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" size={32} strokeWidth={1.5} />
+            <div className="group cursor-pointer">
+               <Shield className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
                <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">US Veteran</h4>
-               <p className="text-sm text-[#1c1c1c]/70 font-medium">Disciplined approach.</p>
+               <p className="text-sm text-[#1c1c1c]/70 font-medium">Disciplined & Trustworthy.</p>
             </div>
-            <div className="group">
-               <MapPin className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" size={32} strokeWidth={1.5} />
+            <div className="group cursor-pointer">
+               <MapPin className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
                <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">Colorado Expert</h4>
-               <p className="text-sm text-[#1c1c1c]/70 font-medium">Deep local knowledge.</p>
+               <p className="text-sm text-[#1c1c1c]/70 font-medium">Local Market Mastery.</p>
             </div>
           </div>
         </Reveal>
@@ -359,9 +366,11 @@ const ProcessSection = () => {
     <section id="process" className="py-24 bg-[#0b2b20] text-[#fdfbf7] overflow-hidden relative border-t-4 border-[#c5a059]">
       {/* Texture overlay - kept dark for contrast in this specific section */}
       <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
-      {/* Moving Grain Overlay - Light version for dark background */}
       <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
       
+      {/* Background Glows */}
+      <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-[#163a2c] to-transparent opacity-50"></div>
+
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <Reveal>
@@ -389,7 +398,7 @@ const ProcessSection = () => {
         <div className="grid md:grid-cols-4 gap-6">
           {activePhases.map((phase, index) => (
             <Reveal key={phase.id} delay={index * 150}>
-              <div className="bg-[#163a2c]/40 backdrop-blur-sm p-8 h-full border border-[#c5a059]/20 hover:border-[#c5a059] transition-all duration-500 group shadow-lg hover:shadow-[0_0_30px_rgba(197,160,89,0.15)] relative overflow-hidden">
+              <div className="bg-[#163a2c]/40 backdrop-blur-sm p-8 h-full border border-[#c5a059]/20 hover:border-[#c5a059] transition-all duration-500 group shadow-lg hover:shadow-[0_0_30px_rgba(197,160,89,0.15)] relative overflow-hidden rounded-sm">
                 {/* Hover Glow */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#c5a059]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -414,12 +423,13 @@ const ProcessSection = () => {
 // 6. Contact / CTA Section
 const Contact = () => {
   return (
-    <section id="contact" className="py-24 bg-[#fdfbf7] relative">
+    <section id="contact" className="py-24 bg-[#fdfbf7] relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] to-[#e6e2d6] z-0"></div>
       <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
 
       <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <div className="bg-white p-12 md:p-24 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[#0b2b20]/10">
+        <div className="bg-white/80 backdrop-blur-md p-12 md:p-24 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[#0b2b20]/10 relative">
           
           <div className="text-center">
             <Reveal>
@@ -431,14 +441,14 @@ const Contact = () => {
 
             <Reveal delay={200}>
               <div className="grid md:grid-cols-2 gap-8 mb-16">
-                <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] group">
+                <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
                   <Phone className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
                   <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Call or Text</span>
                   <a href="tel:720-885-1613" className="font-serif text-2xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium">
                     720-885-1613
                   </a>
                 </div>
-                <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] group">
+                <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
                   <Mail className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
                   <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Email</span>
                   <a href="mailto:bradenbraccio@yourcastle.com" className="font-serif text-xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium">
@@ -451,26 +461,27 @@ const Contact = () => {
             <Reveal delay={300}>
               <form className="space-y-8 text-left max-w-2xl mx-auto">
                 <div className="grid md:grid-cols-2 gap-8">
-                  <div className="relative">
+                  <div className="relative group">
                     <input type="text" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="name" placeholder="Name" />
                     <label htmlFor="name" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Name</label>
                   </div>
-                  <div className="relative">
+                  <div className="relative group">
                     <input type="tel" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="phone" placeholder="Phone" />
                     <label htmlFor="phone" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Phone</label>
                   </div>
                 </div>
-                <div className="relative">
+                <div className="relative group">
                     <input type="email" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="email" placeholder="Email" />
                     <label htmlFor="email" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Email</label>
                 </div>
-                <div className="relative">
+                <div className="relative group">
                     <textarea rows="4" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="msg" placeholder="Message"></textarea>
                     <label htmlFor="msg" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Message</label>
                 </div>
                 <div className="text-center mt-12">
-                  <button type="button" className="bg-[#0b2b20] text-[#fdfbf7] px-14 py-5 text-xs uppercase tracking-[0.2em] font-bold hover:bg-[#163a2c] transition-all duration-300 shadow-xl w-full md:w-auto border border-[#0b2b20] hover:shadow-[0_10px_30px_-5px_rgba(11,43,32,0.3)]">
-                    Send Message
+                  <button type="button" className="bg-[#0b2b20] text-[#fdfbf7] px-14 py-5 text-xs uppercase tracking-[0.2em] font-bold hover:bg-[#163a2c] transition-all duration-300 shadow-xl w-full md:w-auto border border-[#0b2b20] hover:shadow-[0_10px_30px_-5px_rgba(11,43,32,0.3)] relative overflow-hidden group">
+                    <span className="absolute inset-0 bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0"></span>
+                    <span className="relative z-10">Send Message</span>
                   </button>
                 </div>
               </form>
@@ -493,9 +504,9 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-16 text-center md:text-left">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
-             {/* Small Logo Icon */}
-            <div className="mb-6 w-16 h-16 border border-[#c5a059] flex items-center justify-center bg-[#0b2b20] overflow-hidden p-2">
-                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-contain filter invert opacity-90" />
+             {/* Small Logo Icon - UPDATED to Gold/Black */}
+            <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] overflow-hidden p-0.5">
+                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-cover" />
             </div>
             <h3 className="font-serif text-3xl text-[#fdfbf7] tracking-widest mb-4">BRADEN BRACCIO</h3>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#c5a059] mb-8 font-bold">Real Estate Agent</p>
@@ -550,7 +561,6 @@ const App = () => {
   return (
     <div className="bg-[#fdfbf7] text-[#1c1c1c] font-sans selection:bg-[#c5a059] selection:text-[#0b2b20]">
       {/* Global Font Imports via Google Fonts */}
-      {/* Replaced Bodoni Moda with Playfair Display for easier readability while keeping luxury */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
         
@@ -573,8 +583,8 @@ const App = () => {
             100% { transform: translateY(0px) rotate(0deg); }
         }
         @keyframes pulse-slow {
-            0%, 100% { opacity: 0.06; transform: scale(1); }
-            50% { opacity: 0.1; transform: scale(1.05); }
+            0%, 100% { opacity: 0.05; transform: scale(1); }
+            50% { opacity: 0.1; transform: scale(1.1); }
         }
         @keyframes grain {
             0%, 100% { transform: translate(0,0); }
@@ -588,6 +598,25 @@ const App = () => {
             80% { transform: translate(3%, 35%); }
             90% { transform: translate(-10%, 10%); }
         }
+        
+        @keyframes aurora-1 {
+            0% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0,0) scale(1); }
+        }
+        
+        @keyframes aurora-2 {
+            0% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(-30px, 30px) scale(1.1); }
+            66% { transform: translate(40px, -40px) scale(0.95); }
+            100% { transform: translate(0,0) scale(1); }
+        }
+        
+        @keyframes float-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
 
         .animate-float {
             animation: float 10s ease-in-out infinite;
@@ -597,6 +626,15 @@ const App = () => {
         }
         .animate-grain {
             animation: grain 8s steps(10) infinite;
+        }
+        .animate-aurora-1 {
+            animation: aurora-1 20s ease-in-out infinite;
+        }
+        .animate-aurora-2 {
+            animation: aurora-2 25s ease-in-out infinite;
+        }
+        .animate-float-subtle {
+            animation: float-subtle 6s ease-in-out infinite;
         }
       `}</style>
 
