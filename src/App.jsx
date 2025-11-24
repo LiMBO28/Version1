@@ -8,10 +8,9 @@ import {
 /**
  * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL POLISH
  * * Fixes: 
- * - Mobile Menu Button: Added dedicated Close (X) button INSIDE the high-z-index menu layer so it's never hidden.
- * - Mobile Layout: Adjusted padding to push menu items higher (top-aligned) rather than centered/middle.
- * - Spacing: Increased spacing to "fill out" the menu visually.
- * - Logo Blending: Preserved black logo filter.
+ * - Logo Side Borders: Added 'bg-[#fdfbf7]' to logo container to hide green background gaps.
+ * - Mobile Menu Design: Updated to match IMG_9460 (Green background, full contact info).
+ * - Layout: Filled out menu with contact details & brokerage info.
  */
 
 // --- Components ---
@@ -87,12 +86,12 @@ const Navbar = () => {
           
           {/* Logo + Name Section */}
           <a href="#" className="flex items-center gap-3 md:gap-4 relative group">
-             {/* Navbar Logo - Filter added to match black */}
-             <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-full overflow-hidden p-0 transition-transform duration-500 group-hover:scale-105">
+             {/* Navbar Logo - Set bg to cream to match logo background */}
+             <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-md rounded-full overflow-hidden p-0 transition-transform duration-500 group-hover:scale-105">
                 <img 
                   src="logo.jpg" 
                   alt="B Logo" 
-                  className="w-full h-full object-cover contrast-125 brightness-90" 
+                  className="w-full h-full object-contain" 
                 />
              </div>
              <div className="flex flex-col">
@@ -123,7 +122,7 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Mobile Toggle Button (Hamburger) */}
+          {/* Mobile Toggle Button */}
           <button 
             className={`md:hidden text-[#0b2b20] transition-opacity duration-300 hover:text-[#c5a059] p-2 relative z-[40] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} 
             onClick={() => setIsOpen(true)}
@@ -134,55 +133,75 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* --- FULL SCREEN MOBILE MENU OVERLAY (MOVED OUTSIDE NAV) --- */}
-      <div className={`fixed inset-0 z-[100] flex flex-col items-center pt-24 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+      {/* --- FULL SCREEN MOBILE MENU OVERLAY --- */}
+      <div className={`fixed inset-0 z-[100] flex flex-col pt-12 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
-         {/* Solid Background - Prevents page content from bleeding through */}
-         <div className="absolute inset-0 bg-[#fdfbf7]"></div>
+         {/* Dark Green Background to match screenshot */}
+         <div className="absolute inset-0 bg-[#0b2b20]"></div>
          
          {/* Texture Overlay */}
-         <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+         <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
          
-         {/* CLOSE BUTTON - Placed explicitly inside this layer so it is always visible */}
+         {/* CLOSE BUTTON */}
          <button 
-            className="absolute top-6 right-6 text-[#0b2b20] p-2 hover:text-[#c5a059] transition-colors z-50"
+            className="absolute top-6 right-6 text-[#fdfbf7] p-2 hover:text-[#c5a059] transition-colors z-50"
             onClick={() => setIsOpen(false)}
             aria-label="Close Menu"
          >
             <X size={36} />
          </button>
          
-         {/* Scrollable Container for Content */}
-         <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center pb-20">
-           {/* Menu Logo */}
-           <div className="w-24 h-24 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-full overflow-hidden p-0 mb-10 shadow-xl shrink-0">
-              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover contrast-125 brightness-90" />
+         {/* Content Container */}
+         <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center px-6 pb-12">
+           
+           {/* Menu Logo - White Background to hide green borders */}
+           <div className="w-20 h-20 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] rounded-full overflow-hidden p-0 mt-4 mb-8 shadow-2xl shrink-0">
+              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
            </div>
 
-           {/* Navigation Links - Increased spacing to 'fill out' the menu */}
-           <div className="flex flex-col items-center space-y-10">
+           {/* Navigation Links */}
+           <div className="flex flex-col items-center space-y-6 w-full">
              {navLinks.map((link) => (
                 <a 
                   key={link.name} 
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="font-serif text-4xl md:text-5xl text-[#0b2b20] hover:text-[#c5a059] transition-colors"
+                  className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors"
                 >
                   {link.name}
                 </a>
               ))}
-              
-              <div className="w-24 h-1 bg-[#c5a059]/50 my-4"></div>
-              
-              <a 
-                href="#contact"
-                onClick={() => setIsOpen(false)}
-                className="text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] mt-4 px-10 py-5 border border-[#0b2b20] hover:bg-[#0b2b20] hover:text-[#fdfbf7] transition-all"
-              >
-                Start a Conversation
-              </a>
            </div>
+
+           {/* Divider */}
+           <div className="w-12 h-[1px] bg-[#c5a059]/50 my-8"></div>
+
+           {/* BROKERAGE INFO (From Screenshot) */}
+           <div className="flex flex-col items-center text-center space-y-6">
+              <div className="flex space-x-8">
+                 <a href="https://www.instagram.com/youragentbraden" target="_blank" className="text-[#c5a059] hover:text-white">
+                    <Instagram size={24} strokeWidth={1.5} />
+                 </a>
+                 <a href="mailto:bradenbraccio@yourcastle.com" className="text-[#c5a059] hover:text-white">
+                    <Mail size={24} strokeWidth={1.5} />
+                 </a>
+              </div>
+
+              <div className="space-y-2">
+                 <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold mb-2">Brokerage</h4>
+                 <p className="text-[#fdfbf7]/80 font-light text-sm">Your Castle Real Estate</p>
+                 <p className="text-[#fdfbf7]/80 font-light text-sm">License #: FA.100107526</p>
+                 <p className="text-[#fdfbf7]/80 font-light text-sm">Colorado</p>
+              </div>
+
+              <div className="space-y-2">
+                 <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold mb-2">Direct Contact</h4>
+                 <a href="tel:720-885-1613" className="text-[#fdfbf7] text-xl font-serif block hover:text-[#c5a059]">720-885-1613</a>
+                 <a href="mailto:bradenbraccio@yourcastle.com" className="text-[#fdfbf7]/60 text-sm block hover:text-[#c5a059]">bradenbraccio@yourcastle.com</a>
+              </div>
+           </div>
+
          </div>
       </div>
     </>
@@ -218,17 +237,17 @@ const Hero = () => {
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pb-16 md:py-24">
         
-        {/* LOGO HERO - FILTERED BLACK & ROUND */}
+        {/* LOGO HERO - BG CREAM TO FIX BORDERS */}
         <Reveal>
-          <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-0 animate-float-subtle">
+          <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-0 animate-float-subtle">
              {/* Shine effect */}
-             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/10 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
+             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/40 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
              
-             {/* Actual Image Logo - Object Cover to fill circle + Contrast filter to blend black */}
+             {/* Actual Image Logo */}
              <img 
                src="logo.jpg" 
                alt="Braden Braccio Logo" 
-               className="w-full h-full object-cover relative z-10 transition-transform duration-[2s] group-hover:scale-110 contrast-125 brightness-90" 
+               className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" 
              />
           </div>
         </Reveal>
@@ -281,7 +300,6 @@ const Hero = () => {
 // 4. Bio / Philosophy Section
 const BioSection = () => {
   return (
-    // REMOVED overflow-hidden so the badge can hang off the bottom without being cut
     <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20">
       <div className="absolute inset-0 bg-gradient-to-b from-[#fdfbf7] to-[#f4f1ea] z-0"></div>
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c5a059]/5 rounded-full blur-[100px] mix-blend-multiply animate-pulse-slow"></div>
@@ -301,19 +319,18 @@ const BioSection = () => {
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 
-                {/* Logo Badge - UPDATED: Circular, Filtered to Black */}
-                <div className="absolute -bottom-12 -left-4 md:-left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-0 transition-transform duration-500 hover:scale-105">
+                {/* Logo Badge - Set bg to cream */}
+                <div className="absolute -bottom-12 -left-4 md:-left-8 bg-[#fdfbf7] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-0 transition-transform duration-500 hover:scale-105">
                     <img 
                       src="logo.jpg" 
                       alt="Logo Badge" 
-                      className="w-full h-full object-cover opacity-100 contrast-125 brightness-90" 
+                      className="w-full h-full object-contain" 
                     />
                 </div>
             </div>
         </Reveal>
         
         <Reveal delay={200}>
-          {/* Added spacing top on mobile to clear the logo badge */}
           <div className="mt-16 md:mt-0">
             <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold flex items-center gap-3 mb-6">
               <span className="w-12 h-[2px] bg-[#0b2b20]"></span> About Braden
@@ -559,8 +576,8 @@ const Footer = () => {
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
              {/* Small Logo Icon - UPDATED to Gold/Black */}
-            <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] overflow-hidden p-0.5 rounded-full">
-                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-cover contrast-125 brightness-90" />
+            <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] overflow-hidden p-0 rounded-full">
+                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-contain" />
             </div>
             <h3 className="font-serif text-3xl text-[#fdfbf7] tracking-widest mb-4">BRADEN BRACCIO</h3>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#c5a059] mb-8 font-bold">Real Estate Agent</p>
