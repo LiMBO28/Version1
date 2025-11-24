@@ -6,12 +6,12 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL POLISH
- * * Fixes: 
- * - Logo Shapes: Changed square logo containers to 'rounded-full' (Circles).
- * - Logo Fit: Changed 'object-cover' to 'object-contain' with padding so the shield isn't cut off.
- * - Desktop: Changed h-screen to min-h-screen to prevent content cutoff on smaller laptops.
- * - Mobile: Solid navbar bar + solid menu background.
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - MOBILE MENU FIX
+ * * Critical Fix: Moved Mobile Menu OUTSIDE the 'nav' element.
+ * - Why: The 'backdrop-blur' on the nav element creates a new stacking context, 
+ * which traps the 'fixed' mobile menu inside the nav bar's height, causing 
+ * the background to disappear and text to overlap page content.
+ * - Solution: Render MobileMenu as a sibling to the Nav bar.
  */
 
 // --- Components ---
@@ -48,7 +48,7 @@ const Reveal = ({ children, className = "", delay = 0 }) => {
   );
 };
 
-// 2. Navigation
+// 2. Navigation Component
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -76,73 +76,82 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-700 border-b border-[#0b2b20]/10 ${
-      scrolled 
-        ? 'bg-[#fdfbf7]/95 backdrop-blur-xl shadow-sm py-3 md:py-4' 
-        : 'bg-[#fdfbf7] md:bg-transparent py-4 md:py-8 shadow-sm md:shadow-none'
-    }`}>
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
-        
-        {/* Logo + Name Section */}
-        <a href="#" className="flex items-center gap-3 md:gap-4 z-[60] relative group">
-           {/* Navbar Logo - Circular Badge */}
-           <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-full overflow-hidden p-1 transition-transform duration-500 group-hover:scale-105">
-              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
-           </div>
-           <div className="flex flex-col">
-              <span className="font-serif text-lg md:text-2xl tracking-widest text-[#0b2b20] font-semibold leading-tight">
-                BRADEN BRACCIO
-              </span>
-              <span className="block text-[0.6rem] md:text-[0.65rem] font-sans tracking-[0.2em] text-[#c5a059] uppercase group-hover:text-[#0b2b20] transition-colors font-bold mt-0.5">
-                Real Estate Agent
-              </span>
-           </div>
-        </a>
-
-        {/* Desktop Nav - STRICTLY HIDDEN ON MOBILE */}
-        <div className="hidden md:flex space-x-10 items-center">
-          {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden"
-            >
-              <span className="relative z-10">{link.name}</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-            </a>
-          ))}
-          <a href="#contact" className="relative px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0b2b20] border border-[#0b2b20] overflow-hidden group transition-all duration-300 hover:text-[#fdfbf7]">
-            <span className="absolute inset-0 w-full h-full bg-[#0b2b20] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></span>
-            <span className="relative z-10">Inquire</span>
-          </a>
-        </div>
-
-        {/* Mobile Toggle Button - High Z-Index to stay on top */}
-        <button 
-          className="md:hidden z-[60] text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059] p-2 relative" 
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle Menu"
-        >
-          {isOpen ? <X size={32} /> : <Menu size={32} />}
-        </button>
-
-        {/* Mobile Menu Overlay */}
-        <div className={`fixed inset-0 bg-[#fdfbf7] z-[58] flex flex-col items-center justify-start pt-40 space-y-8 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}>
-           {/* Solid Background to prevent bleed-through */}
-           <div className="absolute inset-0 bg-[#fdfbf7]"></div>
-           
-           {/* Texture Overlay */}
-           <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
-           
-           {/* Mobile Menu Content */}
-           <div className="relative z-10 flex flex-col items-center space-y-8">
-             {/* Menu Logo */}
-             <div className="w-20 h-20 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-full overflow-hidden p-2 mb-4 shadow-xl">
-                <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
+    <>
+      {/* --- TOP NAVIGATION BAR --- */}
+      <nav className={`fixed w-full z-50 transition-all duration-700 border-b border-[#0b2b20]/10 ${
+        scrolled 
+          ? 'bg-[#fdfbf7]/95 backdrop-blur-xl shadow-sm py-3 md:py-4' 
+          : 'bg-[#fdfbf7] md:bg-transparent py-4 md:py-8 shadow-sm md:shadow-none'
+      }`}>
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
+          
+          {/* Logo + Name Section */}
+          <a href="#" className="flex items-center gap-3 md:gap-4 relative group">
+             {/* Navbar Logo - Filter added to match black */}
+             <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-md rounded-full overflow-hidden p-0 transition-transform duration-500 group-hover:scale-105">
+                <img 
+                  src="logo.jpg" 
+                  alt="B Logo" 
+                  className="w-full h-full object-cover contrast-125 brightness-90" 
+                />
              </div>
+             <div className="flex flex-col">
+                <span className="font-serif text-lg md:text-2xl tracking-widest text-[#0b2b20] font-semibold leading-tight">
+                  BRADEN BRACCIO
+                </span>
+                <span className="block text-[0.6rem] md:text-[0.65rem] font-sans tracking-[0.2em] text-[#c5a059] uppercase group-hover:text-[#0b2b20] transition-colors font-bold mt-0.5">
+                  Real Estate Agent
+                </span>
+             </div>
+          </a>
 
+          {/* Desktop Nav - STRICTLY HIDDEN ON MOBILE */}
+          <div className="hidden md:flex space-x-10 items-center">
+            {navLinks.map((link) => (
+              <a 
+                key={link.name} 
+                href={link.href}
+                className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden"
+              >
+                <span className="relative z-10">{link.name}</span>
+                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+              </a>
+            ))}
+            <a href="#contact" className="relative px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0b2b20] border border-[#0b2b20] overflow-hidden group transition-all duration-300 hover:text-[#fdfbf7]">
+              <span className="absolute inset-0 w-full h-full bg-[#0b2b20] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></span>
+              <span className="relative z-10">Inquire</span>
+            </a>
+          </div>
+
+          {/* Mobile Toggle Button */}
+          <button 
+            className="md:hidden text-[#0b2b20] transition-transform duration-300 hover:text-[#c5a059] p-2 relative z-[110]" 
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle Menu"
+          >
+            {isOpen ? <X size={32} /> : <Menu size={32} />}
+          </button>
+        </div>
+      </nav>
+
+      {/* --- FULL SCREEN MOBILE MENU OVERLAY (MOVED OUTSIDE NAV) --- */}
+      <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-start pt-32 space-y-6 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+        isOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+         {/* Solid Background - Prevents page content from bleeding through */}
+         <div className="absolute inset-0 bg-[#fdfbf7]"></div>
+         
+         {/* Texture Overlay */}
+         <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+         
+         {/* Scrollable Container for Content */}
+         <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center pb-20">
+           {/* Menu Logo */}
+           <div className="w-24 h-24 border-[2px] border-[#c5a059] flex items-center justify-center bg-[#000] rounded-full overflow-hidden p-0 mb-8 shadow-xl shrink-0">
+              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-cover contrast-125 brightness-90" />
+           </div>
+
+           <div className="flex flex-col items-center space-y-8">
              {navLinks.map((link) => (
                 <a 
                   key={link.name} 
@@ -153,18 +162,18 @@ const Navbar = () => {
                   {link.name}
                 </a>
               ))}
-              <div className="w-16 h-1 bg-[#c5a059] my-4"></div>
+              <div className="w-16 h-1 bg-[#c5a059] my-2"></div>
               <a 
                 href="#contact"
                 onClick={() => setIsOpen(false)}
-                className="text-sm uppercase tracking-[0.2em] font-bold text-[#0b2b20]"
+                className="text-sm uppercase tracking-[0.2em] font-bold text-[#0b2b20] mt-4 px-8 py-4 border border-[#0b2b20] hover:bg-[#0b2b20] hover:text-[#fdfbf7] transition-all"
               >
                 Start a Conversation
               </a>
            </div>
-        </div>
+         </div>
       </div>
-    </nav>
+    </>
   );
 };
 
@@ -197,14 +206,18 @@ const Hero = () => {
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pb-16 md:py-24">
         
-        {/* LOGO HERO - UPDATED: Circular, object-contain */}
+        {/* LOGO HERO - FILTERED BLACK & ROUND */}
         <Reveal>
-          <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-4 md:p-6 animate-float-subtle">
+          <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#000] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-0 animate-float-subtle">
              {/* Shine effect */}
              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/10 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
              
-             {/* Actual Image Logo - Contained within the circle */}
-             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
+             {/* Actual Image Logo - Object Cover to fill circle + Contrast filter to blend black */}
+             <img 
+               src="logo.jpg" 
+               alt="Braden Braccio Logo" 
+               className="w-full h-full object-cover relative z-10 transition-transform duration-[2s] group-hover:scale-110 contrast-125 brightness-90" 
+             />
           </div>
         </Reveal>
 
@@ -256,7 +269,8 @@ const Hero = () => {
 // 4. Bio / Philosophy Section
 const BioSection = () => {
   return (
-    <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20 overflow-hidden">
+    // REMOVED overflow-hidden so the badge can hang off the bottom without being cut
+    <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20">
       <div className="absolute inset-0 bg-gradient-to-b from-[#fdfbf7] to-[#f4f1ea] z-0"></div>
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c5a059]/5 rounded-full blur-[100px] mix-blend-multiply animate-pulse-slow"></div>
       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
@@ -275,45 +289,52 @@ const BioSection = () => {
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 
-                {/* Logo Badge - UPDATED: Circular, object-contain */}
-                <div className="absolute -bottom-12 -left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-4 transition-transform duration-500 hover:scale-105">
-                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-contain opacity-100" />
+                {/* Logo Badge - UPDATED: Circular, Filtered to Black */}
+                <div className="absolute -bottom-12 -left-4 md:-left-8 bg-[#000] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-0 transition-transform duration-500 hover:scale-105">
+                    <img 
+                      src="logo.jpg" 
+                      alt="Logo Badge" 
+                      className="w-full h-full object-cover opacity-100 contrast-125 brightness-90" 
+                    />
                 </div>
             </div>
         </Reveal>
         
         <Reveal delay={200}>
-          <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold flex items-center gap-3 mb-6">
-            <span className="w-12 h-[2px] bg-[#0b2b20]"></span> About Braden
-          </span>
-          <h2 className="font-serif text-4xl md:text-6xl text-[#0b2b20] mb-8 leading-tight font-medium">
-            My Approach
-          </h2>
-          <div className="space-y-8 text-[#1c1c1c]/90 font-normal leading-relaxed text-lg font-sans">
-            <p>
-              Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.
-            </p>
-            <p>
-              As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and quiet strength to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
-            </p>
-            <p>
-              To Braden, luxury is not just about the property. It is about the peace of mind that comes from working with someone who truly listens, anticipates your needs, and guides you with patience and precision.
-            </p>
-            <p className="font-serif italic text-xl text-[#0b2b20] mt-4 border-l-4 border-[#c5a059] pl-6 py-2 bg-gradient-to-r from-[#c5a059]/5 to-transparent">
-              "You deserve an experience that feels as exceptional as the home itself."
-            </p>
-          </div>
-          
-          <div className="mt-12 grid grid-cols-2 gap-8 border-t border-[#0b2b20]/10 pt-8">
-            <div className="group cursor-pointer">
-               <Shield className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
-               <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">US Veteran</h4>
-               <p className="text-sm text-[#1c1c1c]/70 font-medium">Disciplined & Trustworthy.</p>
+          {/* Added spacing top on mobile to clear the logo badge */}
+          <div className="mt-16 md:mt-0">
+            <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold flex items-center gap-3 mb-6">
+              <span className="w-12 h-[2px] bg-[#0b2b20]"></span> About Braden
+            </span>
+            <h2 className="font-serif text-4xl md:text-6xl text-[#0b2b20] mb-8 leading-tight font-medium">
+              My Approach
+            </h2>
+            <div className="space-y-8 text-[#1c1c1c]/90 font-normal leading-relaxed text-lg font-sans">
+              <p>
+                Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.
+              </p>
+              <p>
+                As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and quiet strength to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
+              </p>
+              <p>
+                To Braden, luxury is not just about the property. It is about the peace of mind that comes from working with someone who truly listens, anticipates your needs, and guides you with patience and precision.
+              </p>
+              <p className="font-serif italic text-xl text-[#0b2b20] mt-4 border-l-4 border-[#c5a059] pl-6 py-2 bg-gradient-to-r from-[#c5a059]/5 to-transparent">
+                "You deserve an experience that feels as exceptional as the home itself."
+              </p>
             </div>
-            <div className="group cursor-pointer">
-               <MapPin className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
-               <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">Colorado Expert</h4>
-               <p className="text-sm text-[#1c1c1c]/70 font-medium">Local Market Mastery.</p>
+            
+            <div className="mt-12 grid grid-cols-2 gap-8 border-t border-[#0b2b20]/10 pt-8">
+              <div className="group cursor-pointer">
+                <Shield className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
+                <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">US Veteran</h4>
+                <p className="text-sm text-[#1c1c1c]/70 font-medium">Disciplined & Trustworthy.</p>
+              </div>
+              <div className="group cursor-pointer">
+                <MapPin className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
+                <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">Colorado Expert</h4>
+                <p className="text-sm text-[#1c1c1c]/70 font-medium">Local Market Mastery.</p>
+              </div>
             </div>
           </div>
         </Reveal>
@@ -527,7 +548,7 @@ const Footer = () => {
           <div className="flex flex-col items-center md:items-start">
              {/* Small Logo Icon - UPDATED to Gold/Black */}
             <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#000] overflow-hidden p-0.5 rounded-full">
-                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-cover" />
+                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-cover contrast-125 brightness-90" />
             </div>
             <h3 className="font-serif text-3xl text-[#fdfbf7] tracking-widest mb-4">BRADEN BRACCIO</h3>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#c5a059] mb-8 font-bold">Real Estate Agent</p>
