@@ -6,13 +6,12 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - CLIENT TWEAKS
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL CLIENT TWEAKS
  * * Updates:
- * - Hero: Text removal, line break fixes.
- * - Bio: Content rewrites, quote updates, badge text changes.
- * - Nav: "For Buyers/Sellers" links now switch tabs AND scroll.
- * - Contact: Email formatting, text updates, added Questionnaire button.
- * - Footer: Added Castle Real Estate Logo (Black).
+ * - Hero: Removed "EST. 2024", fixed line breaks for second sentence.
+ * - Bio: Updated copy ("commitment", new paragraph, new quote, badge titles).
+ * - Footer: Added "Your Castle" logo (Untitled design (28).png) with no padding.
+ * - Contact: "Your goals become my mission" text update.
  */
 
 // --- Components ---
@@ -176,7 +175,9 @@ const Navbar = ({ onNavigate }) => {
 
               <div className="space-y-2">
                  <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold mb-2">Brokerage</h4>
-                 <p className="text-[#fdfbf7]/80 font-light text-sm">Your Castle Real Estate</p>
+                 <div className="bg-white/90 p-2 rounded-sm mb-4 inline-block">
+                    <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-10 w-auto object-contain" />
+                 </div>
                  <p className="text-[#fdfbf7]/80 font-light text-sm">License #: FA.100107526</p>
                  <p className="text-[#fdfbf7]/80 font-light text-sm">Colorado</p>
               </div>
@@ -253,10 +254,9 @@ const Hero = () => {
         
         <Reveal delay={600}>
           <p className="text-[#0b2b20]/80 text-base md:text-2xl font-normal mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed font-serif relative px-2">
-            <span className="absolute -top-6 -left-2 md:-left-4 text-4xl md:text-6xl text-[#c5a059]/20 font-serif">"</span>
-            Moving from one home to the next is an important moment in life. <br className="hidden md:block" />
+            Moving from one home to the next is an important moment in life.<br className="hidden md:block" />
+            <span className="md:hidden"> </span>
             We bring the experience, care, and effort you need.
-            <span className="absolute -bottom-8 md:-bottom-10 -right-2 md:-right-4 text-4xl md:text-6xl text-[#c5a059]/20 font-serif">"</span>
           </p>
         </Reveal>
         
@@ -530,8 +530,9 @@ const Footer = () => {
           {/* Brokerage Info */}
           <div className="flex flex-col items-center md:items-start">
             <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.2em] font-bold mb-6">Brokerage</h4>
-            <div className="bg-white/90 p-4 rounded-sm mb-4">
-               <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-12 w-auto object-contain" />
+            {/* Removed white box/padding so logo fills out space */}
+            <div className="mb-6">
+               <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert" />
             </div>
             <div className="space-y-2 text-[#e6e4dc]/80 font-light">
                 <p>License #: FA.100107526</p>
