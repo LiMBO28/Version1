@@ -2,15 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, X, Phone, Mail, Instagram, MapPin, 
   Home, Key, TrendingUp, CheckCircle, ArrowRight,
-  Shield, Award, Clock, ChevronDown
+  Shield, Award, Clock, ChevronDown, FileText
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL POLISH
- * * Fixes: 
- * - Logo Side Borders: Added 'bg-[#fdfbf7]' to logo container to hide green background gaps.
- * - Mobile Menu Design: Updated to match IMG_9460 (Green background, full contact info).
- * - Layout: Filled out menu with contact details & brokerage info.
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - CLIENT TWEAKS
+ * * Updates:
+ * - Hero: Text removal, line break fixes.
+ * - Bio: Content rewrites, quote updates, badge text changes.
+ * - Nav: "For Buyers/Sellers" links now switch tabs AND scroll.
+ * - Contact: Email formatting, text updates, added Questionnaire button.
+ * - Footer: Added Castle Real Estate Logo (Black).
  */
 
 // --- Components ---
@@ -48,7 +50,7 @@ const Reveal = ({ children, className = "", delay = 0 }) => {
 };
 
 // 2. Navigation Component
-const Navbar = () => {
+const Navbar = ({ onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -67,12 +69,10 @@ const Navbar = () => {
     }
   }, [isOpen]);
 
-  const navLinks = [
-    { name: 'Philosophy', href: '#philosophy' },
-    { name: 'For Buyers', href: '#buyers' },
-    { name: 'For Sellers', href: '#sellers' },
-    { name: 'Contact', href: '#contact' },
-  ];
+  const handleNavClick = (target, tab = null) => {
+    setIsOpen(false);
+    onNavigate(target, tab);
+  };
 
   return (
     <>
@@ -85,8 +85,7 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
           
           {/* Logo + Name Section */}
-          <a href="#" className="flex items-center gap-3 md:gap-4 relative group">
-             {/* Navbar Logo - Set bg to cream to match logo background */}
+          <a href="#" onClick={() => handleNavClick('home')} className="flex items-center gap-3 md:gap-4 relative group">
              <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-md rounded-full overflow-hidden p-0 transition-transform duration-500 group-hover:scale-105">
                 <img 
                   src="logo.jpg" 
@@ -104,22 +103,25 @@ const Navbar = () => {
              </div>
           </a>
 
-          {/* Desktop Nav - STRICTLY HIDDEN ON MOBILE */}
+          {/* Desktop Nav */}
           <div className="hidden md:flex space-x-10 items-center">
-            {navLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden"
-              >
-                <span className="relative z-10">{link.name}</span>
-                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-              </a>
-            ))}
-            <a href="#contact" className="relative px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0b2b20] border border-[#0b2b20] overflow-hidden group transition-all duration-300 hover:text-[#fdfbf7]">
+            <button onClick={() => handleNavClick('philosophy')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden">
+              <span className="relative z-10">Philosophy</span>
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+            </button>
+            <button onClick={() => handleNavClick('process', 'buyer')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden">
+              <span className="relative z-10">For Buyers</span>
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+            </button>
+            <button onClick={() => handleNavClick('process', 'seller')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden">
+              <span className="relative z-10">For Sellers</span>
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+            </button>
+            
+            <button onClick={() => handleNavClick('contact')} className="relative px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0b2b20] border border-[#0b2b20] overflow-hidden group transition-all duration-300 hover:text-[#fdfbf7]">
               <span className="absolute inset-0 w-full h-full bg-[#0b2b20] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></span>
               <span className="relative z-10">Inquire</span>
-            </a>
+            </button>
           </div>
 
           {/* Mobile Toggle Button */}
@@ -137,13 +139,9 @@ const Navbar = () => {
       <div className={`fixed inset-0 z-[100] flex flex-col pt-12 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
-         {/* Dark Green Background to match screenshot */}
          <div className="absolute inset-0 bg-[#0b2b20]"></div>
-         
-         {/* Texture Overlay */}
          <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
          
-         {/* CLOSE BUTTON */}
          <button 
             className="absolute top-6 right-6 text-[#fdfbf7] p-2 hover:text-[#c5a059] transition-colors z-50"
             onClick={() => setIsOpen(false)}
@@ -152,32 +150,20 @@ const Navbar = () => {
             <X size={36} />
          </button>
          
-         {/* Content Container */}
          <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center px-6 pb-12">
-           
-           {/* Menu Logo - White Background to hide green borders */}
            <div className="w-20 h-20 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] rounded-full overflow-hidden p-0 mt-4 mb-8 shadow-2xl shrink-0">
               <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
            </div>
 
-           {/* Navigation Links */}
            <div className="flex flex-col items-center space-y-6 w-full">
-             {navLinks.map((link) => (
-                <a 
-                  key={link.name} 
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
+             <button onClick={() => handleNavClick('philosophy')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">Philosophy</button>
+             <button onClick={() => handleNavClick('process', 'buyer')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">For Buyers</button>
+             <button onClick={() => handleNavClick('process', 'seller')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">For Sellers</button>
+             <button onClick={() => handleNavClick('contact')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">Contact</button>
            </div>
 
-           {/* Divider */}
            <div className="w-12 h-[1px] bg-[#c5a059]/50 my-8"></div>
 
-           {/* BROKERAGE INFO (From Screenshot) */}
            <div className="flex flex-col items-center text-center space-y-6">
               <div className="flex space-x-8">
                  <a href="https://www.instagram.com/youragentbraden" target="_blank" className="text-[#c5a059] hover:text-white">
@@ -201,7 +187,6 @@ const Navbar = () => {
                  <a href="mailto:bradenbraccio@yourcastle.com" className="text-[#fdfbf7]/60 text-sm block hover:text-[#c5a059]">bradenbraccio@yourcastle.com</a>
               </div>
            </div>
-
          </div>
       </div>
     </>
@@ -211,7 +196,7 @@ const Navbar = () => {
 // 3. Hero Section
 const Hero = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-32 md:pt-0">
+    <div id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-32 md:pt-0">
       
       {/* --- LIVING BACKGROUND --- */}
       <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] via-[#f4f1ea] to-[#e6e2d6] z-0"></div>
@@ -237,13 +222,10 @@ const Hero = () => {
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pb-16 md:py-24">
         
-        {/* LOGO HERO - BG CREAM TO FIX BORDERS */}
+        {/* LOGO HERO */}
         <Reveal>
           <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-0 animate-float-subtle">
-             {/* Shine effect */}
              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/40 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
-             
-             {/* Actual Image Logo */}
              <img 
                src="logo.jpg" 
                alt="Braden Braccio Logo" 
@@ -255,8 +237,8 @@ const Hero = () => {
         <Reveal delay={200}>
           <div className="flex justify-center items-center gap-4 md:gap-6 mb-8 md:mb-10">
              <span className="w-10 md:w-16 h-[2px] bg-[#0b2b20]/20"></span>
-             <p className="text-[#0b2b20] uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs font-bold">
-               Est. 2024 &bull; Colorado
+             <p className="text-[#0b2b20] uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold">
+               COLORADO
              </p>
              <span className="w-10 md:w-16 h-[2px] bg-[#0b2b20]/20"></span>
           </div>
@@ -272,7 +254,8 @@ const Hero = () => {
         <Reveal delay={600}>
           <p className="text-[#0b2b20]/80 text-base md:text-2xl font-normal mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed font-serif relative px-2">
             <span className="absolute -top-6 -left-2 md:-left-4 text-4xl md:text-6xl text-[#c5a059]/20 font-serif">"</span>
-            Moving from one home to the next is an important moment in life. We bring the experience, care, and effort you need.
+            Moving from one home to the next is an important moment in life. <br className="hidden md:block" />
+            We bring the experience, care, and effort you need.
             <span className="absolute -bottom-8 md:-bottom-10 -right-2 md:-right-4 text-4xl md:text-6xl text-[#c5a059]/20 font-serif">"</span>
           </p>
         </Reveal>
@@ -319,7 +302,7 @@ const BioSection = () => {
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 
-                {/* Logo Badge - Set bg to cream */}
+                {/* Logo Badge */}
                 <div className="absolute -bottom-12 -left-4 md:-left-8 bg-[#fdfbf7] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-0 transition-transform duration-500 hover:scale-105">
                     <img 
                       src="logo.jpg" 
@@ -343,13 +326,13 @@ const BioSection = () => {
                 Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.
               </p>
               <p>
-                As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and quiet strength to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
+                As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and commitment to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
               </p>
               <p>
-                To Braden, luxury is not just about the property. It is about the peace of mind that comes from working with someone who truly listens, anticipates your needs, and guides you with patience and precision.
+                To Braden, luxury is not just about the property, but about the way he conducts his business. Whether you are purchasing or selling a home, your real estate transaction should be stress free. It is about the peace of mind that comes from someone who is actually here to listen.
               </p>
               <p className="font-serif italic text-xl text-[#0b2b20] mt-4 border-l-4 border-[#c5a059] pl-6 py-2 bg-gradient-to-r from-[#c5a059]/5 to-transparent">
-                "You deserve an experience that feels as exceptional as the home itself."
+                "Luxury isn’t just the house. It’s having someone in your corner who’s disciplined enough to handle every detail and blunt enough to never waste your time."
               </p>
             </div>
             
@@ -357,12 +340,12 @@ const BioSection = () => {
               <div className="group cursor-pointer">
                 <Shield className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
                 <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">US Veteran</h4>
-                <p className="text-sm text-[#1c1c1c]/70 font-medium">Disciplined & Trustworthy.</p>
+                <p className="text-sm text-[#1c1c1c]/70 font-medium">Here to Serve</p>
               </div>
               <div className="group cursor-pointer">
                 <MapPin className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
                 <h4 className="font-serif text-xl mb-2 text-[#0b2b20] font-semibold">Colorado Expert</h4>
-                <p className="text-sm text-[#1c1c1c]/70 font-medium">Local Market Mastery.</p>
+                <p className="text-sm text-[#1c1c1c]/70 font-medium">Data. No Delays.</p>
               </div>
             </div>
           </div>
@@ -373,73 +356,35 @@ const BioSection = () => {
 };
 
 // 5. Interactive Process Section (Tabs)
-const ProcessSection = () => {
-  const [activeTab, setActiveTab] = useState('buyer');
+const ProcessSection = ({ activeTab }) => {
+  const [currentTab, setCurrentTab] = useState('buyer');
 
-  // Data extracted from PDFs
-  const buyerPhases = [
-    {
-      id: 1,
-      title: "Identifying Goals",
-      desc: "We clarify your motivation, timeline, and must-haves. This includes selecting a lender, obtaining approval, and signing our exclusive agreement.",
-      icon: <CheckCircle />
-    },
-    {
-      id: 2,
-      title: "Sourcing The Home",
-      desc: "Access to on and off-market listings. We attend open houses, analyze micro-market trends, and draft a winning offer strategy.",
-      icon: <Home />
-    },
-    {
-      id: 3,
-      title: "Negotiation & Inspection",
-      desc: "We present your offer to win. Once accepted, we navigate inspections, disclosures, and negotiate repairs to protect your investment.",
-      icon: <Shield />
-    },
-    {
-      id: 4,
-      title: "Closing & Beyond",
-      desc: "Final walk-throughs, signing, and celebration. But it doesn't end there; we provide resources for your new home and stay in touch.",
-      icon: <Key />
+  useEffect(() => {
+    if (activeTab) {
+      setCurrentTab(activeTab);
     }
+  }, [activeTab]);
+
+  const buyerPhases = [
+    { id: 1, title: "Identifying Goals", desc: "We clarify your motivation, timeline, and must-haves. This includes selecting a lender, obtaining approval, and signing our exclusive agreement.", icon: <CheckCircle /> },
+    { id: 2, title: "Sourcing The Home", desc: "Access to on and off-market listings. We attend open houses, analyze micro-market trends, and draft a winning offer strategy.", icon: <Home /> },
+    { id: 3, title: "Negotiation & Inspection", desc: "We present your offer to win. Once accepted, we navigate inspections, disclosures, and negotiate repairs to protect your investment.", icon: <Shield /> },
+    { id: 4, title: "Closing & Beyond", desc: "Final walk-throughs, signing, and celebration. But it doesn't end there; we provide resources for your new home and stay in touch.", icon: <Key /> }
   ];
 
   const sellerPhases = [
-    {
-      id: 1,
-      title: "Defining A Win",
-      desc: "Understanding your motivation and ideal moving date. We analyze supply vs. demand and create a strategic plan for your target buyer.",
-      icon: <TrendingUp />
-    },
-    {
-      id: 2,
-      title: "Listing & Launch",
-      desc: "Staging strategy, professional photography, and creating 'The Real Advantage'. We work backwards from the launch date to ensure perfection.",
-      icon: <Award />
-    },
-    {
-      id: 3,
-      title: "Marketing & Showing",
-      desc: "Digital plans, social media strategy, and open houses. We monitor feedback weekly and adapt to changes in the marketplace.",
-      icon: <Instagram />
-    },
-    {
-      id: 4,
-      title: "Negotiation to Close",
-      desc: "Deep offer analysis and multiple offer strategies. We maximize your price and terms, managing the contingency periods smoothly.",
-      icon: <Clock />
-    }
+    { id: 1, title: "Defining A Win", desc: "Understanding your motivation and ideal moving date. We analyze supply vs. demand and create a strategic plan for your target buyer.", icon: <TrendingUp /> },
+    { id: 2, title: "Listing & Launch", desc: "Staging strategy, professional photography, and creating 'The Real Advantage'. We work backwards from the launch date to ensure perfection.", icon: <Award /> },
+    { id: 3, title: "Marketing & Showing", desc: "Digital plans, social media strategy, and open houses. We monitor feedback weekly and adapt to changes in the marketplace.", icon: <Instagram /> },
+    { id: 4, title: "Negotiation to Close", desc: "Deep offer analysis and multiple offer strategies. We maximize your price and terms, managing the contingency periods smoothly.", icon: <Clock /> }
   ];
 
-  const activePhases = activeTab === 'buyer' ? buyerPhases : sellerPhases;
+  const activePhases = currentTab === 'buyer' ? buyerPhases : sellerPhases;
 
   return (
     <section id="process" className="py-24 bg-[#0b2b20] text-[#fdfbf7] overflow-hidden relative border-t-4 border-[#c5a059]">
-      {/* Texture overlay - kept dark for contrast in this specific section */}
       <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
       <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
-      
-      {/* Background Glows */}
       <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-[#163a2c] to-transparent opacity-50"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -451,18 +396,8 @@ const ProcessSection = () => {
           </Reveal>
           
           <Reveal delay={200} className="flex justify-center mt-12 space-x-6 md:space-x-12">
-            <button 
-              onClick={() => setActiveTab('buyer')}
-              className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'buyer' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
-            >
-              Buying
-            </button>
-            <button 
-              onClick={() => setActiveTab('seller')}
-              className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${activeTab === 'seller' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}
-            >
-              Selling
-            </button>
+            <button onClick={() => setCurrentTab('buyer')} className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${currentTab === 'buyer' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}>Buying</button>
+            <button onClick={() => setCurrentTab('seller')} className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${currentTab === 'seller' ? 'text-[#c5a059] border-b-2 border-[#c5a059]' : 'text-[#fdfbf7]/40 hover:text-[#fdfbf7]'}`}>Selling</button>
           </Reveal>
         </div>
 
@@ -470,17 +405,13 @@ const ProcessSection = () => {
           {activePhases.map((phase, index) => (
             <Reveal key={phase.id} delay={index * 150}>
               <div className="bg-[#163a2c]/40 backdrop-blur-sm p-8 h-full border border-[#c5a059]/20 hover:border-[#c5a059] transition-all duration-500 group shadow-lg hover:shadow-[0_0_30px_rgba(197,160,89,0.15)] relative overflow-hidden rounded-sm">
-                {/* Hover Glow */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#c5a059]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
                 <div className="relative z-10">
                     <div className="text-[#c5a059] mb-6 group-hover:scale-110 transition-transform duration-500 origin-left">
                     {phase.icon}
                     </div>
                     <h3 className="font-serif text-2xl mb-2 text-[#fdfbf7] font-medium"><span className="text-[#c5a059] text-[10px] font-sans block mb-2 tracking-[0.3em] font-bold uppercase">Phase 0{phase.id}</span> {phase.title}</h3>
-                    <p className="text-[#e6e4dc]/80 text-sm leading-relaxed mt-4 font-normal">
-                    {phase.desc}
-                    </p>
+                    <p className="text-[#e6e4dc]/80 text-sm leading-relaxed mt-4 font-normal">{phase.desc}</p>
                 </div>
               </div>
             </Reveal>
@@ -506,12 +437,12 @@ const Contact = () => {
             <Reveal>
                <h2 className="font-serif text-4xl md:text-6xl text-[#0b2b20] mb-8 font-medium">Let's Work Together</h2>
                <p className="text-[#1c1c1c]/80 mb-12 max-w-lg mx-auto font-normal">
-                 Whether you are looking to acquire your next home or list a property, expect a seamless, disciplined experience.
+                 Your goals become my mission. Simple as that.
                </p>
             </Reveal>
 
             <Reveal delay={200}>
-              <div className="grid md:grid-cols-2 gap-8 mb-16">
+              <div className="grid md:grid-cols-2 gap-8 mb-12">
                 <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
                   <Phone className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
                   <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Call or Text</span>
@@ -522,14 +453,23 @@ const Contact = () => {
                 <div className="flex flex-col items-center p-10 bg-[#f9f8f5] border border-[#0b2b20]/5 transition-all hover:border-[#c5a059] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
                   <Mail className="text-[#0b2b20] mb-4 group-hover:text-[#c5a059] transition-colors" />
                   <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#c5a059] mb-3">Email</span>
-                  <a href="mailto:bradenbraccio@yourcastle.com" className="font-serif text-lg md:text-xl text-[#0b2b20] hover:text-[#c5a059] transition-colors font-medium break-all">
-                    bradenbraccio@<br className="md:hidden"/>yourcastle.com
-                  </a>
+                  <div className="flex flex-col items-center">
+                    <span className="font-serif text-lg md:text-xl text-[#0b2b20] font-medium">bradenbraccio</span>
+                    <a href="mailto:bradenbraccio@yourcastle.com" className="text-sm text-[#0b2b20]/60 hover:text-[#c5a059] transition-colors font-sans">@yourcastle.com</a>
+                  </div>
                 </div>
               </div>
             </Reveal>
 
             <Reveal delay={300}>
+              <div className="text-center mb-16">
+                 <button className="inline-flex items-center gap-3 px-8 py-4 border border-[#0b2b20] text-[#0b2b20] uppercase tracking-[0.2em] text-xs font-bold hover:bg-[#0b2b20] hover:text-[#fdfbf7] transition-all duration-300 group">
+                    <FileText size={16} className="group-hover:scale-110 transition-transform" />
+                    <span>Quick Questionnaire</span>
+                 </button>
+                 <p className="text-[#0b2b20]/40 text-xs mt-4 tracking-wide">Tell us about your needs in 2 minutes.</p>
+              </div>
+
               <form className="space-y-8 text-left max-w-2xl mx-auto">
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="relative group">
@@ -568,27 +508,19 @@ const Contact = () => {
 const Footer = () => {
   return (
     <footer className="bg-[#0b2b20] text-[#e6e4dc] py-20 border-t border-[#c5a059]/50 relative">
-      {/* Footer Texture */}
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid md:grid-cols-3 gap-16 text-center md:text-left">
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
-             {/* Small Logo Icon - UPDATED to Gold/Black */}
             <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] overflow-hidden p-0 rounded-full">
                 <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-contain" />
             </div>
             <h3 className="font-serif text-3xl text-[#fdfbf7] tracking-widest mb-4">BRADEN BRACCIO</h3>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#c5a059] mb-8 font-bold">Real Estate Agent</p>
             <div className="flex space-x-6">
-              {/* UPDATED INSTAGRAM LINK */}
-              <a 
-                href="https://www.instagram.com/youragentbraden" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-[#c5a059] hover:text-white transition-colors transform hover:scale-110"
-              >
+              <a href="https://www.instagram.com/youragentbraden" target="_blank" rel="noopener noreferrer" className="text-[#c5a059] hover:text-white transition-colors transform hover:scale-110">
                 <Instagram size={24} strokeWidth={1.5} />
               </a>
               <a href="#" className="text-[#c5a059] hover:text-white transition-colors transform hover:scale-110"><Mail size={24} strokeWidth={1.5} /></a>
@@ -598,8 +530,10 @@ const Footer = () => {
           {/* Brokerage Info */}
           <div className="flex flex-col items-center md:items-start">
             <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.2em] font-bold mb-6">Brokerage</h4>
+            <div className="bg-white/90 p-4 rounded-sm mb-4">
+               <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-12 w-auto object-contain" />
+            </div>
             <div className="space-y-2 text-[#e6e4dc]/80 font-light">
-                <p>Your Castle Real Estate</p>
                 <p>License #: FA.100107526</p>
                 <p>Colorado</p>
             </div>
@@ -629,98 +563,57 @@ const Footer = () => {
 };
 
 const App = () => {
+  const [activeTab, setActiveTab] = useState('buyer');
+
+  const handleNavigate = (targetId, tab = null) => {
+    const element = document.getElementById(targetId);
+    if (element) {
+      // Offset for fixed header
+      const offset = 100; 
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: elementPosition - offset,
+        behavior: 'smooth'
+      });
+    }
+    if (tab) {
+      setActiveTab(tab);
+    }
+  };
+
   return (
     <div className="bg-[#fdfbf7] text-[#1c1c1c] font-sans selection:bg-[#c5a059] selection:text-[#0b2b20]">
-      {/* Global Font Imports via Google Fonts */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
         
         html {
           scroll-behavior: smooth;
         }
-        
-        .font-serif {
-          font-family: 'Playfair Display', serif;
-        }
-        
-        .font-sans {
-          font-family: 'Lato', sans-serif;
-        }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-sans { font-family: 'Lato', sans-serif; }
 
         /* CUSTOM ANIMATIONS */
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(2deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-        @keyframes pulse-slow {
-            0%, 100% { opacity: 0.05; transform: scale(1); }
-            50% { opacity: 0.1; transform: scale(1.1); }
-        }
-        @keyframes grain {
-            0%, 100% { transform: translate(0,0); }
-            10% { transform: translate(-5%, -10%); }
-            20% { transform: translate(-15%, 5%); }
-            30% { transform: translate(7%, -25%); }
-            40% { transform: translate(-5%, 25%); }
-            50% { transform: translate(-15%, 10%); }
-            60% { transform: translate(15%, 0%); }
-            70% { transform: translate(0%, 15%); }
-            80% { transform: translate(3%, 35%); }
-            90% { transform: translate(-10%, 10%); }
-        }
-        
-        @keyframes aurora-1 {
-            0% { transform: translate(0,0) scale(1); }
-            33% { transform: translate(50px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0,0) scale(1); }
-        }
-        
-        @keyframes aurora-2 {
-            0% { transform: translate(0,0) scale(1); }
-            33% { transform: translate(-30px, 30px) scale(1.1); }
-            66% { transform: translate(40px, -40px) scale(0.95); }
-            100% { transform: translate(0,0) scale(1); }
-        }
-        
-        @keyframes float-subtle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes fade-in-delayed {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+        @keyframes pulse-slow { 0%, 100% { opacity: 0.05; transform: scale(1); } 50% { opacity: 0.1; transform: scale(1.1); } }
+        @keyframes grain { 0%, 100% { transform: translate(0,0); } 10% { transform: translate(-5%, -10%); } 20% { transform: translate(-15%, 5%); } 30% { transform: translate(7%, -25%); } 40% { transform: translate(-5%, 25%); } 50% { transform: translate(-15%, 10%); } 60% { transform: translate(15%, 0%); } 70% { transform: translate(0%, 15%); } 80% { transform: translate(3%, 35%); } 90% { transform: translate(-10%, 10%); } }
+        @keyframes aurora-1 { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(50px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0,0) scale(1); } }
+        @keyframes aurora-2 { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(-30px, 30px) scale(1.1); } 66% { transform: translate(40px, -40px) scale(0.95); } 100% { transform: translate(0,0) scale(1); } }
+        @keyframes float-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes fade-in-delayed { 0% { opacity: 0; } 100% { opacity: 1; } }
 
-        .animate-float {
-            animation: float 10s ease-in-out infinite;
-        }
-        .animate-pulse-slow {
-            animation: pulse-slow 8s ease-in-out infinite;
-        }
-        .animate-grain {
-            animation: grain 8s steps(10) infinite;
-        }
-        .animate-aurora-1 {
-            animation: aurora-1 20s ease-in-out infinite;
-        }
-        .animate-aurora-2 {
-            animation: aurora-2 25s ease-in-out infinite;
-        }
-        .animate-float-subtle {
-            animation: float-subtle 6s ease-in-out infinite;
-        }
-        .animate-fade-in-delayed {
-            animation: fade-in-delayed 2s ease-out forwards;
-        }
+        .animate-float { animation: float 10s ease-in-out infinite; }
+        .animate-pulse-slow { animation: pulse-slow 8s ease-in-out infinite; }
+        .animate-grain { animation: grain 8s steps(10) infinite; }
+        .animate-aurora-1 { animation: aurora-1 20s ease-in-out infinite; }
+        .animate-aurora-2 { animation: aurora-2 25s ease-in-out infinite; }
+        .animate-float-subtle { animation: float-subtle 6s ease-in-out infinite; }
+        .animate-fade-in-delayed { animation: fade-in-delayed 2s ease-out forwards; }
       `}</style>
 
-      <Navbar />
+      <Navbar onNavigate={handleNavigate} />
       <Hero />
       <BioSection />
-      <ProcessSection />
+      <ProcessSection activeTab={activeTab} />
       <Contact />
       <Footer />
     </div>
