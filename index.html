@@ -1,11 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <script src="https://cdn.tailwindcss.com"></script>
-
+  <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    
+    <!-- Prevents user zooming on mobile for a more "App-like" feel -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- 1. THE BROWSER TAB TITLE -->
+    <title>Braden Braccio | Real Estate Agent</title>
+    <meta name="description" content="Concierge Real Estate in Colorado. Moving from one home to the next is an important moment in life. We bring the experience, care, and effort you need." />
+
+    <!-- 2. SOCIAL MEDIA PREVIEWS (Open Graph) -->
+    <!-- This fixes the 'Vite + React' and Black Image on Instagram/iMessage -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bracciorealty.com/" />
+    <meta property="og:title" content="Braden Braccio | Real Estate Agent" />
+    <meta property="og:description" content="Concierge Real Estate in Colorado. Moving from one home to the next is an important moment in life." />
+    
+    <!-- IMPORTANT: This image MUST be in your 'public' folder for previews to work -->
+    <meta property="og:image" content="/logo.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- 3. TWITTER CARD PREVIEWS -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Braden Braccio | Real Estate Agent" />
+    <meta name="twitter:description" content="Concierge Real Estate in Colorado. We bring the experience, care, and effort you need." />
+    <meta name="twitter:image" content="/logo.jpg" />
+
+    <!-- 4. FAVICON (Browser Tab Icon) -->
+    <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+    <link rel="apple-touch-icon" href="/logo.jpg" />
+
   </head>
   <body>
     <div id="root"></div>
