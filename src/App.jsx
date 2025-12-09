@@ -8,6 +8,7 @@ import {
 /**
  * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL CLIENT TWEAKS
  * * Updates:
+ * - Browser Title: Fixed "Vite + React" to show "Braden Braccio | Real Estate Agent".
  * - Hero: Removed "EST. 2024", fixed line breaks for second sentence.
  * - Bio: Updated copy ("commitment", new paragraph, new quote, badge titles).
  * - Footer: Added "Your Castle" logo (Untitled design (28).png) with no padding.
@@ -565,6 +566,11 @@ const Footer = () => {
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('buyer');
+
+  // Add this effect to change the title
+  useEffect(() => {
+    document.title = "Braden Braccio | Real Estate Agent";
+  }, []);
 
   const handleNavigate = (targetId, tab = null) => {
     const element = document.getElementById(targetId);
