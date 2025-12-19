@@ -6,43 +6,12 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - GOOGLE FORM INTEGRATION FIXED
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - GOOGLE SHEETS API INTEGRATION
+ * Connected to Google Apps Script Web App
  */
 
 // --- CONFIGURATION ---
-const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScKha6595csOHkAq_SGsF-iNoTL7cpFTrzvfOqQ4QwQI_YbLg/formResponse";
-
-// Mapping your form's Entry IDs to our internal state keys
-const FIELD_IDS = {
-  type: "entry.1368322447",       // "Are you looking to"
-  name: "entry.800145333",        // "Full name"
-  email: "entry.1134295967",      // "Email address"
-  phone: "entry.1232206198",      // "Phone number"
-  contactMethod: "entry.691798325", // "Preferred contact method"
-  
-  // Buying Fields
-  buyTimeline: "entry.2095125743", // "What is your timeline?"
-  buyLocation: "entry.1815387174", // "Preferred location(s)"
-  buyPrice: "entry.283551999",     // "Price range"
-  buyType: "entry.1646078527",     // "Property type interested in"
-  buyBedBath: "entry.1264040819",  // "How many bedrooms/bathrooms"
-  buyMortgage: "entry.948379821",  // "Are you pre-approved"
-  sellFirst: "entry.416090336",    // "Do you currently own a home..."
-  
-  // Selling Fields
-  sellAddress: "entry.220710153",  // "Property address"
-  sellType: "entry.591754101",     // "Property type"
-  sellStats: "entry.1215922251",   // "Approximate square footage"
-  sellBedBath: "entry.1733427046", // "Bedrooms / Bathrooms"
-  sellYear: "entry.853949151",     // "Year built"
-  sellTimeline: "entry.153080099", // "When do you need or want to sell by"
-  sellReason: "entry.936796055",   // "Main reason for selling"
-  buyAfter: "entry.308169242",     // "Do you plan to buy another home"
-  sellUpdates: "entry.1866600196", // "Recent updates"
-  
-  // Catch-all
-  finalNotes: "entry.1343311960"   // "How can I best help you?"
-};
+const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycby94kzu2mv7oshAWB_B2Dzt-eBlFYWitTR3Qj6rKczd04jFef0rXku-jiSQhxQE_Gff/exec";
 
 // --- Components ---
 
@@ -621,83 +590,85 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
   };
 
-  // --- SUBMISSION HANDLER (FIXED) ---
+  // --- SUBMISSION HANDLER (GOOGLE SHEETS API) ---
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
-    // Use URLSearchParams for application/x-www-form-urlencoded
-    // This is more reliable for Google Forms than FormData
-    const formData = new URLSearchParams();
+    // Construct the Note field with all detailed answers
+    // Because our simple Apps Script only accepts: name, email, phone, type, note
+    let detailedNote = "";
     
-    // Helper to safely append data
-    const append = (key, value) => {
-        if (value && FIELD_IDS[key]) {
-            formData.append(FIELD_IDS[key], value);
-        }
-    };
-    
-    // 1. Common Fields
-    append('type', type ? type.toUpperCase() : 'General');
-    append('name', answers.name);
-    append('email', answers.email);
-    append('phone', answers.phone);
-    append('contactMethod', answers.contactMethod);
-    append('finalNotes', answers.finalNotes);
-
-    // 2. Buying Fields
+    // Add specific details based on type
     if (type === 'buy' || type === 'both') {
-        append('buyTimeline', answers.buyTimeline);
-        append('buyLocation', answers.buyLocation);
-        append('buyPrice', answers.buyPrice);
-        append('buyType', answers.buyType);
-        append('buyBedBath', answers.buyBedBath);
-        append('buyMortgage', answers.buyMortgage);
-        append('sellFirst', answers.sellFirst);
+        detailedNote += `
+--- BUYING PREFERENCES ---
+Timeline: ${answers.buyTimeline || 'N/A'}
+Location: ${answers.buyLocation || 'N/A'}
+Price Range: ${answers.buyPrice || 'N/A'}
+Type: ${answers.buyType || 'N/A'}
+Bed/Bath: ${answers.buyBedBath || 'N/A'}
+Mortgage Status: ${answers.buyMortgage || 'N/A'}
+Sell First?: ${answers.sellFirst || 'N/A'}
+`;
     }
     
-    // 3. Selling Fields
     if (type === 'sell' || type === 'both') {
-        append('sellAddress', answers.sellAddress);
-        append('sellType', answers.sellType);
-        append('sellStats', answers.sellSqFt); // Correctly mapped to sellStats
-        append('sellBedBath', answers.sellBedBath);
-        append('sellYear', answers.sellYear);
-        append('sellTimeline', answers.sellTimeline);
-        append('sellReason', answers.sellReason);
-        append('buyAfter', answers.buyAfter);
-        append('sellUpdates', answers.sellUpdates);
+        detailedNote += `
+--- SELLING DETAILS ---
+Address: ${answers.sellAddress || 'N/A'}
+Type: ${answers.sellType || 'N/A'}
+SqFt/Stats: ${answers.sellSqFt || 'N/A'}
+Bed/Bath: ${answers.sellBedBath || 'N/A'}
+Year Built: ${answers.sellYear || 'N/A'}
+Timeline: ${answers.sellTimeline || 'N/A'}
+Reason: ${answers.sellReason || 'N/A'}
+Buy After?: ${answers.buyAfter || 'N/A'}
+Updates: ${answers.sellUpdates || 'N/A'}
+`;
     }
 
     if (type === 'join') {
-      const joinNote = `
-        --- AGENT APPLICATION ---
-        Licensed: ${answers.hasLicense || 'N/A'}
-        Experience: ${answers.experience || 'N/A'}
-        Transactions (12mo): ${answers.transactions || 'N/A'}
-        GCI: ${answers.gci || 'N/A'}
-        Focus Area: ${answers.focusArea || 'N/A'}
-        Interests: ${answers.joinReason ? answers.joinReason.join(', ') : 'N/A'}
-        Preference: ${answers.workPreference || 'N/A'}
-        Previous Team: ${answers.prevTeam || 'N/A'}
-        Source: ${answers.source || 'N/A'}
-        Notes: ${answers.finalNotes || 'None'}
-      `;
-      // Override final notes for Join flow
-      formData.delete(FIELD_IDS.finalNotes);
-      formData.append(FIELD_IDS.finalNotes, joinNote);
+        detailedNote += `
+--- AGENT APPLICATION ---
+Licensed: ${answers.hasLicense || 'N/A'}
+Experience: ${answers.experience || 'N/A'}
+Transactions (12mo): ${answers.transactions || 'N/A'}
+GCI: ${answers.gci || 'N/A'}
+Focus Area: ${answers.focusArea || 'N/A'}
+Interests: ${answers.joinReason ? answers.joinReason.join(', ') : 'N/A'}
+Preference: ${answers.workPreference || 'N/A'}
+Previous Team: ${answers.prevTeam || 'N/A'}
+Source: ${answers.source || 'N/A'}
+`;
+    }
+    
+    // Add user's final notes
+    if (answers.finalNotes) {
+        detailedNote += `\n--- USER NOTES ---\n${answers.finalNotes}`;
     }
 
+    // Payload matching the Apps Script expectation
+    // Script expects: data.name, data.email, data.phone, data.type, data.note
+    const payload = {
+        name: answers.name,
+        email: answers.email,
+        phone: answers.phone,
+        type: type ? type.toUpperCase() : 'GENERAL',
+        note: detailedNote.trim()
+    };
+
     try {
-        await fetch(GOOGLE_FORM_ACTION_URL, {
+        await fetch(GOOGLE_SHEETS_API_URL, {
             method: 'POST',
-            mode: 'no-cors', // standard for Google Forms from client-side
+            mode: 'no-cors', // standard for Google Apps Script Web App
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json' // Apps Script can parse this
             },
-            body: formData.toString()
+            body: JSON.stringify(payload)
         });
         
         // Success Handler
+        // Note: 'no-cors' mode means we can't read the response, so we assume success if no error thrown
         setTimeout(() => {
             setIsSubmitting(false);
             onClose();
@@ -710,7 +681,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
         const recipient = "bradenbraccio@yourcastle.com";
         const subject = `New Website Inquiry: ${type ? type.toUpperCase() : 'General'}`;
         let body = `Name: ${answers.name}\nEmail: ${answers.email}\nPhone: ${answers.phone}\n\n`;
-        body += `Notes: ${answers.finalNotes || 'Please check Google Sheet for full details.'}`;
+        body += `Notes:\n${detailedNote}`;
         
         window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         setIsSubmitting(false);
