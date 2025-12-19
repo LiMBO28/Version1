@@ -6,12 +6,7 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - GOOGLE FORM INTEGRATION
- * * Updates:
- * - Configured 'submitToGoogleSheets' with the LIVE Google Form URL and Entry IDs provided.
- * - Form data now submits directly to the specific Google Form fields.
- * - Mapped "Details" and "Notes" to the catch-all fields in the form.
- * - DISABLED email/form submission for Unlicensed Agent applicants (Step 999).
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - GOOGLE FORM INTEGRATION FIXED
  */
 
 // --- CONFIGURATION ---
@@ -19,10 +14,10 @@ const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScKha65
 
 // Mapping your form's Entry IDs to our internal state keys
 const FIELD_IDS = {
-  type: "entry.1368322447",      // "Are you looking to"
-  name: "entry.800145333",       // "Full name"
-  email: "entry.1134295967",     // "Email address"
-  phone: "entry.1232206198",     // "Phone number"
+  type: "entry.1368322447",       // "Are you looking to"
+  name: "entry.800145333",        // "Full name"
+  email: "entry.1134295967",      // "Email address"
+  phone: "entry.1232206198",      // "Phone number"
   contactMethod: "entry.691798325", // "Preferred contact method"
   
   // Buying Fields
@@ -37,7 +32,7 @@ const FIELD_IDS = {
   // Selling Fields
   sellAddress: "entry.220710153",  // "Property address"
   sellType: "entry.591754101",     // "Property type"
-  sellStats: "entry.1215922251",   // "Approximate square footage" (reused for stats block if needed)
+  sellStats: "entry.1215922251",   // "Approximate square footage"
   sellBedBath: "entry.1733427046", // "Bedrooms / Bathrooms"
   sellYear: "entry.853949151",     // "Year built"
   sellTimeline: "entry.153080099", // "When do you need or want to sell by"
@@ -107,6 +102,12 @@ const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
     onNavigate(target, tab);
   };
 
+  const LogoPlaceholder = ({ className }) => (
+    <div className={`bg-[#0b2b20] flex items-center justify-center text-[#c5a059] font-serif font-bold text-xl ${className}`}>
+      B
+    </div>
+  );
+
   return (
     <>
       {/* --- TOP NAVIGATION BAR --- */}
@@ -119,7 +120,12 @@ const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
           
           <a href="#" onClick={() => handleNavClick('home')} className="flex items-center gap-3 md:gap-4 relative group">
              <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-md rounded-full overflow-hidden p-0 transition-transform duration-500 group-hover:scale-105">
-                <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
+                <img 
+                  src="logo.jpg" 
+                  onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.parentNode.classList.add('bg-[#0b2b20]'); e.target.parentNode.innerHTML = '<span class="text-[#c5a059] font-serif font-bold text-xl">B</span>'; }}
+                  alt="B Logo" 
+                  className="w-full h-full object-contain" 
+                />
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-lg md:text-2xl tracking-widest text-[#0b2b20] font-semibold leading-tight">
@@ -173,16 +179,16 @@ const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
          <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
          
          <button 
-            className="absolute top-6 right-6 text-[#fdfbf7] p-2 hover:text-[#c5a059] transition-colors z-50"
-            onClick={() => setIsOpen(false)}
-            aria-label="Close Menu"
+           className="absolute top-6 right-6 text-[#fdfbf7] p-2 hover:text-[#c5a059] transition-colors z-50"
+           onClick={() => setIsOpen(false)}
+           aria-label="Close Menu"
          >
             <X size={36} />
          </button>
          
          <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center px-6 pb-12">
            <div className="w-20 h-20 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] rounded-full overflow-hidden p-0 mt-4 mb-8 shadow-2xl shrink-0">
-              <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
+             <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0b2b20] font-serif font-bold text-3xl">B</span>'}} alt="B Logo" className="w-full h-full object-contain" />
            </div>
 
            <div className="flex flex-col items-center space-y-6 w-full">
@@ -208,7 +214,7 @@ const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
               <div className="space-y-2">
                  <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold mb-2">Brokerage</h4>
                  <div className="mb-4 inline-block">
-                    <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert opacity-90" />
+                    <img src="Untitled design (28).png" onError={(e) => e.target.style.display='none'} alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert opacity-90" />
                  </div>
                  
                  <p className="text-[#fdfbf7]/80 font-light text-sm">License #: FA.100107526</p>
@@ -252,7 +258,7 @@ const Hero = () => {
         <Reveal>
           <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-0 animate-float-subtle">
              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/40 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
-             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
+             <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0b2b20] font-serif font-bold text-6xl">B</span>'}} alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
           </div>
         </Reveal>
 
@@ -307,12 +313,12 @@ const BioSection = () => {
         <Reveal className="relative flex justify-center md:justify-end">
             <div className="relative w-full max-w-md group">
                 <div className="aspect-[3/4] bg-[#f0f0f0] relative overflow-hidden shadow-2xl border border-[#0b2b20]/10 z-10">
-                    <img src="agent.jpg" alt="Braden Braccio" className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105 sepia-[0.05]" />
+                    <img src="agent.jpg" onError={(e) => {e.target.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800';}} alt="Braden Braccio" className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105 sepia-[0.05]" />
                 </div>
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
                 <div className="absolute -bottom-12 -left-4 md:-left-8 bg-[#fdfbf7] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-0 transition-transform duration-500 hover:scale-105">
-                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-contain" />
+                    <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0b2b20] font-serif font-bold text-4xl">B</span>'}} alt="Logo Badge" className="w-full h-full object-contain" />
                 </div>
             </div>
         </Reveal>
@@ -554,8 +560,8 @@ const Contact = ({ onOpenQuestionnaire }) => {
             <Reveal delay={300}>
               <div className="text-center mb-12">
                  <button 
-                    onClick={onOpenQuestionnaire}
-                    className="inline-flex items-center gap-3 px-10 py-5 border border-[#0b2b20] bg-[#0b2b20] text-[#fdfbf7] uppercase tracking-[0.2em] text-xs font-bold hover:bg-[#c5a059] hover:border-[#c5a059] transition-all duration-300 group shadow-lg"
+                   onClick={onOpenQuestionnaire}
+                   className="inline-flex items-center gap-3 px-10 py-5 border border-[#0b2b20] bg-[#0b2b20] text-[#fdfbf7] uppercase tracking-[0.2em] text-xs font-bold hover:bg-[#c5a059] hover:border-[#c5a059] transition-all duration-300 group shadow-lg"
                  >
                     <FileText size={16} className="group-hover:scale-110 transition-transform" />
                     <span>Start Questionnaire</span>
@@ -570,7 +576,7 @@ const Contact = ({ onOpenQuestionnaire }) => {
   );
 };
 
-// 9. ADAPTIVE QUESTIONNAIRE WIZARD (REBUILT ONE-QUESTION-PER-STEP)
+// 9. ADAPTIVE QUESTIONNAIRE WIZARD (FIXED SUBMISSION)
 const QuestionnaireModal = ({ isOpen, onClose }) => {
   const [step, setStep] = useState(0); 
   const [type, setType] = useState(null); // 'buy', 'sell', 'both', 'join'
@@ -598,19 +604,30 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
     setStep(1); 
   };
 
-  const nextStep = () => setStep(s => s + 1);
+  const nextStep = () => {
+    // Basic Validation for Step 1
+    if (step === 1) {
+        if (!answers.name || !answers.email) {
+            alert("Please provide your name and email so we can contact you.");
+            return;
+        }
+    }
+    setStep(s => s + 1);
+  };
+
   const prevStep = () => setStep(s => s - 1);
 
   const handleInput = (key, value) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
   };
 
-  // --- SUBMISSION HANDLER ---
+  // --- SUBMISSION HANDLER (FIXED) ---
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
-    // Construct form data using mapped field IDs
-    const formData = new FormData();
+    // Use URLSearchParams for application/x-www-form-urlencoded
+    // This is more reliable for Google Forms than FormData
+    const formData = new URLSearchParams();
     
     // Helper to safely append data
     const append = (key, value) => {
@@ -642,7 +659,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
     if (type === 'sell' || type === 'both') {
         append('sellAddress', answers.sellAddress);
         append('sellType', answers.sellType);
-        append('sellStats', answers.sellSqFt); // Using stats field for sqft
+        append('sellStats', answers.sellSqFt); // Correctly mapped to sellStats
         append('sellBedBath', answers.sellBedBath);
         append('sellYear', answers.sellYear);
         append('sellTimeline', answers.sellTimeline);
@@ -652,29 +669,35 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
     }
 
     if (type === 'join') {
-      append('finalNotes', `
+      const joinNote = `
         --- AGENT APPLICATION ---
         Licensed: ${answers.hasLicense || 'N/A'}
         Experience: ${answers.experience || 'N/A'}
         Transactions (12mo): ${answers.transactions || 'N/A'}
         GCI: ${answers.gci || 'N/A'}
         Focus Area: ${answers.focusArea || 'N/A'}
-        Interests: ${answers.joinReason || 'N/A'}
+        Interests: ${answers.joinReason ? answers.joinReason.join(', ') : 'N/A'}
         Preference: ${answers.workPreference || 'N/A'}
         Previous Team: ${answers.prevTeam || 'N/A'}
         Source: ${answers.source || 'N/A'}
         Notes: ${answers.finalNotes || 'None'}
-      `);
+      `;
+      // Override final notes for Join flow
+      formData.delete(FIELD_IDS.finalNotes);
+      formData.append(FIELD_IDS.finalNotes, joinNote);
     }
 
     try {
         await fetch(GOOGLE_FORM_ACTION_URL, {
             method: 'POST',
-            mode: 'no-cors', // Important for Google Forms
-            body: formData
+            mode: 'no-cors', // standard for Google Forms from client-side
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
         });
         
-        // Show success and close
+        // Success Handler
         setTimeout(() => {
             setIsSubmitting(false);
             onClose();
@@ -687,7 +710,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
         const recipient = "bradenbraccio@yourcastle.com";
         const subject = `New Website Inquiry: ${type ? type.toUpperCase() : 'General'}`;
         let body = `Name: ${answers.name}\nEmail: ${answers.email}\nPhone: ${answers.phone}\n\n`;
-        body += `Notes: ${answers.finalNotes || 'See Google Sheet for full details.'}`;
+        body += `Notes: ${answers.finalNotes || 'Please check Google Sheet for full details.'}`;
         
         window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         setIsSubmitting(false);
@@ -730,9 +753,9 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
       return (
         <div className="space-y-6 animate-in slide-in-from-right duration-300">
            <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Basic Info</h3></div>
-           <input placeholder="Full Name" onChange={(e) => handleInput('name', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-           <input placeholder="Email Address" onChange={(e) => handleInput('email', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-           <input placeholder="Phone Number" onChange={(e) => handleInput('phone', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+           <input required placeholder="Full Name *" value={answers.name || ''} onChange={(e) => handleInput('name', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+           <input required placeholder="Email Address *" value={answers.email || ''} onChange={(e) => handleInput('email', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+           <input placeholder="Phone Number" value={answers.phone || ''} onChange={(e) => handleInput('phone', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
            <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059]">Next</button>
         </div>
       );
@@ -882,6 +905,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
                 <div className="space-y-2">
                    <label className="text-xs uppercase tracking-widest font-bold">Price Range</label>
                    <select onChange={(e) => handleInput('buyPrice', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none">
+                      <option value="">Select Range...</option>
                       <option>Under $400k</option>
                       <option>$400k - $600k</option>
                       <option>$600k - $800k</option>
@@ -889,7 +913,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
                       <option>$1M+</option>
                    </select>
                 </div>
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors mt-4">Next</button>
              </div>
           );
        }
@@ -907,7 +931,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
                    <option>Land</option>
                 </select>
                 <input placeholder="Bed / Bath Count" onChange={(e) => handleInput('buyBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors mt-4">Next</button>
              </div>
           );
        }
@@ -945,7 +969,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
                    <h3 className="font-serif text-2xl text-[#0b2b20]">{type === 'both' ? 'Selling Side' : 'Property Address'}</h3>
                 </div>
                 <input placeholder="Property Address" onChange={(e) => handleInput('sellAddress', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors mt-4">Next</button>
              </div>
           );
        }
@@ -961,7 +985,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
                    <input placeholder="Year Built" onChange={(e) => handleInput('sellYear', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
                 </div>
                 <input placeholder="Bedrooms / Bathrooms" onChange={(e) => handleInput('sellBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors mt-4">Next</button>
              </div>
           );
        }
@@ -1053,7 +1077,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="flex flex-col items-center md:items-start">
             <div className="mb-6 w-16 h-16 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] overflow-hidden p-0 rounded-full">
-                <img src="logo.jpg" alt="Footer Logo" className="w-full h-full object-contain" />
+                <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0b2b20] font-serif font-bold text-3xl">B</span>'}} alt="Footer Logo" className="w-full h-full object-contain" />
             </div>
             <h3 className="font-serif text-3xl text-[#fdfbf7] tracking-widest mb-4">BRADEN BRACCIO</h3>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#c5a059] mb-8 font-bold">Real Estate Agent</p>
@@ -1070,7 +1094,7 @@ const Footer = () => {
             <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.2em] font-bold mb-6">Brokerage</h4>
             {/* Removed white box/padding so logo fills out space */}
             <div className="mb-6">
-               <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert" />
+               <img src="Untitled design (28).png" onError={(e) => e.target.style.display='none'} alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert" />
             </div>
             <div className="space-y-2 text-[#e6e4dc]/80 font-light">
                 <p>License #: FA.100107526</p>
