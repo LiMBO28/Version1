@@ -2,17 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, X, Phone, Mail, Instagram, MapPin, 
   Home, Key, TrendingUp, CheckCircle, ArrowRight,
-  Shield, Award, Clock, ChevronDown, FileText
+  Shield, Award, Clock, ChevronDown, FileText, Heart, User, Star, Plus, ArrowLeft
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - FINAL CLIENT TWEAKS
- * * Updates:
- * - Browser Title: Fixed "Vite + React" to show "Braden Braccio | Real Estate Agent".
- * - Hero: Removed "EST. 2024", fixed line breaks for second sentence.
- * - Bio: Updated copy ("commitment", new paragraph, new quote, badge titles).
- * - Footer: Added "Your Castle" logo (Untitled design (28).png) with no padding.
- * - Contact: "Your goals become my mission" text update.
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - EMAIL OUTPUT UPDATE
+ * * Feature Added: 
+ * - Questionnaire now compiles all answers into a formatted email body.
+ * - Uses 'mailto:' link to open user's email client with pre-filled data addressed to Braden.
+ * - Handles all data fields from Buy, Sell, Both, and Team flows.
  */
 
 // --- Components ---
@@ -50,7 +48,7 @@ const Reveal = ({ children, className = "", delay = 0 }) => {
 };
 
 // 2. Navigation Component
-const Navbar = ({ onNavigate }) => {
+const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -60,7 +58,6 @@ const Navbar = ({ onNavigate }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -84,14 +81,9 @@ const Navbar = ({ onNavigate }) => {
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
           
-          {/* Logo + Name Section */}
           <a href="#" onClick={() => handleNavClick('home')} className="flex items-center gap-3 md:gap-4 relative group">
              <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-md rounded-full overflow-hidden p-0 transition-transform duration-500 group-hover:scale-105">
-                <img 
-                  src="logo.jpg" 
-                  alt="B Logo" 
-                  className="w-full h-full object-contain" 
-                />
+                <img src="logo.jpg" alt="B Logo" className="w-full h-full object-contain" />
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-lg md:text-2xl tracking-widest text-[#0b2b20] font-semibold leading-tight">
@@ -103,8 +95,7 @@ const Navbar = ({ onNavigate }) => {
              </div>
           </a>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex space-x-10 items-center">
+          <div className="hidden md:flex space-x-8 items-center">
             <button onClick={() => handleNavClick('philosophy')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden">
               <span className="relative z-10">Philosophy</span>
               <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
@@ -117,14 +108,17 @@ const Navbar = ({ onNavigate }) => {
               <span className="relative z-10">For Sellers</span>
               <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
             </button>
+            <button onClick={() => handleNavClick('impact')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0b2b20] hover:text-[#c5a059] transition-colors duration-300 relative group overflow-hidden">
+              <span className="relative z-10">Community Impact</span>
+              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+            </button>
             
-            <button onClick={() => handleNavClick('contact')} className="relative px-8 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0b2b20] border border-[#0b2b20] overflow-hidden group transition-all duration-300 hover:text-[#fdfbf7]">
+            <button onClick={() => handleNavClick('contact')} className="relative px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0b2b20] border border-[#0b2b20] overflow-hidden group transition-all duration-300 hover:text-[#fdfbf7]">
               <span className="absolute inset-0 w-full h-full bg-[#0b2b20] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></span>
               <span className="relative z-10">Inquire</span>
             </button>
           </div>
 
-          {/* Mobile Toggle Button */}
           <button 
             className={`md:hidden text-[#0b2b20] transition-opacity duration-300 hover:text-[#c5a059] p-2 relative z-[40] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} 
             onClick={() => setIsOpen(true)}
@@ -159,6 +153,7 @@ const Navbar = ({ onNavigate }) => {
              <button onClick={() => handleNavClick('philosophy')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">Philosophy</button>
              <button onClick={() => handleNavClick('process', 'buyer')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">For Buyers</button>
              <button onClick={() => handleNavClick('process', 'seller')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">For Sellers</button>
+             <button onClick={() => handleNavClick('impact')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">Community Impact</button>
              <button onClick={() => handleNavClick('contact')} className="font-serif text-3xl text-[#fdfbf7] hover:text-[#c5a059] transition-colors">Contact</button>
            </div>
 
@@ -176,9 +171,10 @@ const Navbar = ({ onNavigate }) => {
 
               <div className="space-y-2">
                  <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold mb-2">Brokerage</h4>
-                 <div className="bg-white/90 p-2 rounded-sm mb-4 inline-block">
-                    <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-10 w-auto object-contain" />
+                 <div className="mb-4 inline-block">
+                    <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert opacity-90" />
                  </div>
+                 
                  <p className="text-[#fdfbf7]/80 font-light text-sm">License #: FA.100107526</p>
                  <p className="text-[#fdfbf7]/80 font-light text-sm">Colorado</p>
               </div>
@@ -199,20 +195,14 @@ const Navbar = ({ onNavigate }) => {
 const Hero = () => {
   return (
     <div id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdfbf7] pt-32 md:pt-0">
-      
-      {/* --- LIVING BACKGROUND --- */}
       <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] via-[#f4f1ea] to-[#e6e2d6] z-0"></div>
       <div className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#0b2b20] opacity-[0.08] blur-[100px] animate-aurora-1 mix-blend-multiply"></div>
       <div className="absolute bottom-[-20%] right-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#c5a059] opacity-[0.12] blur-[120px] animate-aurora-2 mix-blend-multiply"></div>
       <div className="absolute top-[40%] left-[50%] transform -translate-x-1/2 w-[40vw] h-[40vw] rounded-full bg-[#c5a059] opacity-[0.05] blur-[80px] animate-pulse-slow"></div>
       <div className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none animate-grain" 
-           style={{ 
-             backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")',
-             backgroundSize: '200px 200px'
-           }}>
+           style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")', backgroundSize: '200px 200px' }}>
       </div>
       
-      {/* 4. Decorative Border Frame */}
       <div className="absolute inset-4 md:inset-8 border border-[#0b2b20]/5 z-0 pointer-events-none">
           <div className="absolute top-0 left-0 w-16 h-16 md:w-40 md:h-40 border-t-[3px] border-l-[3px] border-[#0b2b20]/20 animate-fade-in-delayed"></div>
           <div className="absolute top-4 left-4 w-12 h-12 md:w-32 md:h-32 border-t border-l border-[#c5a059]/50 animate-fade-in-delayed"></div>
@@ -223,25 +213,17 @@ const Hero = () => {
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pb-16 md:py-24">
-        
-        {/* LOGO HERO */}
         <Reveal>
           <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#c5a059] flex items-center justify-center bg-[#fdfbf7] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0b2b20] rounded-full p-0 animate-float-subtle">
              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/40 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
-             <img 
-               src="logo.jpg" 
-               alt="Braden Braccio Logo" 
-               className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" 
-             />
+             <img src="logo.jpg" alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
           </div>
         </Reveal>
 
         <Reveal delay={200}>
           <div className="flex justify-center items-center gap-4 md:gap-6 mb-8 md:mb-10">
              <span className="w-10 md:w-16 h-[2px] bg-[#0b2b20]/20"></span>
-             <p className="text-[#0b2b20] uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold">
-               COLORADO
-             </p>
+             <p className="text-[#0b2b20] uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold">COLORADO</p>
              <span className="w-10 md:w-16 h-[2px] bg-[#0b2b20]/20"></span>
           </div>
         </Reveal>
@@ -263,14 +245,10 @@ const Hero = () => {
         
         <Reveal delay={800}>
           <div className="flex flex-col items-center gap-6">
-            <a 
-              href="#contact" 
-              className="group relative inline-block overflow-hidden border-[1.5px] border-[#0b2b20] px-10 md:px-14 py-4 md:py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] transition-colors duration-500 hover:text-[#fdfbf7] shadow-lg hover:shadow-2xl"
-            >
+            <a href="#contact" className="group relative inline-block overflow-hidden border-[1.5px] border-[#0b2b20] px-10 md:px-14 py-4 md:py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0b2b20] transition-colors duration-500 hover:text-[#fdfbf7] shadow-lg hover:shadow-2xl">
               <span className="absolute inset-0 translate-y-[101%] bg-[#0b2b20] transition-transform duration-500 group-hover:translate-y-0"></span>
               <span className="relative z-10">Start the Conversation</span>
             </a>
-            
             <a href="#philosophy" className="animate-bounce mt-4 md:mt-8 text-[#0b2b20]/40 hover:text-[#c5a059] transition-colors">
               <ChevronDown size={28} md:size={32} strokeWidth={1} />
             </a>
@@ -281,7 +259,7 @@ const Hero = () => {
   );
 };
 
-// 4. Bio / Philosophy Section
+// 4. Bio Section
 const BioSection = () => {
   return (
     <section id="philosophy" className="py-24 md:py-32 bg-[#fffefc] relative border-t border-[#c5a059]/20">
@@ -291,25 +269,14 @@ const BioSection = () => {
 
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center relative z-10">
         <Reveal className="relative flex justify-center md:justify-end">
-            {/* HEADSHOT CONTAINER */}
             <div className="relative w-full max-w-md group">
                 <div className="aspect-[3/4] bg-[#f0f0f0] relative overflow-hidden shadow-2xl border border-[#0b2b20]/10 z-10">
-                    <img 
-                      src="agent.jpg" 
-                      alt="Braden Braccio" 
-                      className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105 sepia-[0.05]"
-                    />
+                    <img src="agent.jpg" alt="Braden Braccio" className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105 sepia-[0.05]" />
                 </div>
                 <div className="absolute -top-6 -left-6 w-full h-full border border-[#0b2b20] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
                 <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#c5a059] opacity-100 z-20"></div>
-                
-                {/* Logo Badge */}
                 <div className="absolute -bottom-12 -left-4 md:-left-8 bg-[#fdfbf7] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#c5a059] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-0 transition-transform duration-500 hover:scale-105">
-                    <img 
-                      src="logo.jpg" 
-                      alt="Logo Badge" 
-                      className="w-full h-full object-contain" 
-                    />
+                    <img src="logo.jpg" alt="Logo Badge" className="w-full h-full object-contain" />
                 </div>
             </div>
         </Reveal>
@@ -319,22 +286,12 @@ const BioSection = () => {
             <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold flex items-center gap-3 mb-6">
               <span className="w-12 h-[2px] bg-[#0b2b20]"></span> About Braden
             </span>
-            <h2 className="font-serif text-4xl md:text-6xl text-[#0b2b20] mb-8 leading-tight font-medium">
-              My Approach
-            </h2>
+            <h2 className="font-serif text-4xl md:text-6xl text-[#0b2b20] mb-8 leading-tight font-medium">My Approach</h2>
             <div className="space-y-8 text-[#1c1c1c]/90 font-normal leading-relaxed text-lg font-sans">
-              <p>
-                Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.
-              </p>
-              <p>
-                As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and commitment to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.
-              </p>
-              <p>
-                To Braden, luxury is not just about the property, but about the way he conducts his business. Whether you are purchasing or selling a home, your real estate transaction should be stress free. It is about the peace of mind that comes from someone who is actually here to listen.
-              </p>
-              <p className="font-serif italic text-xl text-[#0b2b20] mt-4 border-l-4 border-[#c5a059] pl-6 py-2 bg-gradient-to-r from-[#c5a059]/5 to-transparent">
-                "Luxury isn’t just the house. It’s having someone in your corner who’s disciplined enough to handle every detail and blunt enough to never waste your time."
-              </p>
+              <p>Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.</p>
+              <p>As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and commitment to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.</p>
+              <p>To Braden, luxury is not just about the property, but about the way he conducts his business. Whether you are purchasing or selling a home, your real estate transaction should be stress free. It is about the peace of mind that comes from someone who is actually here to listen.</p>
+              <p className="font-serif italic text-xl text-[#0b2b20] mt-4 border-l-4 border-[#c5a059] pl-6 py-2 bg-gradient-to-r from-[#c5a059]/5 to-transparent">"Luxury isn’t just the house. It’s having someone in your corner who’s disciplined enough to handle every detail and blunt enough to never waste your time."</p>
             </div>
             
             <div className="mt-12 grid grid-cols-2 gap-8 border-t border-[#0b2b20]/10 pt-8">
@@ -392,7 +349,7 @@ const ProcessSection = ({ activeTab }) => {
         <div className="text-center mb-16">
           <Reveal>
             <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold">The Methodology</span>
-            <h2 className="font-serif text-4xl md:text-6xl mt-6 text-[#fdfbf7] font-medium">Concierge Real Estate</h2>
+            <h2 className="font-serif text-4xl md:text-6xl mt-6 text-[#fdfbf7] font-medium">Real Estate</h2>
             <div className="w-24 h-1 bg-[#c5a059] mx-auto mt-8"></div>
           </Reveal>
           
@@ -423,13 +380,109 @@ const ProcessSection = ({ activeTab }) => {
   );
 };
 
-// 6. Contact / CTA Section
-const Contact = () => {
+// 6. Community Impact Section
+const ImpactSection = () => {
+  return (
+    <section id="impact" className="py-24 bg-[#fdfbf7] relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <Reveal>
+            <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold">Giving Back</span>
+            <h2 className="font-serif text-4xl md:text-5xl mt-6 text-[#0b2b20] font-medium">Community Impact</h2>
+            <p className="text-[#1c1c1c]/70 mt-6 max-w-2xl mx-auto">
+              Service extends beyond real estate. We are proud to support organizations that provide vital assistance to veterans, first responders, and those in need.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <Reveal delay={100}>
+            <div className="bg-white border border-[#0b2b20]/10 p-8 text-center hover:border-[#c5a059] transition-all shadow-sm">
+              <Heart className="text-[#c5a059] w-12 h-12 mx-auto mb-6" />
+              <h3 className="font-serif text-2xl text-[#0b2b20] mb-4">Wounded Warrior Project</h3>
+              <p className="text-sm text-[#1c1c1c]/70 mb-6">Supporting veterans and service members who incurred a physical or mental injury, illness, or wound while serving in the military.</p>
+              <a href="https://support.woundedwarriorproject.org/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest font-bold text-[#0b2b20] border-b border-[#c5a059] hover:text-[#c5a059]">Donate Now</a>
+            </div>
+          </Reveal>
+          
+          <Reveal delay={200}>
+            <div className="bg-white border border-[#0b2b20]/10 p-8 text-center hover:border-[#c5a059] transition-all shadow-sm">
+              <Shield className="text-[#c5a059] w-12 h-12 mx-auto mb-6" />
+              <h3 className="font-serif text-2xl text-[#0b2b20] mb-4">First Responders Funding</h3>
+              <p className="text-sm text-[#1c1c1c]/70 mb-6">Providing essential equipment, training, and financial support to the brave men and women who serve as first responders in our communities.</p>
+              <a href="https://www.firstrespondersfoundation.org/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest font-bold text-[#0b2b20] border-b border-[#c5a059] hover:text-[#c5a059]">Support Now</a>
+            </div>
+          </Reveal>
+
+          <Reveal delay={300}>
+            <div className="bg-white border border-[#0b2b20]/10 p-8 text-center hover:border-[#c5a059] transition-all shadow-sm">
+              <Phone className="text-[#c5a059] w-12 h-12 mx-auto mb-6" />
+              <h3 className="font-serif text-2xl text-[#0b2b20] mb-4">Veteran Crisis Line</h3>
+              <p className="text-sm text-[#1c1c1c]/70 mb-6">Free, confidential support for Veterans in crisis and their families and friends. Available 24/7/365.</p>
+              <a href="https://www.veteranscrisisline.net/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest font-bold text-[#0b2b20] border-b border-[#c5a059] hover:text-[#c5a059]">Get Help / Donate</a>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// 7. Testimonials Section
+const Testimonials = () => {
+  return (
+    <section className="py-24 bg-[#0b2b20] text-[#fdfbf7] border-t border-[#c5a059]/30">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <span className="text-[#c5a059] text-xs uppercase tracking-[0.25em] font-bold">Client Stories</span>
+          <h2 className="font-serif text-4xl mt-4">Trusted by Families</h2>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-12">
+          <Reveal>
+            <div className="bg-[#163a2c]/50 p-10 border border-[#c5a059]/20 relative">
+              <div className="absolute top-6 left-6 text-[#c5a059]/20 text-6xl font-serif">"</div>
+              <p className="relative z-10 text-lg font-light leading-relaxed italic mb-6">
+                Braden has been excellent to work with. He’s very helpful, knowledgeable, and made the whole house hunting to closing experience a pleasure. We’d recommend him to anyone.
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#c5a059] flex items-center justify-center text-[#0b2b20] font-bold">D</div>
+                <div>
+                  <p className="font-serif text-lg">Denise and Keith Grace</p>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <div className="bg-[#163a2c]/50 p-10 border border-[#c5a059]/20 relative">
+              <div className="absolute top-6 left-6 text-[#c5a059]/20 text-6xl font-serif">"</div>
+              <p className="relative z-10 text-lg font-light leading-relaxed italic mb-6">
+                Braden was an excellent realtor. He was prompt, organized, and always on time. He was willing to go above and beyond taking extra steps to help me close on the house because I lived too far away to do it myself. Braden was the 4th realtor I have worked with and will be the one I reach out to next time I go to purchase a home.
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#c5a059] flex items-center justify-center text-[#0b2b20] font-bold">A</div>
+                <div>
+                  <p className="font-serif text-lg">Aaron Barnett</p>
+                  <p className="text-xs uppercase tracking-wider text-[#c5a059]">US Army</p>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// 8. Contact Section
+const Contact = ({ onOpenQuestionnaire }) => {
   return (
     <section id="contact" className="py-24 bg-[#fdfbf7] relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] to-[#e6e2d6] z-0"></div>
       <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
-      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
 
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className="bg-white/80 backdrop-blur-md p-8 md:p-24 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[#0b2b20]/10 relative">
@@ -463,40 +516,16 @@ const Contact = () => {
             </Reveal>
 
             <Reveal delay={300}>
-              <div className="text-center mb-16">
-                 <button className="inline-flex items-center gap-3 px-8 py-4 border border-[#0b2b20] text-[#0b2b20] uppercase tracking-[0.2em] text-xs font-bold hover:bg-[#0b2b20] hover:text-[#fdfbf7] transition-all duration-300 group">
+              <div className="text-center mb-12">
+                 <button 
+                    onClick={onOpenQuestionnaire}
+                    className="inline-flex items-center gap-3 px-10 py-5 border border-[#0b2b20] bg-[#0b2b20] text-[#fdfbf7] uppercase tracking-[0.2em] text-xs font-bold hover:bg-[#c5a059] hover:border-[#c5a059] transition-all duration-300 group shadow-lg"
+                 >
                     <FileText size={16} className="group-hover:scale-110 transition-transform" />
-                    <span>Quick Questionnaire</span>
+                    <span>Start Questionnaire</span>
                  </button>
                  <p className="text-[#0b2b20]/40 text-xs mt-4 tracking-wide">Tell us about your needs in 2 minutes.</p>
               </div>
-
-              <form className="space-y-8 text-left max-w-2xl mx-auto">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="relative group">
-                    <input type="text" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="name" placeholder="Name" />
-                    <label htmlFor="name" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Name</label>
-                  </div>
-                  <div className="relative group">
-                    <input type="tel" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="phone" placeholder="Phone" />
-                    <label htmlFor="phone" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Phone</label>
-                  </div>
-                </div>
-                <div className="relative group">
-                    <input type="email" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="email" placeholder="Email" />
-                    <label htmlFor="email" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Email</label>
-                </div>
-                <div className="relative group">
-                    <textarea rows="4" className="peer w-full bg-transparent border-b border-[#0b2b20]/20 py-3 focus:outline-none focus:border-[#c5a059] transition-colors text-[#0b2b20] placeholder-transparent font-medium" id="msg" placeholder="Message"></textarea>
-                    <label htmlFor="msg" className="absolute left-0 -top-3.5 text-xs text-[#c5a059] transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#0b2b20]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#c5a059] peer-focus:text-xs">Message</label>
-                </div>
-                <div className="text-center mt-12">
-                  <button type="button" className="bg-[#0b2b20] text-[#fdfbf7] px-14 py-5 text-xs uppercase tracking-[0.2em] font-bold hover:bg-[#163a2c] transition-all duration-300 shadow-xl w-full md:w-auto border border-[#0b2b20] hover:shadow-[0_10px_30px_-5px_rgba(11,43,32,0.3)] relative overflow-hidden group">
-                    <span className="absolute inset-0 bg-[#c5a059] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0"></span>
-                    <span className="relative z-10">Send Message</span>
-                  </button>
-                </div>
-              </form>
             </Reveal>
           </div>
         </div>
@@ -505,7 +534,417 @@ const Contact = () => {
   );
 };
 
-// 7. Footer
+// 9. ADAPTIVE QUESTIONNAIRE WIZARD (REBUILT)
+const QuestionnaireModal = ({ isOpen, onClose }) => {
+  const [step, setStep] = useState(0); // 0 = Type Selection
+  const [type, setType] = useState(null); // 'buy', 'sell', 'both', 'join'
+  const [answers, setAnswers] = useState({});
+  const [licenseStatus, setLicenseStatus] = useState(null);
+  
+  // RESET ON CLOSE
+  useEffect(() => {
+    if (!isOpen) {
+      setTimeout(() => {
+        setStep(0);
+        setType(null);
+        setAnswers({});
+        setLicenseStatus(null);
+      }, 300);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSelectType = (selected) => {
+    setType(selected);
+    setStep(1); // Move to first question
+  };
+
+  const nextStep = () => setStep(s => s + 1);
+  const prevStep = () => setStep(s => s - 1);
+
+  const handleInput = (key, value) => {
+    setAnswers(prev => ({ ...prev, [key]: value }));
+  };
+
+  // --- MAILTO GENERATOR ---
+  const handleSubmit = () => {
+    const recipient = "bradenbraccio@yourcastle.com";
+    const subject = `New Website Inquiry: ${type ? type.toUpperCase() : 'General'}`;
+    
+    let body = `Name: ${answers.name || 'N/A'}\n`;
+    body += `Email: ${answers.email || 'N/A'}\n`;
+    body += `Phone: ${answers.phone || 'N/A'}\n`;
+    body += `Preferred Contact: ${answers.contactMethod || 'N/A'}\n\n`;
+
+    if (type === 'buy' || type === 'both') {
+      body += `--- BUYING PREFERENCES ---\n`;
+      body += `Timeline: ${answers.buyTimeline || 'N/A'}\n`;
+      body += `Location: ${answers.buyLocation || 'N/A'}\n`;
+      body += `Price Range: ${answers.buyPrice || 'N/A'}\n`;
+      body += `Property Type: ${answers.buyType || 'N/A'}\n`;
+      body += `Bed/Bath: ${answers.buyBedBath || 'N/A'}\n`;
+      body += `Pre-Approved: ${answers.buyMortgage || 'N/A'}\n`;
+      body += `Sell First?: ${answers.sellFirst || 'N/A'}\n\n`;
+    }
+
+    if (type === 'sell' || type === 'both') {
+      body += `--- SELLING PREFERENCES ---\n`;
+      body += `Address: ${answers.sellAddress || 'N/A'}\n`;
+      body += `Timeline: ${answers.sellTimeline || 'N/A'}\n`;
+      body += `Motivation: ${answers.sellReason || 'N/A'}\n`;
+      body += `Property Type: ${answers.sellType || 'N/A'}\n`;
+      body += `Stats (SqFt/Year): ${answers.sellStats || 'N/A'}\n`;
+      body += `Recent Updates: ${answers.sellUpdates || 'N/A'}\n\n`;
+    }
+
+    if (type === 'join') {
+      body += `--- AGENT APPLICATION ---\n`;
+      body += `Licensed: ${answers.hasLicense || 'N/A'}\n`;
+      body += `Experience: ${answers.experience || 'N/A'}\n`;
+      body += `Transactions (12mo): ${answers.transactions || 'N/A'}\n`;
+      body += `GCI: ${answers.gci || 'N/A'}\n`;
+      body += `Interests: ${answers.joinReason || 'N/A'}\n`;
+    }
+
+    body += `--- NOTES ---\n${answers.finalNotes || 'None'}`;
+
+    window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    onClose();
+  };
+
+  // --- RENDER CONTENT BASED ON STEP & TYPE ---
+  const renderContent = () => {
+    
+    // STEP 0: INITIAL SELECTION
+    if (step === 0) {
+      return (
+        <div className="space-y-8 animate-in fade-in zoom-in duration-300">
+          <h3 className="font-serif text-3xl md:text-4xl text-[#0b2b20] text-center">How can I help you today?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onClick={() => handleSelectType('buy')} className="group p-8 border border-[#0b2b20]/20 hover:border-[#c5a059] hover:bg-[#f9f8f5] transition-all flex flex-col items-center">
+              <Home className="text-[#0b2b20] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
+              <span className="font-bold uppercase tracking-widest text-sm">Buy a Home</span>
+            </button>
+            <button onClick={() => handleSelectType('sell')} className="group p-8 border border-[#0b2b20]/20 hover:border-[#c5a059] hover:bg-[#f9f8f5] transition-all flex flex-col items-center">
+              <TrendingUp className="text-[#0b2b20] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
+              <span className="font-bold uppercase tracking-widest text-sm">Sell a Home</span>
+            </button>
+            <button onClick={() => handleSelectType('both')} className="group p-8 border border-[#0b2b20]/20 hover:border-[#c5a059] hover:bg-[#f9f8f5] transition-all flex flex-col items-center">
+              <Key className="text-[#0b2b20] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
+              <span className="font-bold uppercase tracking-widest text-sm">Buy & Sell</span>
+            </button>
+            <button onClick={() => handleSelectType('join')} className="group p-8 border border-[#0b2b20]/20 hover:border-[#c5a059] hover:bg-[#f9f8f5] transition-all flex flex-col items-center">
+              <User className="text-[#0b2b20] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
+              <span className="font-bold uppercase tracking-widest text-sm">Join My Team</span>
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // --- STEP 1: CONTACT INFO (Common for all) ---
+    if (step === 1) {
+      return (
+        <div className="space-y-6 animate-in slide-in-from-right duration-300">
+          <div className="flex items-center gap-4 mb-2">
+             <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+             <h3 className="font-serif text-2xl text-[#0b2b20]">Let's Connect</h3>
+          </div>
+          
+          <div className="space-y-4">
+             <input placeholder="Full Name" onChange={(e) => handleInput('name', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent focus:border-[#c5a059] outline-none" />
+             <input placeholder="Email Address" onChange={(e) => handleInput('email', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent focus:border-[#c5a059] outline-none" />
+             <input placeholder="Phone Number" onChange={(e) => handleInput('phone', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent focus:border-[#c5a059] outline-none" />
+             
+             <div className="space-y-2">
+               <label className="text-xs uppercase tracking-widest font-bold text-[#0b2b20]">Preferred Contact</label>
+               <div className="flex gap-4">
+                  {['Email', 'Phone', 'Text'].map(m => (
+                     <label key={m} className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="contact" value={m} onChange={(e) => handleInput('contactMethod', e.target.value)} className="accent-[#c5a059]" /> 
+                        <span className="text-sm">{m}</span>
+                     </label>
+                  ))}
+               </div>
+             </div>
+          </div>
+          <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next Step</button>
+        </div>
+      );
+    }
+
+    // --- JOIN TEAM BRANCH ---
+    if (type === 'join') {
+      // Step 2: License Check (CRITICAL LOGIC)
+      if (step === 2) {
+        return (
+          <div className="space-y-6 animate-in slide-in-from-right duration-300">
+             <div className="flex items-center gap-4 mb-2">
+                <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                <h3 className="font-serif text-2xl text-[#0b2b20]">Licensing Status</h3>
+             </div>
+             
+             <p className="text-lg">Do you currently hold an active Colorado real estate license?</p>
+             
+             <div className="space-y-3">
+               <button onClick={() => { handleInput('hasLicense', 'Yes'); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">Yes</button>
+               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(99); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">No, but I'm interested in getting licensed</button>
+               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(99); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">No, just exploring</button>
+             </div>
+          </div>
+        );
+      }
+      
+      // Step 99: STOP SCREEN for No License
+      if (step === 99) {
+         return (
+            <div className="bg-[#fdfbf7] border-l-4 border-[#c5a059] p-8 shadow-sm animate-in fade-in duration-500">
+               <h4 className="font-serif text-xl mb-4 text-[#0b2b20]">Thank you for your interest!</h4>
+               <div className="space-y-4 text-sm text-[#1c1c1c]/80 leading-relaxed">
+                  <p>Since you're not yet licensed, one of our experienced team members will reach out to you within 24-48 hours to personally guide you through the next steps.</p>
+                  <p className="font-bold text-[#0b2b20]">We'll help you navigate:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                     <li>Pre-licensing education options</li>
+                     <li>Exam preparation and scheduling</li>
+                     <li>Fingerprinting and background check</li>
+                     <li>Application process with the Colorado Division of Real Estate</li>
+                     <li>Ongoing mentorship as you launch your career</li>
+                  </ul>
+                  <p className="italic pt-2">We're excited to support you every step of the way – no prior experience needed!</p>
+               </div>
+               <button onClick={handleSubmit} className="mt-6 bg-[#0b2b20] text-white px-8 py-3 uppercase text-xs font-bold hover:bg-[#c5a059] transition-colors">Finish & Send</button>
+            </div>
+         );
+      }
+
+      // Step 3: Experience
+      if (step === 3) {
+         return (
+            <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2">
+                  <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                  <h3 className="font-serif text-2xl text-[#0b2b20]">Experience</h3>
+               </div>
+               <p>How many years of real estate experience do you have?</p>
+               <div className="space-y-3">
+                  {['Less than 2 years', '2-5 years', '5-10 years', '10+ years'].map(opt => (
+                     <button key={opt} onClick={() => { handleInput('experience', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">{opt}</button>
+                  ))}
+               </div>
+            </div>
+         );
+      }
+
+      // Step 4: Final Details
+      if (step === 4) {
+         return (
+            <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2">
+                  <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                  <h3 className="font-serif text-2xl text-[#0b2b20]">Final Details</h3>
+               </div>
+               <div className="grid grid-cols-2 gap-4">
+                  <input placeholder="Transactions Last 12mo" onChange={(e) => handleInput('transactions', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+                  <input placeholder="Approx GCI" onChange={(e) => handleInput('gci', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               </div>
+               <textarea placeholder="Why join us? / LinkedIn / Resume..." onChange={(e) => handleInput('finalNotes', e.target.value)} rows="3" className="w-full p-4 border border-gray-300 bg-transparent outline-none"></textarea>
+               <button onClick={handleSubmit} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Submit Application</button>
+            </div>
+         );
+      }
+    }
+
+    // --- BUYER FLOW ---
+    if (type === 'buy' || (type === 'both' && step <= 5)) {
+       let currentStep = step;
+       if (type === 'both') currentStep = step; // Normal flow
+
+       if (currentStep === 2) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                   <h3 className="font-serif text-2xl text-[#0b2b20]">Buying Timeline</h3>
+                </div>
+                <div className="space-y-3">
+                   {['Ready Now (0-30 days)', '1-3 Months', '3-6 Months', '6+ Months'].map(opt => (
+                      <button key={opt} onClick={() => { handleInput('buyTimeline', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">{opt}</button>
+                   ))}
+                </div>
+             </div>
+          );
+       }
+       if (currentStep === 3) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                   <h3 className="font-serif text-2xl text-[#0b2b20]">Location & Price</h3>
+                </div>
+                <input placeholder="Preferred Locations (City, Zip, Neighborhood)" onChange={(e) => handleInput('buyLocation', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
+                <div className="space-y-2">
+                   <label className="text-xs uppercase tracking-widest font-bold">Price Range</label>
+                   <select onChange={(e) => handleInput('buyPrice', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none">
+                      <option>Under $400k</option>
+                      <option>$400k - $600k</option>
+                      <option>$600k - $800k</option>
+                      <option>$800k - $1M</option>
+                      <option>$1M+</option>
+                   </select>
+                </div>
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+             </div>
+          );
+       }
+       if (currentStep === 4) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                   <h3 className="font-serif text-2xl text-[#0b2b20]">Property Details</h3>
+                </div>
+                <select onChange={(e) => handleInput('buyType', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4">
+                   <option>Single Family Home</option>
+                   <option>Condo/Townhome</option>
+                   <option>Multi-Family</option>
+                   <option>Land</option>
+                </select>
+                <input placeholder="Bed / Bath Count" onChange={(e) => handleInput('buyBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+             </div>
+          );
+       }
+       if (currentStep === 5) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                   <h3 className="font-serif text-2xl text-[#0b2b20]">Financing</h3>
+                </div>
+                <p>Are you pre-approved for a mortgage?</p>
+                <div className="space-y-3">
+                   {['Yes', 'No, but planning to', 'Paying Cash', 'Not yet'].map(opt => (
+                      <button key={opt} onClick={() => { handleInput('buyMortgage', opt); type === 'both' ? nextStep() : setStep(100); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">{opt}</button>
+                   ))}
+                </div>
+             </div>
+          );
+       }
+    }
+
+    // --- SELLER FLOW ---
+    if (type === 'sell' || type === 'both') {
+       // Adjust steps for Sell flow
+       // If type is sell, steps start at 2. If both, steps start at 6 (after buy flow)
+       let effectiveStep = step; 
+       if (type === 'sell') effectiveStep = step; 
+       if (type === 'both') effectiveStep = step - 4; // Shift logic for both
+
+       if (effectiveStep === 2) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                   <h3 className="font-serif text-2xl text-[#0b2b20]">{type === 'both' ? 'Selling Side' : 'Property Address'}</h3>
+                </div>
+                <input placeholder="Property Address" onChange={(e) => handleInput('sellAddress', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+             </div>
+          );
+       }
+       if (effectiveStep === 3) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                   <h3 className="font-serif text-2xl text-[#0b2b20]">Property Details</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                   <input placeholder="Approx Sq Ft" onChange={(e) => handleInput('sellSqFt', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+                   <input placeholder="Year Built" onChange={(e) => handleInput('sellYear', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+                </div>
+                <input placeholder="Bedrooms / Bathrooms" onChange={(e) => handleInput('sellBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+             </div>
+          );
+       }
+       if (effectiveStep === 4) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+                <div className="flex items-center gap-4 mb-2">
+                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
+                   <h3 className="font-serif text-2xl text-[#0b2b20]">Timeline & Motivation</h3>
+                </div>
+                <select onChange={(e) => handleInput('sellTimeline', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4">
+                   <option value="">Sell By?</option>
+                   <option>ASAP</option>
+                   <option>Within 30 Days</option>
+                   <option>1-3 Months</option>
+                   <option>6+ Months</option>
+                </select>
+                <select onChange={(e) => handleInput('sellReason', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none">
+                   <option value="">Main Reason?</option>
+                   <option>Upsizing</option>
+                   <option>Downsizing</option>
+                   <option>Relocation</option>
+                   <option>Financial</option>
+                   <option>Life Event</option>
+                </select>
+                <button onClick={() => setStep(100)} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors mt-4">Review & Submit</button>
+             </div>
+          );
+       }
+    }
+
+    // --- FINAL SUBMISSION SCREEN ---
+    if (step === 100) {
+       return (
+         <div className="space-y-6 animate-in slide-in-from-right duration-300">
+            <h3 className="font-serif text-2xl text-[#0b2b20] border-b border-[#c5a059]/30 pb-4">One Last Thing</h3>
+            <p className="text-sm text-gray-600">Any specific needs, questions, or updates I should know about?</p>
+            <textarea 
+               rows="4" 
+               className="w-full p-4 border border-gray-300 bg-transparent outline-none focus:border-[#c5a059]" 
+               placeholder="Tell me more..."
+               onChange={(e) => handleInput('finalNotes', e.target.value)}
+            ></textarea>
+            
+            <div className="pt-4">
+               <button onClick={handleSubmit} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors shadow-lg">Submit Information</button>
+               <p className="text-[10px] text-center text-gray-500 mt-3">
+                  I'll reach out within 24 hours. For faster response, text (720) 885-1613.
+               </p>
+            </div>
+         </div>
+       );
+    }
+
+    return null;
+  };
+
+  return (
+    <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-[#fdfbf7] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 md:p-12 relative shadow-2xl rounded-sm">
+        <button onClick={onClose} className="absolute top-4 right-4 text-[#0b2b20] hover:text-[#c5a059] transition-colors">
+          <X size={28} />
+        </button>
+        
+        {/* Progress Indicator */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
+           <div 
+             className="h-full bg-[#c5a059] transition-all duration-500 ease-out" 
+             style={{ width: `${(step / 6) * 100}%` }} // Simplified progress for demo
+           ></div>
+        </div>
+
+        {renderContent()}
+      </div>
+    </div>
+  );
+};
+
+// 10. Footer
 const Footer = () => {
   return (
     <footer className="bg-[#0b2b20] text-[#e6e4dc] py-20 border-t border-[#c5a059]/50 relative">
@@ -531,7 +970,6 @@ const Footer = () => {
           {/* Brokerage Info */}
           <div className="flex flex-col items-center md:items-start">
             <h4 className="text-[#c5a059] text-xs uppercase tracking-[0.2em] font-bold mb-6">Brokerage</h4>
-            {/* Removed white box/padding so logo fills out space */}
             <div className="mb-6">
                <img src="Untitled design (28).png" alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert" />
             </div>
@@ -564,10 +1002,11 @@ const Footer = () => {
   );
 };
 
+// Main App Component
 const App = () => {
   const [activeTab, setActiveTab] = useState('buyer');
+  const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
 
-  // Add this effect to change the title
   useEffect(() => {
     document.title = "Braden Braccio | Real Estate Agent";
   }, []);
@@ -575,7 +1014,6 @@ const App = () => {
   const handleNavigate = (targetId, tab = null) => {
     const element = document.getElementById(targetId);
     if (element) {
-      // Offset for fixed header
       const offset = 100; 
       const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
@@ -593,13 +1031,11 @@ const App = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
         
-        html {
-          scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
         .font-serif { font-family: 'Playfair Display', serif; }
         .font-sans { font-family: 'Lato', sans-serif; }
 
-        /* CUSTOM ANIMATIONS */
+        /* ANIMATIONS */
         @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } 100% { transform: translateY(0px) rotate(0deg); } }
         @keyframes pulse-slow { 0%, 100% { opacity: 0.05; transform: scale(1); } 50% { opacity: 0.1; transform: scale(1.1); } }
         @keyframes grain { 0%, 100% { transform: translate(0,0); } 10% { transform: translate(-5%, -10%); } 20% { transform: translate(-15%, 5%); } 30% { transform: translate(7%, -25%); } 40% { transform: translate(-5%, 25%); } 50% { transform: translate(-15%, 10%); } 60% { transform: translate(15%, 0%); } 70% { transform: translate(0%, 15%); } 80% { transform: translate(3%, 35%); } 90% { transform: translate(-10%, 10%); } }
@@ -617,12 +1053,16 @@ const App = () => {
         .animate-fade-in-delayed { animation: fade-in-delayed 2s ease-out forwards; }
       `}</style>
 
-      <Navbar onNavigate={handleNavigate} />
+      <Navbar onNavigate={handleNavigate} onOpenQuestionnaire={() => setIsQuestionnaireOpen(true)} />
       <Hero />
       <BioSection />
       <ProcessSection activeTab={activeTab} />
-      <Contact />
+      <ImpactSection />
+      <Testimonials />
+      <Contact onOpenQuestionnaire={() => setIsQuestionnaireOpen(true)} />
       <Footer />
+      
+      <QuestionnaireModal isOpen={isQuestionnaireOpen} onClose={() => setIsQuestionnaireOpen(false)} />
     </div>
   );
 };
