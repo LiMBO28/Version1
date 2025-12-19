@@ -11,6 +11,7 @@ import {
  * - Configured 'submitToGoogleSheets' with the LIVE Google Form URL and Entry IDs provided.
  * - Form data now submits directly to the specific Google Form fields.
  * - Mapped "Details" and "Notes" to the catch-all fields in the form.
+ * - DISABLED email/form submission for Unlicensed Agent applicants (Step 999).
  */
 
 // --- CONFIGURATION ---
@@ -650,6 +651,22 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
         append('sellUpdates', answers.sellUpdates);
     }
 
+    if (type === 'join') {
+      append('finalNotes', `
+        --- AGENT APPLICATION ---
+        Licensed: ${answers.hasLicense || 'N/A'}
+        Experience: ${answers.experience || 'N/A'}
+        Transactions (12mo): ${answers.transactions || 'N/A'}
+        GCI: ${answers.gci || 'N/A'}
+        Focus Area: ${answers.focusArea || 'N/A'}
+        Interests: ${answers.joinReason || 'N/A'}
+        Preference: ${answers.workPreference || 'N/A'}
+        Previous Team: ${answers.prevTeam || 'N/A'}
+        Source: ${answers.source || 'N/A'}
+        Notes: ${answers.finalNotes || 'None'}
+      `);
+    }
+
     try {
         await fetch(GOOGLE_FORM_ACTION_URL, {
             method: 'POST',
@@ -666,8 +683,15 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
         
     } catch (error) {
         console.error("Submission error", error);
+        // Fallback to mailto if fetch fails
+        const recipient = "bradenbraccio@yourcastle.com";
+        const subject = `New Website Inquiry: ${type ? type.toUpperCase() : 'General'}`;
+        let body = `Name: ${answers.name}\nEmail: ${answers.email}\nPhone: ${answers.phone}\n\n`;
+        body += `Notes: ${answers.finalNotes || 'See Google Sheet for full details.'}`;
+        
+        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         setIsSubmitting(false);
-        alert("There was an error sending your form. Please try again or contact Braden directly.");
+        onClose();
     }
   };
 
@@ -746,6 +770,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
              <div className="bg-[#fdfbf7] border-l-4 border-[#c5a059] p-8 shadow-sm animate-in fade-in duration-500">
                <h4 className="font-serif text-xl mb-4 text-[#0b2b20]">Thank you for your interest!</h4>
                <p className="text-sm text-[#1c1c1c]/80 mb-4">Since you're not yet licensed, one of our experienced team members will reach out to you within 24-48 hours to personally guide you through the next steps.</p>
+               {/* Finish Button now just closes modal, NO EMAIL SENT */}
                <button onClick={onClose} className="bg-[#0b2b20] text-white px-8 py-3 uppercase text-xs font-bold hover:bg-[#c5a059]">Finish</button>
             </div>
           );
