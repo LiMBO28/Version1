@@ -6,12 +6,17 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - EMAIL OUTPUT UPDATE
- * * Feature Added: 
- * - Questionnaire now compiles all answers into a formatted email body.
- * - Uses 'mailto:' link to open user's email client with pre-filled data addressed to Braden.
- * - Handles all data fields from Buy, Sell, Both, and Team flows.
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - PDF QUESTIONNAIRE UPDATE
+ * * Updates:
+ * - Implemented exact questions from "Tech Updates.pdf".
+ * - "One Question Per Step" adaptive flow.
+ * - Specific stop logic for unlicensed agents.
+ * - Supports Buy, Sell, Both, and Join Team paths perfectly.
  */
+
+// --- CONFIGURATION ---
+// REPLACE THIS URL WITH YOUR GOOGLE FORM SUBMISSION URL IF YOU USE GOOGLE SHEETS
+const GOOGLE_FORM_ACTION_URL = ""; // e.g. "https://docs.google.com/forms/d/e/.../formResponse"
 
 // --- Components ---
 
@@ -534,9 +539,9 @@ const Contact = ({ onOpenQuestionnaire }) => {
   );
 };
 
-// 9. ADAPTIVE QUESTIONNAIRE WIZARD (REBUILT)
+// 9. ADAPTIVE QUESTIONNAIRE WIZARD (REBUILT ONE-QUESTION-PER-STEP)
 const QuestionnaireModal = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState(0); // 0 = Type Selection
+  const [step, setStep] = useState(0); 
   const [type, setType] = useState(null); // 'buy', 'sell', 'both', 'join'
   const [answers, setAnswers] = useState({});
   const [licenseStatus, setLicenseStatus] = useState(null);
@@ -557,7 +562,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
 
   const handleSelectType = (selected) => {
     setType(selected);
-    setStep(1); // Move to first question
+    setStep(1); 
   };
 
   const nextStep = () => setStep(s => s + 1);
@@ -567,11 +572,12 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
   };
 
-  // --- MAILTO GENERATOR ---
-  const handleSubmit = () => {
+  // --- SUBMISSION HANDLER ---
+  const handleSubmit = async () => {
     const recipient = "bradenbraccio@yourcastle.com";
     const subject = `New Website Inquiry: ${type ? type.toUpperCase() : 'General'}`;
     
+    // FORMATTED EMAIL BODY FROM PDF LOGIC
     let body = `Name: ${answers.name || 'N/A'}\n`;
     body += `Email: ${answers.email || 'N/A'}\n`;
     body += `Phone: ${answers.phone || 'N/A'}\n`;
@@ -591,11 +597,14 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
     if (type === 'sell' || type === 'both') {
       body += `--- SELLING PREFERENCES ---\n`;
       body += `Address: ${answers.sellAddress || 'N/A'}\n`;
+      body += `Property Type: ${answers.sellType || 'N/A'}\n`;
+      body += `SqFt: ${answers.sellSqFt || 'N/A'}\n`;
+      body += `Bed/Bath: ${answers.sellBedBath || 'N/A'}\n`;
+      body += `Year Built: ${answers.sellYear || 'N/A'}\n`;
       body += `Timeline: ${answers.sellTimeline || 'N/A'}\n`;
       body += `Motivation: ${answers.sellReason || 'N/A'}\n`;
-      body += `Property Type: ${answers.sellType || 'N/A'}\n`;
-      body += `Stats (SqFt/Year): ${answers.sellStats || 'N/A'}\n`;
-      body += `Recent Updates: ${answers.sellUpdates || 'N/A'}\n\n`;
+      body += `Buy After?: ${answers.buyAfter || 'N/A'}\n`;
+      body += `Updates: ${answers.sellUpdates || 'N/A'}\n\n`;
     }
 
     if (type === 'join') {
@@ -604,7 +613,11 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
       body += `Experience: ${answers.experience || 'N/A'}\n`;
       body += `Transactions (12mo): ${answers.transactions || 'N/A'}\n`;
       body += `GCI: ${answers.gci || 'N/A'}\n`;
+      body += `Focus Area: ${answers.focusArea || 'N/A'}\n`;
       body += `Interests: ${answers.joinReason || 'N/A'}\n`;
+      body += `Preference: ${answers.workPreference || 'N/A'}\n`;
+      body += `Previous Team: ${answers.prevTeam || 'N/A'}\n`;
+      body += `Source: ${answers.source || 'N/A'}\n`;
     }
 
     body += `--- NOTES ---\n${answers.finalNotes || 'None'}`;
@@ -613,7 +626,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  // --- RENDER CONTENT BASED ON STEP & TYPE ---
+  // --- RENDER CONTENT BASED ON STEP & TYPE (WIZARD MODE) ---
   const renderContent = () => {
     
     // STEP 0: INITIAL SELECTION
@@ -643,261 +656,285 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
       );
     }
 
-    // --- STEP 1: CONTACT INFO (Common for all) ---
+    // --- STEP 1: BASIC INFO ---
     if (step === 1) {
       return (
         <div className="space-y-6 animate-in slide-in-from-right duration-300">
-          <div className="flex items-center gap-4 mb-2">
-             <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-             <h3 className="font-serif text-2xl text-[#0b2b20]">Let's Connect</h3>
-          </div>
-          
-          <div className="space-y-4">
-             <input placeholder="Full Name" onChange={(e) => handleInput('name', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent focus:border-[#c5a059] outline-none" />
-             <input placeholder="Email Address" onChange={(e) => handleInput('email', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent focus:border-[#c5a059] outline-none" />
-             <input placeholder="Phone Number" onChange={(e) => handleInput('phone', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent focus:border-[#c5a059] outline-none" />
-             
-             <div className="space-y-2">
-               <label className="text-xs uppercase tracking-widest font-bold text-[#0b2b20]">Preferred Contact</label>
-               <div className="flex gap-4">
-                  {['Email', 'Phone', 'Text'].map(m => (
-                     <label key={m} className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="contact" value={m} onChange={(e) => handleInput('contactMethod', e.target.value)} className="accent-[#c5a059]" /> 
-                        <span className="text-sm">{m}</span>
-                     </label>
-                  ))}
-               </div>
-             </div>
-          </div>
-          <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next Step</button>
+           <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Basic Info</h3></div>
+           <input placeholder="Full Name" onChange={(e) => handleInput('name', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+           <input placeholder="Email Address" onChange={(e) => handleInput('email', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+           <input placeholder="Phone Number" onChange={(e) => handleInput('phone', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+           <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059]">Next</button>
         </div>
       );
     }
 
+    // --- STEP 2: CONTACT METHOD ---
+    if (step === 2) {
+       return (
+         <div className="space-y-6 animate-in slide-in-from-right duration-300">
+            <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Preferred Contact</h3></div>
+            <div className="space-y-3">
+               {['Email', 'Phone Call', 'Text'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('contactMethod', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+            </div>
+         </div>
+       );
+    }
+
     // --- JOIN TEAM BRANCH ---
     if (type === 'join') {
-      // Step 2: License Check (CRITICAL LOGIC)
-      if (step === 2) {
-        return (
-          <div className="space-y-6 animate-in slide-in-from-right duration-300">
-             <div className="flex items-center gap-4 mb-2">
-                <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                <h3 className="font-serif text-2xl text-[#0b2b20]">Licensing Status</h3>
+       if (step === 3) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">License Status</h3></div>
+               <p>Do you currently hold an active Colorado real estate license?</p>
+               <button onClick={() => { handleInput('hasLicense', 'Yes'); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">Yes (License #: ________)</button>
+               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(999); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">No, but interested</button>
+               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(999); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">No, just exploring</button>
              </div>
-             
-             <p className="text-lg">Do you currently hold an active Colorado real estate license?</p>
-             
-             <div className="space-y-3">
-               <button onClick={() => { handleInput('hasLicense', 'Yes'); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">Yes</button>
-               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(99); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">No, but I'm interested in getting licensed</button>
-               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(99); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">No, just exploring</button>
-             </div>
-          </div>
-        );
-      }
-      
-      // Step 99: STOP SCREEN for No License
-      if (step === 99) {
-         return (
-            <div className="bg-[#fdfbf7] border-l-4 border-[#c5a059] p-8 shadow-sm animate-in fade-in duration-500">
+          );
+       }
+       if (step === 999) {
+          return (
+             <div className="bg-[#fdfbf7] border-l-4 border-[#c5a059] p-8 shadow-sm animate-in fade-in duration-500">
                <h4 className="font-serif text-xl mb-4 text-[#0b2b20]">Thank you for your interest!</h4>
-               <div className="space-y-4 text-sm text-[#1c1c1c]/80 leading-relaxed">
-                  <p>Since you're not yet licensed, one of our experienced team members will reach out to you within 24-48 hours to personally guide you through the next steps.</p>
-                  <p className="font-bold text-[#0b2b20]">We'll help you navigate:</p>
-                  <ul className="list-disc pl-5 space-y-1">
-                     <li>Pre-licensing education options</li>
-                     <li>Exam preparation and scheduling</li>
-                     <li>Fingerprinting and background check</li>
-                     <li>Application process with the Colorado Division of Real Estate</li>
-                     <li>Ongoing mentorship as you launch your career</li>
-                  </ul>
-                  <p className="italic pt-2">We're excited to support you every step of the way – no prior experience needed!</p>
-               </div>
-               <button onClick={handleSubmit} className="mt-6 bg-[#0b2b20] text-white px-8 py-3 uppercase text-xs font-bold hover:bg-[#c5a059] transition-colors">Finish & Send</button>
+               <p className="text-sm text-[#1c1c1c]/80 mb-4">Since you're not yet licensed, one of our experienced team members will reach out to you within 24-48 hours to personally guide you through the next steps.</p>
+               <button onClick={handleSubmit} className="bg-[#0b2b20] text-white px-8 py-3 uppercase text-xs font-bold hover:bg-[#c5a059]">Finish</button>
             </div>
-         );
-      }
-
-      // Step 3: Experience
-      if (step === 3) {
-         return (
-            <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2">
-                  <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                  <h3 className="font-serif text-2xl text-[#0b2b20]">Experience</h3>
-               </div>
-               <p>How many years of real estate experience do you have?</p>
-               <div className="space-y-3">
-                  {['Less than 2 years', '2-5 years', '5-10 years', '10+ years'].map(opt => (
-                     <button key={opt} onClick={() => { handleInput('experience', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">{opt}</button>
-                  ))}
-               </div>
-            </div>
-         );
-      }
-
-      // Step 4: Final Details
-      if (step === 4) {
-         return (
-            <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2">
-                  <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                  <h3 className="font-serif text-2xl text-[#0b2b20]">Final Details</h3>
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                  <input placeholder="Transactions Last 12mo" onChange={(e) => handleInput('transactions', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                  <input placeholder="Approx GCI" onChange={(e) => handleInput('gci', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-               </div>
-               <textarea placeholder="Why join us? / LinkedIn / Resume..." onChange={(e) => handleInput('finalNotes', e.target.value)} rows="3" className="w-full p-4 border border-gray-300 bg-transparent outline-none"></textarea>
-               <button onClick={handleSubmit} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Submit Application</button>
-            </div>
-         );
-      }
-    }
-
-    // --- BUYER FLOW ---
-    if (type === 'buy' || (type === 'both' && step <= 5)) {
-       let currentStep = step;
-       if (type === 'both') currentStep = step; // Normal flow
-
-       if (currentStep === 2) {
+          );
+       }
+       // If Licensed, continue to Step 4...
+       if (step === 4) {
           return (
              <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0b2b20]">Buying Timeline</h3>
-                </div>
-                <div className="space-y-3">
-                   {['Ready Now (0-30 days)', '1-3 Months', '3-6 Months', '6+ Months'].map(opt => (
-                      <button key={opt} onClick={() => { handleInput('buyTimeline', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">{opt}</button>
-                   ))}
-                </div>
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Experience</h3></div>
+               {['New to Industry', '< 2 Years', '2-5 Years', '5-10 Years', '10+ Years'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('experience', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
              </div>
           );
        }
-       if (currentStep === 3) {
+       if (step === 5) {
           return (
              <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0b2b20]">Location & Price</h3>
-                </div>
-                <input placeholder="Preferred Locations (City, Zip, Neighborhood)" onChange={(e) => handleInput('buyLocation', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
-                <div className="space-y-2">
-                   <label className="text-xs uppercase tracking-widest font-bold">Price Range</label>
-                   <select onChange={(e) => handleInput('buyPrice', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none">
-                      <option>Under $400k</option>
-                      <option>$400k - $600k</option>
-                      <option>$600k - $800k</option>
-                      <option>$800k - $1M</option>
-                      <option>$1M+</option>
-                   </select>
-                </div>
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Production (Last 12mo)</h3></div>
+               <input placeholder="# of Transactions" onChange={(e) => handleInput('transactions', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
+               <input placeholder="Approx GCI" onChange={(e) => handleInput('gci', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059]">Next</button>
              </div>
           );
        }
-       if (currentStep === 4) {
+       if (step === 6) {
           return (
              <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0b2b20]">Property Details</h3>
-                </div>
-                <select onChange={(e) => handleInput('buyType', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4">
-                   <option>Single Family Home</option>
-                   <option>Condo/Townhome</option>
-                   <option>Multi-Family</option>
-                   <option>Land</option>
-                </select>
-                <input placeholder="Bed / Bath Count" onChange={(e) => handleInput('buyBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Focus Area</h3></div>
+               <input placeholder="What areas do you serve? (e.g. Denver Metro)" onChange={(e) => handleInput('focusArea', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Next</button>
              </div>
           );
        }
-       if (currentStep === 5) {
+       if (step === 7) {
           return (
              <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0b2b20]">Financing</h3>
-                </div>
-                <p>Are you pre-approved for a mortgage?</p>
-                <div className="space-y-3">
-                   {['Yes', 'No, but planning to', 'Paying Cash', 'Not yet'].map(opt => (
-                      <button key={opt} onClick={() => { handleInput('buyMortgage', opt); type === 'both' ? nextStep() : setStep(100); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] hover:bg-[#f9f8f5] text-left font-medium transition-all">{opt}</button>
-                   ))}
-                </div>
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Why Join?</h3></div>
+               <p className="text-sm text-gray-500 mb-2">Select all that apply</p>
+               <div className="space-y-2">
+                 {['Leads & Marketing', 'Mentorship', 'Team Culture', 'Tools', 'Growth'].map(opt => (
+                    <label key={opt} className="flex items-center gap-3 p-3 border border-gray-200 cursor-pointer hover:bg-gray-50">
+                       <input type="checkbox" onChange={(e) => { 
+                          const current = answers.joinReason || [];
+                          if(e.target.checked) handleInput('joinReason', [...current, opt]);
+                          else handleInput('joinReason', current.filter(x => x !== opt));
+                       }} className="accent-[#c5a059] w-5 h-5" /> 
+                       <span>{opt}</span>
+                    </label>
+                 ))}
+               </div>
+               <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Next</button>
+             </div>
+          );
+       }
+       if (step === 8) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Work Preference</h3></div>
+               {['Buyers', 'Sellers', 'Both'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('workPreference', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+             </div>
+          );
+       }
+       if (step === 9) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Final Details</h3></div>
+               <input placeholder="Have you worked on a team before? (Details)" onChange={(e) => handleInput('prevTeam', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
+               <input placeholder="How did you hear about us?" onChange={(e) => handleInput('source', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
+               <textarea placeholder="Any questions or links (LinkedIn/Resume)..." onChange={(e) => handleInput('finalNotes', e.target.value)} rows="3" className="w-full p-4 border border-gray-300 bg-transparent outline-none"></textarea>
+               <button onClick={handleSubmit} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Submit Application</button>
              </div>
           );
        }
     }
 
-    // --- SELLER FLOW ---
-    if (type === 'sell' || type === 'both') {
-       // Adjust steps for Sell flow
-       // If type is sell, steps start at 2. If both, steps start at 6 (after buy flow)
-       let effectiveStep = step; 
-       if (type === 'sell') effectiveStep = step; 
-       if (type === 'both') effectiveStep = step - 4; // Shift logic for both
-
-       if (effectiveStep === 2) {
+    // --- BUY/SELL LOGIC (One Question Per Step) ---
+    // Start step for BUY/SELL/BOTH is 3 (after contact info)
+    
+    // BUYER QUESTIONS
+    if (type === 'buy' || type === 'both') {
+       // Adjust step index for Both flow to ensure sequential
+       let s = step;
+       
+       if (s === 3) {
           return (
              <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0b2b20]">{type === 'both' ? 'Selling Side' : 'Property Address'}</h3>
-                </div>
-                <input placeholder="Property Address" onChange={(e) => handleInput('sellAddress', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Timeline</h3></div>
+               {['Ready Now (0-30 days)', '1-3 Months', '3-6 Months', '6+ Months'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('buyTimeline', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
              </div>
           );
        }
-       if (effectiveStep === 3) {
+       if (s === 4) {
           return (
              <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0b2b20]">Property Details</h3>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                   <input placeholder="Approx Sq Ft" onChange={(e) => handleInput('sellSqFt', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                   <input placeholder="Year Built" onChange={(e) => handleInput('sellYear', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                </div>
-                <input placeholder="Bedrooms / Bathrooms" onChange={(e) => handleInput('sellBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors">Next</button>
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Location</h3></div>
+               <input placeholder="Preferred Cities, Neighborhoods, Counties..." onChange={(e) => handleInput('buyLocation', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Next</button>
              </div>
           );
        }
-       if (effectiveStep === 4) {
+       if (s === 5) {
           return (
              <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0b2b20]/50 hover:text-[#0b2b20]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0b2b20]">Timeline & Motivation</h3>
-                </div>
-                <select onChange={(e) => handleInput('sellTimeline', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4">
-                   <option value="">Sell By?</option>
-                   <option>ASAP</option>
-                   <option>Within 30 Days</option>
-                   <option>1-3 Months</option>
-                   <option>6+ Months</option>
-                </select>
-                <select onChange={(e) => handleInput('sellReason', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none">
-                   <option value="">Main Reason?</option>
-                   <option>Upsizing</option>
-                   <option>Downsizing</option>
-                   <option>Relocation</option>
-                   <option>Financial</option>
-                   <option>Life Event</option>
-                </select>
-                <button onClick={() => setStep(100)} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors mt-4">Review & Submit</button>
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Price Range</h3></div>
+               {['Under $400k', '$400k - $600k', '$600k - $800k', '$800k - $1M', '$1M+'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('buyPrice', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+             </div>
+          );
+       }
+       if (s === 6) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Property Type</h3></div>
+               {['Single-Family', 'Condo/Townhome', 'Multi-Family', 'Land', 'Other'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('buyType', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+             </div>
+          );
+       }
+       if (s === 7) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Bed/Bath Count</h3></div>
+               <input placeholder="e.g. 3 Bed / 2 Bath" onChange={(e) => handleInput('buyBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Next</button>
+             </div>
+          );
+       }
+       if (s === 8) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Mortgage Status</h3></div>
+               {['Yes, Pre-Approved', 'No, planning to', 'Paying Cash', 'Not yet'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('buyMortgage', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+             </div>
+          );
+       }
+       if (s === 9) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Sell First?</h3></div>
+               <p>Do you have a home to sell before buying?</p>
+               <button onClick={() => { handleInput('sellFirst', 'Yes'); type === 'both' ? nextStep() : setStep(100); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">Yes</button>
+               <button onClick={() => { handleInput('sellFirst', 'No'); type === 'both' ? nextStep() : setStep(100); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">No</button>
              </div>
           );
        }
     }
 
-    // --- FINAL SUBMISSION SCREEN ---
+    // SELLER QUESTIONS (Adjust steps based on flow)
+    if (type === 'sell' || (type === 'both' && step >= 10)) {
+       let s = step;
+       if (type === 'sell') s = step + 7; // Align step index with buy flow for simpler rendering logic
+
+       if (s === 10) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Property Address</h3></div>
+               <input placeholder="Street Address, City, Zip" onChange={(e) => handleInput('sellAddress', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Next</button>
+             </div>
+          );
+       }
+       if (s === 11) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Property Type</h3></div>
+               {['Single-Family', 'Condo/Townhome', 'Multi-Family', 'Land', 'Other'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('sellType', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+             </div>
+          );
+       }
+       if (s === 12) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Property Stats</h3></div>
+               <input placeholder="Approx Sq Footage" onChange={(e) => handleInput('sellSqFt', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
+               <input placeholder="Bedrooms / Bathrooms" onChange={(e) => handleInput('sellBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
+               <input placeholder="Approx Year Built" onChange={(e) => handleInput('sellYear', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               <button onClick={nextStep} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Next</button>
+             </div>
+          );
+       }
+       if (s === 13) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Selling Timeline</h3></div>
+               {['ASAP', 'Within 30 Days', '1-3 Months', '3-6 Months', '6+ Months'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('sellTimeline', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+             </div>
+          );
+       }
+       if (s === 14) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Reason for Selling</h3></div>
+               {['Relocation', 'Upsizing', 'Downsizing', 'Financial', 'Life Event', 'Investment'].map(opt => (
+                  <button key={opt} onClick={() => { handleInput('sellReason', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">{opt}</button>
+               ))}
+             </div>
+          );
+       }
+       if (s === 15) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Buy Next?</h3></div>
+               <p>Do you plan to buy another home after selling?</p>
+               <button onClick={() => { handleInput('buyAfter', 'Yes'); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">Yes</button>
+               <button onClick={() => { handleInput('buyAfter', 'No'); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">No</button>
+               <button onClick={() => { handleInput('buyAfter', 'Not Sure'); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#c5a059] text-left">Not Sure</button>
+             </div>
+          );
+       }
+       if (s === 16) {
+          return (
+             <div className="space-y-6 animate-in slide-in-from-right duration-300">
+               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Updates</h3></div>
+               <input placeholder="Any recent updates? (Roof, HVAC, Kitchen...)" onChange={(e) => handleInput('sellUpdates', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
+               <button onClick={() => setStep(100)} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Review & Submit</button>
+             </div>
+          );
+       }
+    }
+
+    // --- FINAL STEP 100: ADDITIONAL NOTES ---
     if (step === 100) {
        return (
          <div className="space-y-6 animate-in slide-in-from-right duration-300">
@@ -930,11 +967,11 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
           <X size={28} />
         </button>
         
-        {/* Progress Indicator */}
+        {/* Progress Bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
            <div 
              className="h-full bg-[#c5a059] transition-all duration-500 ease-out" 
-             style={{ width: `${(step / 6) * 100}%` }} // Simplified progress for demo
+             style={{ width: `${(step / 16) * 100}%` }} 
            ></div>
         </div>
 
