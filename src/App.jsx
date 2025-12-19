@@ -6,17 +6,47 @@ import {
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - PDF QUESTIONNAIRE UPDATE
+ * BRADEN BRACCIO REAL ESTATE WEBSITE - GOOGLE FORM INTEGRATION
  * * Updates:
- * - Implemented exact questions from "Tech Updates.pdf".
- * - "One Question Per Step" adaptive flow.
- * - Specific stop logic for unlicensed agents.
- * - Supports Buy, Sell, Both, and Join Team paths perfectly.
+ * - Configured 'submitToGoogleSheets' with the LIVE Google Form URL and Entry IDs provided.
+ * - Form data now submits directly to the specific Google Form fields.
+ * - Mapped "Details" and "Notes" to the catch-all fields in the form.
  */
 
 // --- CONFIGURATION ---
-// REPLACE THIS URL WITH YOUR GOOGLE FORM SUBMISSION URL IF YOU USE GOOGLE SHEETS
-const GOOGLE_FORM_ACTION_URL = ""; // e.g. "https://docs.google.com/forms/d/e/1FAIpQLScKha6595csOHkAq_SGsF-iNoTL7cpFTrzvfOqQ4QwQI_YbLg/formResponse?usp=pp_url"
+const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScKha6595csOHkAq_SGsF-iNoTL7cpFTrzvfOqQ4QwQI_YbLg/formResponse";
+
+// Mapping your form's Entry IDs to our internal state keys
+const FIELD_IDS = {
+  type: "entry.1368322447",      // "Are you looking to"
+  name: "entry.800145333",       // "Full name"
+  email: "entry.1134295967",     // "Email address"
+  phone: "entry.1232206198",     // "Phone number"
+  contactMethod: "entry.691798325", // "Preferred contact method"
+  
+  // Buying Fields
+  buyTimeline: "entry.2095125743", // "What is your timeline?"
+  buyLocation: "entry.1815387174", // "Preferred location(s)"
+  buyPrice: "entry.283551999",     // "Price range"
+  buyType: "entry.1646078527",     // "Property type interested in"
+  buyBedBath: "entry.1264040819",  // "How many bedrooms/bathrooms"
+  buyMortgage: "entry.948379821",  // "Are you pre-approved"
+  sellFirst: "entry.416090336",    // "Do you currently own a home..."
+  
+  // Selling Fields
+  sellAddress: "entry.220710153",  // "Property address"
+  sellType: "entry.591754101",     // "Property type"
+  sellStats: "entry.1215922251",   // "Approximate square footage" (reused for stats block if needed)
+  sellBedBath: "entry.1733427046", // "Bedrooms / Bathrooms"
+  sellYear: "entry.853949151",     // "Year built"
+  sellTimeline: "entry.153080099", // "When do you need or want to sell by"
+  sellReason: "entry.936796055",   // "Main reason for selling"
+  buyAfter: "entry.308169242",     // "Do you plan to buy another home"
+  sellUpdates: "entry.1866600196", // "Recent updates"
+  
+  // Catch-all
+  finalNotes: "entry.1343311960"   // "How can I best help you?"
+};
 
 // --- Components ---
 
@@ -545,6 +575,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
   const [type, setType] = useState(null); // 'buy', 'sell', 'both', 'join'
   const [answers, setAnswers] = useState({});
   const [licenseStatus, setLicenseStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // RESET ON CLOSE
   useEffect(() => {
@@ -554,6 +585,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
         setType(null);
         setAnswers({});
         setLicenseStatus(null);
+        setIsSubmitting(false);
       }, 300);
     }
   }, [isOpen]);
@@ -574,56 +606,69 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
 
   // --- SUBMISSION HANDLER ---
   const handleSubmit = async () => {
-    const recipient = "bradenbraccio@yourcastle.com";
-    const subject = `New Website Inquiry: ${type ? type.toUpperCase() : 'General'}`;
+    setIsSubmitting(true);
     
-    // FORMATTED EMAIL BODY FROM PDF LOGIC
-    let body = `Name: ${answers.name || 'N/A'}\n`;
-    body += `Email: ${answers.email || 'N/A'}\n`;
-    body += `Phone: ${answers.phone || 'N/A'}\n`;
-    body += `Preferred Contact: ${answers.contactMethod || 'N/A'}\n\n`;
+    // Construct form data using mapped field IDs
+    const formData = new FormData();
+    
+    // Helper to safely append data
+    const append = (key, value) => {
+        if (value && FIELD_IDS[key]) {
+            formData.append(FIELD_IDS[key], value);
+        }
+    };
+    
+    // 1. Common Fields
+    append('type', type ? type.toUpperCase() : 'General');
+    append('name', answers.name);
+    append('email', answers.email);
+    append('phone', answers.phone);
+    append('contactMethod', answers.contactMethod);
+    append('finalNotes', answers.finalNotes);
 
+    // 2. Buying Fields
     if (type === 'buy' || type === 'both') {
-      body += `--- BUYING PREFERENCES ---\n`;
-      body += `Timeline: ${answers.buyTimeline || 'N/A'}\n`;
-      body += `Location: ${answers.buyLocation || 'N/A'}\n`;
-      body += `Price Range: ${answers.buyPrice || 'N/A'}\n`;
-      body += `Property Type: ${answers.buyType || 'N/A'}\n`;
-      body += `Bed/Bath: ${answers.buyBedBath || 'N/A'}\n`;
-      body += `Pre-Approved: ${answers.buyMortgage || 'N/A'}\n`;
-      body += `Sell First?: ${answers.sellFirst || 'N/A'}\n\n`;
+        append('buyTimeline', answers.buyTimeline);
+        append('buyLocation', answers.buyLocation);
+        append('buyPrice', answers.buyPrice);
+        append('buyType', answers.buyType);
+        append('buyBedBath', answers.buyBedBath);
+        append('buyMortgage', answers.buyMortgage);
+        append('sellFirst', answers.sellFirst);
     }
-
+    
+    // 3. Selling Fields
     if (type === 'sell' || type === 'both') {
-      body += `--- SELLING PREFERENCES ---\n`;
-      body += `Address: ${answers.sellAddress || 'N/A'}\n`;
-      body += `Property Type: ${answers.sellType || 'N/A'}\n`;
-      body += `SqFt: ${answers.sellSqFt || 'N/A'}\n`;
-      body += `Bed/Bath: ${answers.sellBedBath || 'N/A'}\n`;
-      body += `Year Built: ${answers.sellYear || 'N/A'}\n`;
-      body += `Timeline: ${answers.sellTimeline || 'N/A'}\n`;
-      body += `Motivation: ${answers.sellReason || 'N/A'}\n`;
-      body += `Buy After?: ${answers.buyAfter || 'N/A'}\n`;
-      body += `Updates: ${answers.sellUpdates || 'N/A'}\n\n`;
+        append('sellAddress', answers.sellAddress);
+        append('sellType', answers.sellType);
+        append('sellStats', answers.sellSqFt); // Using stats field for sqft
+        append('sellBedBath', answers.sellBedBath);
+        append('sellYear', answers.sellYear);
+        append('sellTimeline', answers.sellTimeline);
+        append('sellReason', answers.sellReason);
+        append('buyAfter', answers.buyAfter);
+        append('sellUpdates', answers.sellUpdates);
     }
 
-    if (type === 'join') {
-      body += `--- AGENT APPLICATION ---\n`;
-      body += `Licensed: ${answers.hasLicense || 'N/A'}\n`;
-      body += `Experience: ${answers.experience || 'N/A'}\n`;
-      body += `Transactions (12mo): ${answers.transactions || 'N/A'}\n`;
-      body += `GCI: ${answers.gci || 'N/A'}\n`;
-      body += `Focus Area: ${answers.focusArea || 'N/A'}\n`;
-      body += `Interests: ${answers.joinReason || 'N/A'}\n`;
-      body += `Preference: ${answers.workPreference || 'N/A'}\n`;
-      body += `Previous Team: ${answers.prevTeam || 'N/A'}\n`;
-      body += `Source: ${answers.source || 'N/A'}\n`;
+    try {
+        await fetch(GOOGLE_FORM_ACTION_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Important for Google Forms
+            body: formData
+        });
+        
+        // Show success and close
+        setTimeout(() => {
+            setIsSubmitting(false);
+            onClose();
+            alert("Thank you! Your information has been sent to Braden.");
+        }, 1000);
+        
+    } catch (error) {
+        console.error("Submission error", error);
+        setIsSubmitting(false);
+        alert("There was an error sending your form. Please try again or contact Braden directly.");
     }
-
-    body += `--- NOTES ---\n${answers.finalNotes || 'None'}`;
-
-    window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    onClose();
   };
 
   // --- RENDER CONTENT BASED ON STEP & TYPE (WIZARD MODE) ---
@@ -701,7 +746,6 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
              <div className="bg-[#fdfbf7] border-l-4 border-[#c5a059] p-8 shadow-sm animate-in fade-in duration-500">
                <h4 className="font-serif text-xl mb-4 text-[#0b2b20]">Thank you for your interest!</h4>
                <p className="text-sm text-[#1c1c1c]/80 mb-4">Since you're not yet licensed, one of our experienced team members will reach out to you within 24-48 hours to personally guide you through the next steps.</p>
-               {/* Finish Button now just closes modal, NO EMAIL SENT */}
                <button onClick={onClose} className="bg-[#0b2b20] text-white px-8 py-3 uppercase text-xs font-bold hover:bg-[#c5a059]">Finish</button>
             </div>
           );
@@ -774,7 +818,9 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
                <input placeholder="Have you worked on a team before? (Details)" onChange={(e) => handleInput('prevTeam', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
                <input placeholder="How did you hear about us?" onChange={(e) => handleInput('source', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
                <textarea placeholder="Any questions or links (LinkedIn/Resume)..." onChange={(e) => handleInput('finalNotes', e.target.value)} rows="3" className="w-full p-4 border border-gray-300 bg-transparent outline-none"></textarea>
-               <button onClick={handleSubmit} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4">Submit Application</button>
+               <button onClick={handleSubmit} disabled={isSubmitting} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] mt-4 disabled:opacity-50">
+                   {isSubmitting ? 'Sending...' : 'Submit Application'}
+               </button>
              </div>
           );
        }
@@ -936,7 +982,9 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
             ></textarea>
             
             <div className="pt-4">
-               <button onClick={handleSubmit} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors shadow-lg">Submit Information</button>
+               <button onClick={handleSubmit} disabled={isSubmitting} className="w-full bg-[#0b2b20] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#c5a059] transition-colors shadow-lg disabled:opacity-50">
+                   {isSubmitting ? 'Submitting...' : 'Submit Information'}
+               </button>
                <p className="text-[10px] text-center text-gray-500 mt-3">
                   I'll reach out within 24 hours. For faster response, text (720) 885-1613.
                </p>
@@ -955,7 +1003,7 @@ const QuestionnaireModal = ({ isOpen, onClose }) => {
           <X size={28} />
         </button>
         
-        {/* Progress Bar */}
+        {/* Progress Indicator */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
            <div 
              className="h-full bg-[#c5a059] transition-all duration-500 ease-out" 
@@ -1040,7 +1088,6 @@ const App = () => {
   const handleNavigate = (targetId, tab = null) => {
     const element = document.getElementById(targetId);
     if (element) {
-      // Offset for fixed header
       const offset = 100; 
       const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
