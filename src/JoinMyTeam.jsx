@@ -3,7 +3,8 @@ import { ArrowRight, Award, Users, TrendingUp, Compass } from 'lucide-react';
 
 /**
  * JoinMyTeam — recruiting section for The Aston Group.
- * Content pulled from the Team Proposal + Agent Handbook in Drive.
+ * General, welcoming description. No commission specifics,
+ * no agent-tier segmentation.
  */
 const JoinMyTeam = ({ onOpenQuestionnaire }) => {
   const pillars = [
@@ -14,8 +15,8 @@ const JoinMyTeam = ({ onOpenQuestionnaire }) => {
     },
     {
       icon: TrendingUp,
-      title: 'Splits That Compound',
-      body: "Designed to reward production, not subsidize it. Seasoned agents start on an 80/20 split. New agents ramp on a structured probationary plan with real lead flow and mentorship. Caps reset every January.",
+      title: 'Built to Grow',
+      body: "A boutique team designed for sustained production, not burnout. Predictable systems, weekly accountability, and the freedom to focus on what actually moves your business forward.",
     },
     {
       icon: Users,
@@ -38,7 +39,6 @@ const JoinMyTeam = ({ onOpenQuestionnaire }) => {
 
   return (
     <section id="join" className="py-24 md:py-32 bg-[#fafaf8] text-[#0a0a0a] relative overflow-hidden">
-      {/* Subtle gold accent line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-[#a8854c]"></div>
 
       <div className="max-w-[1300px] mx-auto px-6">
@@ -61,34 +61,8 @@ const JoinMyTeam = ({ onOpenQuestionnaire }) => {
             The Vision
           </span>
           <p className="font-serif text-xl md:text-2xl text-[#0a0a0a]/85 leading-[1.45]">
-            A high-touch, training-driven boutique team where seasoned agents lead with leverage and new agents ramp with mentorship. We're redefining excellence in Colorado real estate — and we're hiring with intention.
+            A high-touch, training-driven boutique team where every agent has the support, systems, and mentorship to do their best work. We're redefining excellence in Colorado real estate — and we're hiring with intention.
           </p>
-        </div>
-
-        {/* Who this is for */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-20 md:mb-28">
-          <div>
-            <span className="block text-[10px] tracking-[0.32em] uppercase font-medium text-[#a8854c] mb-3">For</span>
-            <h3 className="font-serif text-3xl md:text-4xl font-light italic mb-4">Seasoned Agents</h3>
-            <div className="w-10 h-px bg-[#0a0a0a]/30 mb-5"></div>
-            <p className="text-[#0a0a0a]/75 leading-relaxed mb-4">
-              <strong className="font-medium">1.5+ years licensed · 5+ closings per year.</strong> You're looking for leverage, leadership opportunities, and a structured environment that lets you focus on the highest-leverage activity in your business.
-            </p>
-            <p className="text-[#0a0a0a]/75 leading-relaxed">
-              Premium client experience, disciplined lead generation, and a team behind every conversation. 80/20 split, immediate.
-            </p>
-          </div>
-          <div>
-            <span className="block text-[10px] tracking-[0.32em] uppercase font-medium text-[#a8854c] mb-3">Also For</span>
-            <h3 className="font-serif text-3xl md:text-4xl font-light italic mb-4">New Agents Welcome</h3>
-            <div className="w-10 h-px bg-[#0a0a0a]/30 mb-5"></div>
-            <p className="text-[#0a0a0a]/75 leading-relaxed mb-4">
-              <strong className="font-medium">Structured ramp · Authentic lead flow.</strong> Starting a real estate career without proper guidance is brutal. We pair you with a Mentor of Record, hand you a 60-day onboarding curriculum, and shadow your first three transactions.
-            </p>
-            <p className="text-[#0a0a0a]/75 leading-relaxed">
-              Confidence in contracts, scripts, listing presentations, and the chair across the table. You will never sign something you don't understand.
-            </p>
-          </div>
         </div>
 
         {/* Four pillars */}
