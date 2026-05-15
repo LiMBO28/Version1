@@ -1,0 +1,81 @@
+{
+  "_meta": {
+    "lastUpdated": "2026-05-15",
+    "source": "Curated luxury Colorado listings — Unsplash placeholders. Replace with your own listing photos or wire to an IDX feed when ready.",
+    "instructions": "Edit this file to swap photos. Each listing needs: image (URL), address, city, price, beds, baths, sqft, link (where 'View Listing' goes)."
+  },
+  "listings": [
+    {
+      "id": "1",
+      "image": "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=2400",
+      "address": "Cherry Hills Village Estate",
+      "city": "Cherry Hills Village, CO",
+      "price": "$4,850,000",
+      "beds": 6,
+      "baths": 7,
+      "sqft": "8,420",
+      "tagline": "Equestrian estate · 2.5 acres",
+      "link": "https://www.recolorado.com/search/?status=Active&list_price_min=3000000&city=Cherry+Hills+Village"
+    },
+    {
+      "id": "2",
+      "image": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2400",
+      "address": "Mountain Modern Retreat",
+      "city": "Aspen, CO",
+      "price": "$12,750,000",
+      "beds": 5,
+      "baths": 6,
+      "sqft": "7,100",
+      "tagline": "Ski-in · Roaring Fork Valley",
+      "link": "https://www.recolorado.com/search/?status=Active&list_price_min=5000000&city=Aspen"
+    },
+    {
+      "id": "3",
+      "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2400",
+      "address": "Boulder Foothills Contemporary",
+      "city": "Boulder, CO",
+      "price": "$3,295,000",
+      "beds": 5,
+      "baths": 5,
+      "sqft": "5,840",
+      "tagline": "Flatiron views · Walls of glass",
+      "link": "https://www.recolorado.com/search/?status=Active&list_price_min=2500000&city=Boulder"
+    },
+    {
+      "id": "4",
+      "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2400",
+      "address": "Vail Valley Alpine Estate",
+      "city": "Vail, CO",
+      "price": "$8,995,000",
+      "beds": 6,
+      "baths": 7,
+      "sqft": "9,200",
+      "tagline": "Ski access · Vail Village",
+      "link": "https://www.recolorado.com/search/?status=Active&list_price_min=5000000&city=Vail"
+    },
+    {
+      "id": "5",
+      "image": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=2400",
+      "address": "Castle Pines Master Estate",
+      "city": "Castle Pines, CO",
+      "price": "$2,795,000",
+      "beds": 5,
+      "baths": 6,
+      "sqft": "6,200",
+      "tagline": "Golf-front · Mountain views",
+      "link": "https://www.recolorado.com/search/?status=Active&list_price_min=2000000&city=Castle+Pines"
+    },
+    {
+      "id": "6",
+      "image": "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=2400",
+      "address": "Telluride Mountain Residence",
+      "city": "Telluride, CO",
+      "price": "$6,450,000",
+      "beds": 4,
+      "baths": 5,
+      "sqft": "5,100",
+      "tagline": "Mountain Village · Box Canyon views",
+      "link": "https://www.recolorado.com/search/?status=Active&list_price_min=3000000&city=Telluride"
+    }
+  ]
+}
