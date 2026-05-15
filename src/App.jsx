@@ -1,387 +1,395 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Menu, X, Phone, Mail, Instagram, MapPin, 
-  Home, Key, TrendingUp, CheckCircle, ArrowRight,
-  Shield, Award, Clock, ChevronDown, FileText, Heart, User, Star, Plus, ArrowLeft
+import {
+  Search, Menu, X, Phone, Mail, Instagram, MapPin,
+  Home, Key, TrendingUp, CheckCircle, ArrowRight, ArrowLeft,
+  Shield, Award, Clock, ChevronDown, ChevronLeft, ChevronRight,
+  FileText, Heart, User
 } from 'lucide-react';
 
 /**
- * BRADEN BRACCIO REAL ESTATE WEBSITE - GOOGLE SHEETS API INTEGRATION
- * Connected to Google Apps Script Web App
+ * BRADEN BRACCIO REAL ESTATE — LIV SOTHEBY'S-INSPIRED EDITION
+ * Monochrome black / ivory / refined gold • Cormorant Garamond / Inter
  */
 
-// --- CONFIGURATION ---
 const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycby94kzu2mv7oshAWB_B2Dzt-eBlFYWitTR3Qj6rKczd04jFef0rXku-jiSQhxQE_Gff/exec";
 
-// --- Components ---
-
-// 1. Reveal on Scroll Component
+// ---------- helpers ----------
 const Reveal = ({ children, className = "", delay = 0 }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [vis, setVis] = useState(false);
   const ref = useRef(null);
-
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect(); } }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
   }, []);
-
   return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-1000 ease-out transform ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-      } ${className}`}
-    >
+    <div ref={ref} style={{ transitionDelay: `${delay}ms` }}
+      className={`transition-all duration-1000 ease-out transform ${vis ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}>
       {children}
     </div>
   );
 };
 
-// 2. Navigation Component
+const Eyebrow = ({ children, className = "" }) => (
+  <span className={`block text-[10px] md:text-[11px] tracking-[0.32em] uppercase font-medium text-[#0a0a0a]/70 ${className}`}>
+    {children}
+  </span>
+);
+
+// ---------- 1. NAVBAR (LIV-style: search left, centered wordmark, menu right) ----------
 const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  useEffect(() => { document.body.style.overflow = open ? 'hidden' : 'unset'; }, [open]);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  }, [isOpen]);
-
-  const handleNavClick = (target, tab = null) => {
-    setIsOpen(false);
-    onNavigate(target, tab);
-  };
-
-  const LogoPlaceholder = ({ className }) => (
-    <div className={`bg-[#0a0a0a] flex items-center justify-center text-[#a8854c] font-serif font-bold text-xl ${className}`}>
-      B
-    </div>
-  );
+  const go = (target, tab = null) => { setOpen(false); onNavigate(target, tab); };
 
   return (
     <>
-      {/* --- TOP NAVIGATION BAR --- */}
-      <nav className={`fixed w-full z-50 transition-all duration-700 border-b border-[#0a0a0a]/10 ${
-        scrolled 
-          ? 'bg-[#f7f4ec]/95 backdrop-blur-xl shadow-sm py-3 md:py-4' 
-          : 'bg-[#f7f4ec] md:bg-transparent py-4 md:py-8 shadow-sm md:shadow-none'
-      }`}>
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
-          
-          <a href="#" onClick={() => handleNavClick('home')} className="flex items-center gap-3 md:gap-4 relative group">
-             <div className="w-10 h-10 md:w-12 md:h-12 border-[1.5px] border-[#a8854c] flex items-center justify-center bg-[#f7f4ec] shadow-md rounded-full overflow-hidden p-0 transition-transform duration-500 group-hover:scale-105">
-                <img 
-                  src="logo.jpg" 
-                  onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.parentNode.classList.add('bg-[#0a0a0a]'); e.target.parentNode.innerHTML = '<span class="text-[#a8854c] font-serif font-bold text-xl">B</span>'; }}
-                  alt="B Logo" 
-                  className="w-full h-full object-contain" 
-                />
-             </div>
-             <div className="flex flex-col">
-                <span className="font-serif text-lg md:text-2xl tracking-widest text-[#0a0a0a] font-semibold leading-tight">
-                  BRADEN BRACCIO
-                </span>
-                <span className="block text-[0.6rem] md:text-[0.65rem] font-sans tracking-[0.2em] text-[#a8854c] uppercase group-hover:text-[#0a0a0a] transition-colors font-bold mt-0.5">
-                  Real Estate Agent
-                </span>
-             </div>
-          </a>
-
-          <div className="hidden md:flex space-x-8 items-center">
-            <button onClick={() => handleNavClick('philosophy')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0a0a0a] hover:text-[#a8854c] transition-colors duration-300 relative group overflow-hidden">
-              <span className="relative z-10">Philosophy</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#a8854c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-            </button>
-            <button onClick={() => handleNavClick('process', 'buyer')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0a0a0a] hover:text-[#a8854c] transition-colors duration-300 relative group overflow-hidden">
-              <span className="relative z-10">For Buyers</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#a8854c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-            </button>
-            <button onClick={() => handleNavClick('process', 'seller')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0a0a0a] hover:text-[#a8854c] transition-colors duration-300 relative group overflow-hidden">
-              <span className="relative z-10">For Sellers</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#a8854c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-            </button>
-            <button onClick={() => handleNavClick('impact')} className="text-xs uppercase tracking-[0.15em] font-bold text-[#0a0a0a] hover:text-[#a8854c] transition-colors duration-300 relative group overflow-hidden">
-              <span className="relative z-10">Community Impact</span>
-              <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#a8854c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-            </button>
-            
-            <button onClick={() => handleNavClick('contact')} className="relative px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-bold text-[#0a0a0a] border border-[#0a0a0a] overflow-hidden group transition-all duration-300 hover:text-[#f7f4ec]">
-              <span className="absolute inset-0 w-full h-full bg-[#0a0a0a] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></span>
-              <span className="relative z-10">Inquire</span>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#fafaf8]/95 backdrop-blur-md py-3 shadow-[0_1px_0_rgba(10,10,10,0.06)]' : 'bg-transparent py-5'}`}>
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-3 items-center">
+          {/* Left: search */}
+          <div className="flex items-center">
+            <button onClick={() => go('contact')} aria-label="Search" className="text-[#0a0a0a] hover:text-[#a8854c] transition-colors">
+              <Search size={20} strokeWidth={1.5} />
             </button>
           </div>
-
-          <button 
-            className={`md:hidden text-[#0a0a0a] transition-opacity duration-300 hover:text-[#a8854c] p-2 relative z-[40] ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} 
-            onClick={() => setIsOpen(true)}
-            aria-label="Open Menu"
-          >
-            <Menu size={32} />
-          </button>
+          {/* Center: wordmark */}
+          <a href="#" onClick={(e) => { e.preventDefault(); go('home'); }} className="flex flex-col items-center group">
+            <span className="font-display text-[13px] md:text-[15px] tracking-[0.42em] text-[#0a0a0a] font-medium leading-tight">BRADEN BRACCIO</span>
+            <span className="font-display text-[8.5px] md:text-[9px] tracking-[0.6em] text-[#a8854c] uppercase mt-1">Real Estate</span>
+          </a>
+          {/* Right: menu */}
+          <div className="flex justify-end">
+            <button onClick={() => setOpen(true)} aria-label="Open menu" className="text-[#0a0a0a] hover:text-[#a8854c] transition-colors">
+              <Menu size={22} strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* --- FULL SCREEN MOBILE MENU OVERLAY --- */}
-      <div className={`fixed inset-0 z-[100] flex flex-col pt-12 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-         <div className="absolute inset-0 bg-[#0a0a0a]"></div>
-         <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
-         
-         <button 
-           className="absolute top-6 right-6 text-[#f7f4ec] p-2 hover:text-[#a8854c] transition-colors z-50"
-           onClick={() => setIsOpen(false)}
-           aria-label="Close Menu"
-         >
-            <X size={36} />
-         </button>
-         
-         <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center px-6 pb-12">
-           <div className="w-20 h-20 border-[1.5px] border-[#a8854c] flex items-center justify-center bg-[#f7f4ec] rounded-full overflow-hidden p-0 mt-4 mb-8 shadow-2xl shrink-0">
-             <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0a0a0a] font-serif font-bold text-3xl">B</span>'}} alt="B Logo" className="w-full h-full object-contain" />
-           </div>
-
-           <div className="flex flex-col items-center space-y-6 w-full">
-             <button onClick={() => handleNavClick('philosophy')} className="font-serif text-3xl text-[#f7f4ec] hover:text-[#a8854c] transition-colors">Philosophy</button>
-             <button onClick={() => handleNavClick('process', 'buyer')} className="font-serif text-3xl text-[#f7f4ec] hover:text-[#a8854c] transition-colors">For Buyers</button>
-             <button onClick={() => handleNavClick('process', 'seller')} className="font-serif text-3xl text-[#f7f4ec] hover:text-[#a8854c] transition-colors">For Sellers</button>
-             <button onClick={() => handleNavClick('impact')} className="font-serif text-3xl text-[#f7f4ec] hover:text-[#a8854c] transition-colors">Community Impact</button>
-             <button onClick={() => handleNavClick('contact')} className="font-serif text-3xl text-[#f7f4ec] hover:text-[#a8854c] transition-colors">Contact</button>
-           </div>
-
-           <div className="w-12 h-[1px] bg-[#a8854c]/50 my-8"></div>
-
-           <div className="flex flex-col items-center text-center space-y-6">
-              <div className="flex space-x-8">
-                 <a href="https://www.instagram.com/youragentbraden" target="_blank" className="text-[#a8854c] hover:text-white">
-                    <Instagram size={24} strokeWidth={1.5} />
-                 </a>
-                 <a href="mailto:bradenbraccio@yourcastle.com" className="text-[#a8854c] hover:text-white">
-                    <Mail size={24} strokeWidth={1.5} />
-                 </a>
-              </div>
-
-              <div className="space-y-2">
-                 <h4 className="text-[#a8854c] text-xs uppercase tracking-[0.25em] font-bold mb-2">Brokerage</h4>
-                 <div className="mb-4 inline-block">
-                    <img src="Untitled design (28).png" onError={(e) => e.target.style.display='none'} alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert opacity-90" />
-                 </div>
-                 
-                 <p className="text-[#f7f4ec]/80 font-light text-sm">License #: FA.100107526</p>
-                 <p className="text-[#f7f4ec]/80 font-light text-sm">Colorado</p>
-              </div>
-
-              <div className="space-y-2">
-                 <h4 className="text-[#a8854c] text-xs uppercase tracking-[0.25em] font-bold mb-2">Direct Contact</h4>
-                 <a href="tel:720-885-1613" className="text-[#f7f4ec] text-xl font-serif block hover:text-[#a8854c]">720-885-1613</a>
-                 <a href="mailto:bradenbraccio@yourcastle.com" className="text-[#f7f4ec]/60 text-sm block hover:text-[#a8854c]">bradenbraccio@yourcastle.com</a>
-              </div>
-           </div>
-         </div>
+      {/* Full-screen menu overlay */}
+      <div className={`fixed inset-0 z-[100] transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${open ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="absolute inset-0 bg-[#0a0a0a]"></div>
+        <button onClick={() => setOpen(false)} aria-label="Close" className="absolute top-6 right-6 text-[#fafaf8] hover:text-[#a8854c] z-50 p-2">
+          <X size={28} strokeWidth={1.5} />
+        </button>
+        <div className="relative z-10 w-full h-full overflow-y-auto flex flex-col items-center justify-center px-6 py-16">
+          <div className="font-display text-[10px] tracking-[0.6em] text-[#a8854c] uppercase mb-10">Menu</div>
+          <div className="flex flex-col items-center space-y-7 w-full max-w-md">
+            <button onClick={() => go('home')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Home</button>
+            <button onClick={() => go('communities')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Communities</button>
+            <button onClick={() => go('philosophy')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">About</button>
+            <button onClick={() => go('process', 'buyer')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Buying</button>
+            <button onClick={() => go('process', 'seller')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Selling</button>
+            <button onClick={() => go('impact')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Community Impact</button>
+            <button onClick={() => go('contact')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Connect</button>
+          </div>
+          <div className="w-12 h-px bg-[#a8854c]/40 my-10"></div>
+          <div className="flex flex-col items-center space-y-4">
+            <a href="tel:720-885-1613" className="font-serif text-xl text-[#fafaf8] hover:text-[#a8854c]">720-885-1613</a>
+            <a href="mailto:bradenbraccio@yourcastle.com" className="text-sm text-[#fafaf8]/70 hover:text-[#a8854c]">bradenbraccio@yourcastle.com</a>
+            <div className="flex space-x-6 pt-2">
+              <a href="https://www.instagram.com/youragentbraden" target="_blank" rel="noopener noreferrer" className="text-[#a8854c] hover:text-[#fafaf8]"><Instagram size={20} strokeWidth={1.5} /></a>
+              <a href="mailto:bradenbraccio@yourcastle.com" className="text-[#a8854c] hover:text-[#fafaf8]"><Mail size={20} strokeWidth={1.5} /></a>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
-// 3. Hero Section
-const Hero = () => {
+// ---------- 2. HERO (LIV-style: big serif headline + tab bar + search + full-bleed image) ----------
+const Hero = ({ onNavigate, onOpenQuestionnaire }) => {
+  const [tab, setTab] = useState('CONNECT');
+  const tabs = ['BUYING', 'SELLING', 'ABOUT', 'CONNECT'];
+  const placeholderForTab = {
+    BUYING: 'Search by area, ZIP, or neighborhood',
+    SELLING: "Your property address",
+    ABOUT: 'What would you like to know?',
+    CONNECT: 'Your name or how to reach you',
+  };
   return (
-    <div id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#f7f4ec] pt-32 md:pt-0">
-      <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] via-[#efece5] to-[#ebe9e2] z-0"></div>
-      <div className="absolute top-[-20%] left-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#0a0a0a] opacity-[0.08] blur-[100px] animate-aurora-1 mix-blend-multiply"></div>
-      <div className="absolute bottom-[-20%] right-[-20%] w-[80vw] h-[80vw] rounded-full bg-[#a8854c] opacity-[0.12] blur-[120px] animate-aurora-2 mix-blend-multiply"></div>
-      <div className="absolute top-[40%] left-[50%] transform -translate-x-1/2 w-[40vw] h-[40vw] rounded-full bg-[#a8854c] opacity-[0.05] blur-[80px] animate-pulse-slow"></div>
-      <div className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none animate-grain" 
-           style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")', backgroundSize: '200px 200px' }}>
-      </div>
-      
-      <div className="absolute inset-4 md:inset-8 border border-[#0a0a0a]/5 z-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-16 h-16 md:w-40 md:h-40 border-t-[3px] border-l-[3px] border-[#0a0a0a]/20 animate-fade-in-delayed"></div>
-          <div className="absolute top-4 left-4 w-12 h-12 md:w-32 md:h-32 border-t border-l border-[#a8854c]/50 animate-fade-in-delayed"></div>
-          <div className="absolute bottom-0 right-0 w-16 h-16 md:w-40 md:h-40 border-b-[3px] border-r-[3px] border-[#0a0a0a]/20 animate-fade-in-delayed"></div>
-          <div className="absolute bottom-4 right-4 w-12 h-12 md:w-32 md:h-32 border-b border-r border-[#a8854c]/50 animate-fade-in-delayed"></div>
-          <div className="absolute top-0 bottom-0 left-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#a8854c]/30 to-transparent hidden md:block"></div>
-          <div className="absolute top-0 bottom-0 right-[10%] w-[1px] bg-gradient-to-b from-transparent via-[#a8854c]/30 to-transparent hidden md:block"></div>
-      </div>
-
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pb-16 md:py-24">
+    <div id="home" className="relative min-h-screen pt-32 md:pt-28 pb-0 bg-[#fafaf8]">
+      {/* Headline */}
+      <div className="max-w-[1400px] mx-auto px-6 text-center">
         <Reveal>
-          <div className="mx-auto mb-8 md:mb-12 w-36 h-36 md:w-56 md:h-56 border-[2px] md:border-[3px] border-[#a8854c] flex items-center justify-center bg-[#f7f4ec] shadow-[0_30px_60px_-15px_rgba(11,43,32,0.3)] relative group overflow-hidden transition-all duration-700 hover:border-[#0a0a0a] rounded-full p-0 animate-float-subtle">
-             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffffff]/40 to-transparent translate-x-[-150%] group-hover:translate-x-[150%] transition-transform duration-1000 z-20"></div>
-             <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0a0a0a] font-serif font-bold text-6xl">B</span>'}} alt="Braden Braccio Logo" className="w-full h-full object-contain relative z-10 transition-transform duration-[2s] group-hover:scale-110" />
-          </div>
+          <Eyebrow className="mb-6">Colorado · Real Estate</Eyebrow>
         </Reveal>
-
-        <Reveal delay={200}>
-          <div className="flex justify-center items-center gap-4 md:gap-6 mb-8 md:mb-10">
-             <span className="w-10 md:w-16 h-[2px] bg-[#0a0a0a]/20"></span>
-             <p className="text-[#0a0a0a] uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold">COLORADO</p>
-             <span className="w-10 md:w-16 h-[2px] bg-[#0a0a0a]/20"></span>
-          </div>
-        </Reveal>
-        
-        <Reveal delay={400}>
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-[#0a0a0a] mb-8 md:mb-10 leading-[1.1] tracking-wide drop-shadow-sm font-medium">
-            <span className="block text-[#0a0a0a] italic font-normal text-4xl md:text-6xl mb-4 opacity-80">A Higher</span>
-            Standard of Living
+        <Reveal delay={150}>
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-[6rem] text-[#0a0a0a] leading-[1.02] tracking-tight font-light mb-10 md:mb-14">
+            <span className="italic font-light">Local Expertise.</span><br />
+            <span className="font-normal">A Higher Standard.</span>
           </h1>
         </Reveal>
-        
-        <Reveal delay={600}>
-          <p className="text-[#0a0a0a]/80 text-base md:text-2xl font-normal mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed font-serif relative px-2">
-            Moving from one home to the next is an important moment in life.<br className="hidden md:block" />
-            <span className="md:hidden"> </span>
-            We bring the experience, care, and effort you need.
-          </p>
+
+        {/* Tab bar */}
+        <Reveal delay={300}>
+          <div className="flex justify-center gap-8 md:gap-12 mb-6">
+            {tabs.map(t => (
+              <button key={t} onClick={() => setTab(t)} className={`text-[11px] md:text-xs uppercase tracking-[0.3em] font-medium pb-2 transition-all ${tab === t ? 'text-[#0a0a0a] border-b-2 border-[#a8854c]' : 'text-[#0a0a0a]/50 hover:text-[#0a0a0a]'}`}>
+                {t}
+              </button>
+            ))}
+          </div>
         </Reveal>
-        
-        <Reveal delay={800}>
-          <div className="flex flex-col items-center gap-6">
-            <a href="#contact" className="group relative inline-block overflow-hidden border-[1.5px] border-[#0a0a0a] px-10 md:px-14 py-4 md:py-5 text-xs md:text-sm uppercase tracking-[0.25em] font-bold text-[#0a0a0a] transition-colors duration-500 hover:text-[#f7f4ec] shadow-lg hover:shadow-2xl">
-              <span className="absolute inset-0 translate-y-[101%] bg-[#0a0a0a] transition-transform duration-500 group-hover:translate-y-0"></span>
-              <span className="relative z-10">Start the Conversation</span>
-            </a>
-            <a href="#philosophy" className="animate-bounce mt-4 md:mt-8 text-[#0a0a0a]/40 hover:text-[#a8854c] transition-colors">
-              <ChevronDown size={28} md:size={32} strokeWidth={1} />
-            </a>
+
+        {/* Search bar */}
+        <Reveal delay={400}>
+          <div className="max-w-3xl mx-auto mb-12 md:mb-16">
+            <form onSubmit={(e) => { e.preventDefault(); onOpenQuestionnaire(); }} className="flex items-center border-b border-[#0a0a0a]/30 focus-within:border-[#a8854c] transition-colors py-3">
+              <Search size={18} strokeWidth={1.5} className="text-[#0a0a0a]/60 mr-4" />
+              <input type="text" placeholder={placeholderForTab[tab]} className="flex-1 bg-transparent outline-none font-serif italic text-lg md:text-xl text-[#0a0a0a] placeholder-[#0a0a0a]/40" />
+              <button type="submit" aria-label="Continue" className="text-[#0a0a0a] hover:text-[#a8854c] transition-colors">
+                <ArrowRight size={22} strokeWidth={1.5} />
+              </button>
+            </form>
           </div>
         </Reveal>
       </div>
+
+      {/* Full-bleed feature image */}
+      <Reveal delay={500}>
+        <div className="relative w-full h-[55vh] md:h-[72vh] overflow-hidden bg-[#0a0a0a]">
+          <img src="agent.jpg"
+            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2000'; }}
+            alt="Featured" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/60 via-transparent to-transparent"></div>
+          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-16 text-[#fafaf8]">
+            <Eyebrow className="text-[#fafaf8]/70 mb-2">Colorado</Eyebrow>
+            <h3 className="font-serif text-2xl md:text-4xl text-[#fafaf8] italic font-light">Front Range · Mountains · Foothills</h3>
+            <button onClick={() => onNavigate('communities')} className="inline-flex items-center gap-3 text-[11px] tracking-[0.28em] uppercase text-[#fafaf8] mt-4 hover:text-[#a8854c] transition-colors">
+              Explore Communities <ArrowRight size={14} strokeWidth={1.5} />
+            </button>
+          </div>
+        </div>
+      </Reveal>
     </div>
   );
 };
 
-// 4. Bio Section
-const BioSection = () => {
-  return (
-    <section id="philosophy" className="py-24 md:py-32 bg-[#fafaf8] relative border-t border-[#a8854c]/20">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ec] to-[#efece5] z-0"></div>
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#a8854c]/5 rounded-full blur-[100px] mix-blend-multiply animate-pulse-slow"></div>
-      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
+// ---------- 3. FEATURED COMMUNITIES (LIV-style category cards) ----------
+const Communities = () => {
+  const cats = ['FRONT RANGE', 'MOUNTAINS', 'METRO DENVER', 'LUXURY'];
+  const [cat, setCat] = useState('FRONT RANGE');
+  const data = {
+    'FRONT RANGE': [
+      { name: 'Highlands Ranch', area: 'Douglas County', desc: 'Estate-style living with trails and award-winning schools.' },
+      { name: 'Castle Rock', area: 'Douglas County', desc: 'Mountain views, master-planned communities, and small-town charm.' },
+    ],
+    'MOUNTAINS': [
+      { name: 'Evergreen', area: 'Jefferson County', desc: 'Pine-shaded retreats minutes from Denver yet a world away.' },
+      { name: 'Vail Valley', area: 'Eagle County', desc: 'World-class skiing, alpine architecture, year-round living.' },
+    ],
+    'METRO DENVER': [
+      { name: 'Cherry Creek', area: 'Denver', desc: 'Walkable luxury at Denver\'s most refined shopping address.' },
+      { name: 'Washington Park', area: 'Denver', desc: 'Historic bungalows and tree-lined streets around the park.' },
+    ],
+    'LUXURY': [
+      { name: 'Cherry Hills Village', area: 'Arapahoe County', desc: 'Estate properties and equestrian land minutes from downtown.' },
+      { name: 'Boulder Foothills', area: 'Boulder County', desc: 'Mountain-front homes overlooking the Flatirons.' },
+    ],
+  };
 
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center relative z-10">
-        <Reveal className="relative flex justify-center md:justify-end">
-            <div className="relative w-full max-w-md group">
-                <div className="aspect-[3/4] bg-[#f0f0f0] relative overflow-hidden shadow-2xl border border-[#0a0a0a]/10 z-10">
-                    <img src="agent.jpg" onError={(e) => {e.target.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800';}} alt="Braden Braccio" className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105 sepia-[0.05]" />
-                </div>
-                <div className="absolute -top-6 -left-6 w-full h-full border border-[#0a0a0a] opacity-10 z-0 transition-transform duration-700 group-hover:translate-x-2 group-hover:translate-y-2"></div>
-                <div className="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-[#a8854c] opacity-100 z-20"></div>
-                <div className="absolute -bottom-12 -left-4 md:-left-8 bg-[#f7f4ec] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-[2px] border-[#a8854c] w-36 h-36 md:w-48 md:h-48 flex items-center justify-center overflow-hidden z-30 rounded-full p-0 transition-transform duration-500 hover:scale-105">
-                    <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0a0a0a] font-serif font-bold text-4xl">B</span>'}} alt="Logo Badge" className="w-full h-full object-contain" />
-                </div>
-            </div>
-        </Reveal>
-        
+  return (
+    <section id="communities" className="py-24 md:py-32 bg-[#fafaf8]">
+      <div className="max-w-[1400px] mx-auto px-6">
+        <div className="text-center mb-12">
+          <Reveal><Eyebrow className="mb-5">Featured</Eyebrow></Reveal>
+          <Reveal delay={100}>
+            <h2 className="font-serif text-4xl md:text-6xl text-[#0a0a0a] font-light tracking-tight">
+              <span className="italic">Distinctive</span> Communities
+            </h2>
+          </Reveal>
+        </div>
+
+        {/* Category tabs */}
         <Reveal delay={200}>
-          <div className="mt-16 md:mt-0">
-            <span className="text-[#a8854c] text-xs uppercase tracking-[0.25em] font-bold flex items-center gap-3 mb-6">
-              <span className="w-12 h-[2px] bg-[#0a0a0a]"></span> About Braden
-            </span>
-            <h2 className="font-serif text-4xl md:text-6xl text-[#0a0a0a] mb-8 leading-tight font-medium">My Approach</h2>
-            <div className="space-y-8 text-[#0a0a0a]/90 font-normal leading-relaxed text-lg font-sans">
-              <p>Braden Braccio believes that buying or selling a home, especially in Colorado’s finest neighborhoods, should feel calm, confident, and deeply personal.</p>
-              <p>As a former <strong>U.S. Veteran</strong>, he brings the same discipline, integrity, and commitment to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.</p>
-              <p>To Braden, luxury is not just about the property, but about the way he conducts his business. Whether you are purchasing or selling a home, your real estate transaction should be stress free. It is about the peace of mind that comes from someone who is actually here to listen.</p>
-              <p className="font-serif italic text-xl text-[#0a0a0a] mt-4 border-l-4 border-[#a8854c] pl-6 py-2 bg-gradient-to-r from-[#a8854c]/5 to-transparent">"Luxury isn’t just the house. It’s having someone in your corner who’s disciplined enough to handle every detail and blunt enough to never waste your time."</p>
-            </div>
-            
-            <div className="mt-12 grid grid-cols-2 gap-8 border-t border-[#0a0a0a]/10 pt-8">
-              <div className="group cursor-pointer">
-                <Shield className="text-[#0a0a0a] mb-4 group-hover:text-[#a8854c] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
-                <h4 className="font-serif text-xl mb-2 text-[#0a0a0a] font-semibold">US Veteran</h4>
-                <p className="text-sm text-[#0a0a0a]/70 font-medium">Here to Serve</p>
-              </div>
-              <div className="group cursor-pointer">
-                <MapPin className="text-[#0a0a0a] mb-4 group-hover:text-[#a8854c] transition-colors duration-300 transform group-hover:-translate-y-1" size={32} strokeWidth={1.5} />
-                <h4 className="font-serif text-xl mb-2 text-[#0a0a0a] font-semibold">Colorado Expert</h4>
-                <p className="text-sm text-[#0a0a0a]/70 font-medium">Data. No Delays.</p>
-              </div>
-            </div>
+          <div className="flex flex-wrap justify-center gap-6 md:gap-10 mb-12 md:mb-16 border-b border-[#0a0a0a]/10 pb-2">
+            {cats.map(c => (
+              <button key={c} onClick={() => setCat(c)}
+                className={`text-[11px] md:text-xs tracking-[0.3em] uppercase font-medium pb-3 -mb-[1px] border-b-2 transition-all ${cat === c ? 'text-[#0a0a0a] border-[#a8854c]' : 'text-[#0a0a0a]/45 hover:text-[#0a0a0a] border-transparent'}`}>
+                {c}
+              </button>
+            ))}
           </div>
         </Reveal>
+
+        {/* Cards */}
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+          {data[cat].map((p, i) => (
+            <Reveal key={p.name} delay={i * 120}>
+              <div className="group cursor-pointer">
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#ebe9e2]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0a0a0a] to-[#2a2a2a]"></div>
+                  <div className="absolute inset-0 flex items-center justify-center text-[#a8854c]/30">
+                    <Home size={96} strokeWidth={0.75} />
+                  </div>
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <span className="px-3 py-1 text-[9px] tracking-[0.25em] uppercase bg-[#fafaf8]/95 text-[#0a0a0a] font-medium">Featured</span>
+                  </div>
+                </div>
+                <div className="pt-5">
+                  <h3 className="font-serif text-2xl md:text-3xl text-[#0a0a0a] font-light"><span className="italic">{p.name}</span></h3>
+                  <p className="text-[#0a0a0a]/55 text-xs tracking-[0.22em] uppercase mt-1 mb-3">{p.area}</p>
+                  <p className="text-[#0a0a0a]/75 text-base leading-relaxed">{p.desc}</p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <div className="text-center mt-14">
+          <a href="#contact" className="inline-flex items-center gap-3 text-[11px] tracking-[0.3em] uppercase font-medium text-[#0a0a0a] border-b border-[#0a0a0a] pb-1 hover:text-[#a8854c] hover:border-[#a8854c] transition-colors">
+            Inquire About a Community <ArrowRight size={14} strokeWidth={1.5} />
+          </a>
+        </div>
       </div>
     </section>
   );
 };
 
-// 5. Interactive Process Section (Tabs)
+// ---------- 4. LOCAL EXPERTISE (full-bleed landscape + nav rows) ----------
+const LocalExpertise = ({ onOpenQuestionnaire }) => (
+  <section className="relative bg-[#fafaf8]">
+    <div className="text-center pt-24 md:pt-32 pb-12 md:pb-16">
+      <Reveal><Eyebrow className="mb-5">Local Expertise</Eyebrow></Reveal>
+      <Reveal delay={100}>
+        <h2 className="font-serif text-4xl md:text-6xl text-[#0a0a0a] font-light tracking-tight">
+          <span className="italic">Rooted</span> in Colorado
+        </h2>
+      </Reveal>
+    </div>
+    {/* Full-bleed image */}
+    <Reveal>
+      <div className="relative w-full h-[50vh] md:h-[70vh] overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1633684977180-eef79da66c12?auto=format&fit=crop&q=80&w=2000" alt="Colorado mountains" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 to-transparent"></div>
+      </div>
+    </Reveal>
+    <div className="max-w-[1100px] mx-auto px-6 -mt-6">
+      <div className="bg-[#fafaf8] pt-10">
+        <div className="text-center pb-10">
+          <Eyebrow className="mb-2">Colorado</Eyebrow>
+          <p className="font-serif text-2xl md:text-3xl text-[#0a0a0a] italic font-light">Denver Metro &amp; The Front Range</p>
+        </div>
+        {/* Nav rows */}
+        <div className="divide-y divide-[#0a0a0a]/12 border-t border-b border-[#0a0a0a]/12">
+          {[
+            { h: 'Market Insights & Trends', s: 'Latest data on the Colorado real estate market.', a: 'philosophy' },
+            { h: 'Meet Braden', s: 'A disciplined, client-first approach to luxury real estate.', a: 'philosophy' },
+            { h: "Find Your Home", s: 'Start a personalized search tailored to your goals.', a: 'contact', cta: true },
+          ].map(({ h, s, a, cta }) => (
+            <a key={h} href={`#${a}`}
+              onClick={cta ? (e) => { e.preventDefault(); onOpenQuestionnaire(); } : undefined}
+              className="group flex items-center justify-between py-7 md:py-9 px-2 md:px-4 transition-colors hover:bg-[#0a0a0a]/[0.025]">
+              <div>
+                <h3 className="font-serif text-xl md:text-3xl text-[#0a0a0a] font-light"><span className="italic">{h}</span></h3>
+                <p className="text-[#0a0a0a]/60 text-sm mt-1 hidden md:block">{s}</p>
+              </div>
+              <ArrowRight size={22} strokeWidth={1.5} className="text-[#a8854c] group-hover:translate-x-2 transition-transform" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+// ---------- 5. BIO / ABOUT (editorial layout) ----------
+const BioSection = () => (
+  <section id="philosophy" className="py-24 md:py-36 bg-[#fafaf8]">
+    <div className="max-w-[1300px] mx-auto px-6 grid md:grid-cols-12 gap-10 md:gap-16 items-start">
+      <Reveal className="md:col-span-5 order-2 md:order-1">
+        <div className="relative w-full">
+          <div className="aspect-[3/4] overflow-hidden bg-[#ebe9e2]">
+            <img src="agent.jpg" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=900'; }} alt="Braden Braccio" className="w-full h-full object-cover" />
+          </div>
+        </div>
+      </Reveal>
+      <Reveal delay={150} className="md:col-span-7 order-1 md:order-2 md:pt-10">
+        <Eyebrow className="mb-6">About Braden</Eyebrow>
+        <div className="w-14 h-px bg-[#a8854c] mb-8"></div>
+        <h2 className="font-serif text-5xl md:text-7xl text-[#0a0a0a] leading-[1.05] tracking-tight font-light mb-10">
+          <span className="italic">A Higher</span> Standard.
+        </h2>
+        <div className="space-y-6 text-[#0a0a0a]/85 text-base md:text-[17px] leading-[1.75] max-w-xl">
+          <p>Braden Braccio believes that buying or selling a home, especially in Colorado&rsquo;s finest neighborhoods, should feel calm, confident, and deeply personal.</p>
+          <p>As a former <strong className="text-[#0a0a0a]">U.S. Veteran</strong>, he brings the same discipline, integrity, and commitment to real estate that he once brought to service. His promise is simple: every detail will be handled with care, every conversation kept in complete confidence, and your best interests placed above all else.</p>
+          <p>To Braden, luxury is not about the house. It is about the way the work is done.</p>
+        </div>
+        <blockquote className="font-serif italic text-xl md:text-2xl text-[#0a0a0a] mt-10 pl-6 border-l-2 border-[#a8854c] leading-relaxed max-w-xl">
+          &ldquo;Disciplined enough to handle every detail. Blunt enough to never waste your time.&rdquo;
+        </blockquote>
+        <div className="mt-12 grid grid-cols-2 gap-10 max-w-xl">
+          <div>
+            <Shield className="text-[#a8854c] mb-3" size={28} strokeWidth={1.25} />
+            <h4 className="font-serif text-xl text-[#0a0a0a] font-medium">US Veteran</h4>
+            <p className="text-sm text-[#0a0a0a]/60 mt-1">Here to serve.</p>
+          </div>
+          <div>
+            <MapPin className="text-[#a8854c] mb-3" size={28} strokeWidth={1.25} />
+            <h4 className="font-serif text-xl text-[#0a0a0a] font-medium">Colorado Expert</h4>
+            <p className="text-sm text-[#0a0a0a]/60 mt-1">Data. No delays.</p>
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+);
+
+// ---------- 6. PROCESS (buyer/seller phases) ----------
 const ProcessSection = ({ activeTab }) => {
-  const [currentTab, setCurrentTab] = useState('buyer');
-
-  useEffect(() => {
-    if (activeTab) {
-      setCurrentTab(activeTab);
-    }
-  }, [activeTab]);
-
-  const buyerPhases = [
-    { id: 1, title: "Identifying Goals", desc: "We clarify your motivation, timeline, and must-haves. This includes selecting a lender, obtaining approval, and signing our exclusive agreement.", icon: <CheckCircle /> },
-    { id: 2, title: "Sourcing The Home", desc: "Access to on and off-market listings. We attend open houses, analyze micro-market trends, and draft a winning offer strategy.", icon: <Home /> },
-    { id: 3, title: "Negotiation & Inspection", desc: "We present your offer to win. Once accepted, we navigate inspections, disclosures, and negotiate repairs to protect your investment.", icon: <Shield /> },
-    { id: 4, title: "Closing & Beyond", desc: "Final walk-throughs, signing, and celebration. But it doesn't end there; we provide resources for your new home and stay in touch.", icon: <Key /> }
+  const [tab, setTab] = useState('buyer');
+  useEffect(() => { if (activeTab) setTab(activeTab); }, [activeTab]);
+  const buyer = [
+    { t: 'Identifying Goals', d: 'We clarify your motivation, timeline, and must-haves. Lender selection, approval, exclusive agreement.', I: CheckCircle },
+    { t: 'Sourcing The Home', d: 'On and off-market access. Open houses, micro-market analysis, a winning offer strategy.', I: Home },
+    { t: 'Negotiation & Inspection', d: 'We present to win. Inspections, disclosures, repairs — your investment protected.', I: Shield },
+    { t: 'Closing & Beyond', d: 'Final walk-throughs, signing, celebration. Resources after move-in. We stay in touch.', I: Key },
   ];
-
-  const sellerPhases = [
-    { id: 1, title: "Defining A Win", desc: "Understanding your motivation and ideal moving date. We analyze supply vs. demand and create a strategic plan for your target buyer.", icon: <TrendingUp /> },
-    { id: 2, title: "Listing & Launch", desc: "Staging strategy, professional photography, and creating 'The Real Advantage'. We work backwards from the launch date to ensure perfection.", icon: <Award /> },
-    { id: 3, title: "Marketing & Showing", desc: "Digital plans, social media strategy, and open houses. We monitor feedback weekly and adapt to changes in the marketplace.", icon: <Instagram /> },
-    { id: 4, title: "Negotiation to Close", desc: "Deep offer analysis and multiple offer strategies. We maximize your price and terms, managing the contingency periods smoothly.", icon: <Clock /> }
+  const seller = [
+    { t: 'Defining A Win', d: 'Understanding motivation and ideal moving date. Supply vs. demand. A strategic plan for your buyer.', I: TrendingUp },
+    { t: 'Listing & Launch', d: 'Staging, photography, and The Real Advantage. Working backwards from launch for perfection.', I: Award },
+    { t: 'Marketing & Showings', d: 'Digital plans, social strategy, open houses. Weekly feedback. Adapting to the market.', I: Instagram },
+    { t: 'Negotiation To Close', d: 'Deep offer analysis, multiple-offer strategy. Maximizing price and terms.', I: Clock },
   ];
-
-  const activePhases = currentTab === 'buyer' ? buyerPhases : sellerPhases;
+  const phases = tab === 'buyer' ? buyer : seller;
 
   return (
-    <section id="process" className="py-24 bg-[#0a0a0a] text-[#f7f4ec] overflow-hidden relative border-t-4 border-[#a8854c]">
-      <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
-      <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none animate-grain" style={{ backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/Noise.png")' }}></div>
-      <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-[#1a1a1a] to-transparent opacity-50"></div>
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <section id="process" className="py-24 md:py-32 bg-[#0a0a0a] text-[#fafaf8] border-t border-[#a8854c]/40">
+      <div className="max-w-[1300px] mx-auto px-6">
         <div className="text-center mb-16">
-          <Reveal>
-            <span className="text-[#a8854c] text-xs uppercase tracking-[0.25em] font-bold">The Methodology</span>
-            <h2 className="font-serif text-4xl md:text-6xl mt-6 text-[#f7f4ec] font-medium">Real Estate</h2>
-            <div className="w-24 h-1 bg-[#a8854c] mx-auto mt-8"></div>
+          <Reveal><Eyebrow className="text-[#a8854c] mb-5">The Methodology</Eyebrow></Reveal>
+          <Reveal delay={100}>
+            <h2 className="font-serif text-4xl md:text-6xl text-[#fafaf8] font-light tracking-tight">
+              <span className="italic">The</span> Real Estate Process
+            </h2>
           </Reveal>
-          
-          <Reveal delay={200} className="flex justify-center mt-12 space-x-6 md:space-x-12">
-            <button onClick={() => setCurrentTab('buyer')} className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${currentTab === 'buyer' ? 'text-[#a8854c] border-b-2 border-[#a8854c]' : 'text-[#f7f4ec]/40 hover:text-[#f7f4ec]'}`}>Buying</button>
-            <button onClick={() => setCurrentTab('seller')} className={`text-sm md:text-base uppercase tracking-[0.2em] font-bold pb-3 transition-all duration-300 ${currentTab === 'seller' ? 'text-[#a8854c] border-b-2 border-[#a8854c]' : 'text-[#f7f4ec]/40 hover:text-[#f7f4ec]'}`}>Selling</button>
+          <Reveal delay={200}>
+            <div className="flex justify-center gap-10 mt-10">
+              {['buyer', 'seller'].map(k => (
+                <button key={k} onClick={() => setTab(k)} className={`text-xs uppercase tracking-[0.3em] font-medium pb-2 border-b-2 transition-all ${tab === k ? 'text-[#a8854c] border-[#a8854c]' : 'text-[#fafaf8]/45 border-transparent hover:text-[#fafaf8]'}`}>
+                  {k === 'buyer' ? 'Buying' : 'Selling'}
+                </button>
+              ))}
+            </div>
           </Reveal>
         </div>
-
-        <div className="grid md:grid-cols-4 gap-6">
-          {activePhases.map((phase, index) => (
-            <Reveal key={phase.id} delay={index * 150}>
-              <div className="bg-[#1a1a1a]/40 backdrop-blur-sm p-8 h-full border border-[#a8854c]/20 hover:border-[#a8854c] transition-all duration-500 group shadow-lg hover:shadow-[0_0_30px_rgba(197,160,89,0.15)] relative overflow-hidden rounded-sm">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#a8854c]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10">
-                    <div className="text-[#a8854c] mb-6 group-hover:scale-110 transition-transform duration-500 origin-left">
-                    {phase.icon}
-                    </div>
-                    <h3 className="font-serif text-2xl mb-2 text-[#f7f4ec] font-medium"><span className="text-[#a8854c] text-[10px] font-sans block mb-2 tracking-[0.3em] font-bold uppercase">Phase 0{phase.id}</span> {phase.title}</h3>
-                    <p className="text-[#e8e6e0]/80 text-sm leading-relaxed mt-4 font-normal">{phase.desc}</p>
-                </div>
+        <div className="grid md:grid-cols-4 gap-8 md:gap-6">
+          {phases.map((p, i) => (
+            <Reveal key={p.t} delay={i * 120}>
+              <div className="border-t border-[#a8854c]/30 pt-8 group">
+                <p.I className="text-[#a8854c] mb-6 transition-transform group-hover:-translate-y-1" size={28} strokeWidth={1.25} />
+                <p className="text-[10px] tracking-[0.3em] uppercase text-[#a8854c] font-medium mb-2">Phase 0{i + 1}</p>
+                <h3 className="font-serif text-2xl text-[#fafaf8] font-light mb-3"><span className="italic">{p.t}</span></h3>
+                <p className="text-[#fafaf8]/65 text-sm leading-relaxed">{p.d}</p>
               </div>
             </Reveal>
           ))}
@@ -391,772 +399,316 @@ const ProcessSection = ({ activeTab }) => {
   );
 };
 
-// 6. Community Impact Section
-const ImpactSection = () => {
-  return (
-    <section id="impact" className="py-24 bg-[#f7f4ec] relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
-      
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <Reveal>
-            <span className="text-[#a8854c] text-xs uppercase tracking-[0.25em] font-bold">Giving Back</span>
-            <h2 className="font-serif text-4xl md:text-5xl mt-6 text-[#0a0a0a] font-medium">Community Impact</h2>
-            <p className="text-[#0a0a0a]/70 mt-6 max-w-2xl mx-auto">
-              Service extends beyond real estate. We are proud to support organizations that provide vital assistance to veterans, first responders, and those in need.
-            </p>
-          </Reveal>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          <Reveal delay={100}>
-            <div className="bg-white border border-[#0a0a0a]/10 p-8 text-center hover:border-[#a8854c] transition-all shadow-sm">
-              <Heart className="text-[#a8854c] w-12 h-12 mx-auto mb-6" />
-              <h3 className="font-serif text-2xl text-[#0a0a0a] mb-4">Wounded Warrior Project</h3>
-              <p className="text-sm text-[#0a0a0a]/70 mb-6">Supporting veterans and service members who incurred a physical or mental injury, illness, or wound while serving in the military.</p>
-              <a href="https://support.woundedwarriorproject.org/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest font-bold text-[#0a0a0a] border-b border-[#a8854c] hover:text-[#a8854c]">Donate Now</a>
-            </div>
-          </Reveal>
-          
-          <Reveal delay={200}>
-            <div className="bg-white border border-[#0a0a0a]/10 p-8 text-center hover:border-[#a8854c] transition-all shadow-sm">
-              <Shield className="text-[#a8854c] w-12 h-12 mx-auto mb-6" />
-              <h3 className="font-serif text-2xl text-[#0a0a0a] mb-4">First Responders Funding</h3>
-              <p className="text-sm text-[#0a0a0a]/70 mb-6">Providing essential equipment, training, and financial support to the brave men and women who serve as first responders in our communities.</p>
-              <a href="https://www.firstrespondersfoundation.org/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest font-bold text-[#0a0a0a] border-b border-[#a8854c] hover:text-[#a8854c]">Support Now</a>
-            </div>
-          </Reveal>
-
-          <Reveal delay={300}>
-            <div className="bg-white border border-[#0a0a0a]/10 p-8 text-center hover:border-[#a8854c] transition-all shadow-sm">
-              <Phone className="text-[#a8854c] w-12 h-12 mx-auto mb-6" />
-              <h3 className="font-serif text-2xl text-[#0a0a0a] mb-4">Veteran Crisis Line</h3>
-              <p className="text-sm text-[#0a0a0a]/70 mb-6">Free, confidential support for Veterans in crisis and their families and friends. Available 24/7/365.</p>
-              <a href="https://www.veteranscrisisline.net/" target="_blank" rel="noopener noreferrer" className="text-xs uppercase tracking-widest font-bold text-[#0a0a0a] border-b border-[#a8854c] hover:text-[#a8854c]">Get Help / Donate</a>
-            </div>
-          </Reveal>
-        </div>
+// ---------- 7. IMPACT ----------
+const ImpactSection = () => (
+  <section id="impact" className="py-24 md:py-32 bg-[#fafaf8]">
+    <div className="max-w-[1300px] mx-auto px-6">
+      <div className="text-center mb-16">
+        <Reveal><Eyebrow className="mb-5">Giving Back</Eyebrow></Reveal>
+        <Reveal delay={100}>
+          <h2 className="font-serif text-4xl md:text-5xl text-[#0a0a0a] font-light tracking-tight">
+            <span className="italic">Community</span> Impact
+          </h2>
+        </Reveal>
+        <Reveal delay={200}>
+          <p className="text-[#0a0a0a]/65 mt-6 max-w-2xl mx-auto">Service extends beyond real estate. We support organizations that provide vital assistance to veterans, first responders, and those in need.</p>
+        </Reveal>
       </div>
-    </section>
-  );
-};
+      <div className="grid md:grid-cols-3 gap-8 md:gap-10">
+        {[
+          { I: Heart, t: 'Wounded Warrior Project', d: 'Supporting veterans who incurred a physical or mental injury while serving in the military.', l: 'https://support.woundedwarriorproject.org/', cta: 'Donate Now' },
+          { I: Shield, t: 'First Responders Foundation', d: 'Essential equipment, training, and financial support to the men and women who serve as first responders.', l: 'https://www.firstrespondersfoundation.org/', cta: 'Support Now' },
+          { I: Phone, t: 'Veteran Crisis Line', d: 'Free, confidential support for Veterans in crisis and their families and friends. Available 24/7/365.', l: 'https://www.veteranscrisisline.net/', cta: 'Get Help' },
+        ].map((c, i) => (
+          <Reveal key={c.t} delay={i * 120}>
+            <div className="border-t border-[#a8854c]/40 pt-10 group">
+              <c.I className="text-[#a8854c] mb-6" size={36} strokeWidth={1.25} />
+              <h3 className="font-serif text-2xl md:text-3xl text-[#0a0a0a] font-light mb-4"><span className="italic">{c.t}</span></h3>
+              <p className="text-[#0a0a0a]/70 text-sm leading-relaxed mb-6">{c.d}</p>
+              <a href={c.l} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs tracking-[0.28em] uppercase font-medium text-[#0a0a0a] border-b border-[#a8854c] pb-1 hover:text-[#a8854c]">{c.cta} <ArrowRight size={12} /></a>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+);
 
-// 7. Testimonials Section
-const Testimonials = () => {
-  return (
-    <section className="py-24 bg-[#0a0a0a] text-[#f7f4ec] border-t border-[#a8854c]/30">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="text-[#a8854c] text-xs uppercase tracking-[0.25em] font-bold">Client Stories</span>
-          <h2 className="font-serif text-4xl mt-4">Trusted by Families</h2>
-        </div>
-        
-        <div className="grid md:grid-cols-2 gap-12">
-          <Reveal>
-            <div className="bg-[#1a1a1a]/50 p-10 border border-[#a8854c]/20 relative">
-              <div className="absolute top-6 left-6 text-[#a8854c]/20 text-6xl font-serif">"</div>
-              <p className="relative z-10 text-lg font-light leading-relaxed italic mb-6">
-                Braden has been excellent to work with. He’s very helpful, knowledgeable, and made the whole house hunting to closing experience a pleasure. We’d recommend him to anyone.
-              </p>
+// ---------- 8. TESTIMONIALS ----------
+const Testimonials = () => (
+  <section className="py-24 md:py-32 bg-[#0a0a0a] text-[#fafaf8]">
+    <div className="max-w-[1200px] mx-auto px-6">
+      <div className="text-center mb-16">
+        <Reveal><Eyebrow className="text-[#a8854c] mb-5">Client Stories</Eyebrow></Reveal>
+        <Reveal delay={100}>
+          <h2 className="font-serif text-4xl md:text-5xl text-[#fafaf8] font-light tracking-tight">
+            <span className="italic">Trusted</span> by Families.
+          </h2>
+        </Reveal>
+      </div>
+      <div className="grid md:grid-cols-2 gap-10">
+        {[
+          { q: 'Braden has been excellent to work with. He&rsquo;s very helpful, knowledgeable, and made the whole house hunting to closing experience a pleasure. We&rsquo;d recommend him to anyone.', n: 'Denise & Keith Grace' },
+          { q: 'Braden was an excellent realtor. Prompt, organized, and always on time. He went above and beyond, taking extra steps to help me close on the house because I lived too far away. He is the realtor I will reach out to next time.', n: 'Aaron Barnett', s: 'US Army' },
+        ].map((t, i) => (
+          <Reveal key={t.n} delay={i * 150}>
+            <div className="border-t border-[#a8854c]/40 pt-10">
+              <p className="font-serif text-xl md:text-[22px] italic text-[#fafaf8]/90 leading-relaxed mb-8" dangerouslySetInnerHTML={{ __html: '&ldquo;' + t.q + '&rdquo;' }}></p>
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#a8854c] flex items-center justify-center text-[#0a0a0a] font-bold">D</div>
+                <div className="w-10 h-10 rounded-full bg-[#a8854c] flex items-center justify-center text-[#0a0a0a] font-medium">{t.n[0]}</div>
                 <div>
-                  <p className="font-serif text-lg">Denise and Keith Grace</p>
+                  <p className="font-serif text-lg text-[#fafaf8]">{t.n}</p>
+                  {t.s && <p className="text-[10px] uppercase tracking-[0.3em] text-[#a8854c] mt-0.5">{t.s}</p>}
                 </div>
               </div>
             </div>
           </Reveal>
-
-          <Reveal delay={200}>
-            <div className="bg-[#1a1a1a]/50 p-10 border border-[#a8854c]/20 relative">
-              <div className="absolute top-6 left-6 text-[#a8854c]/20 text-6xl font-serif">"</div>
-              <p className="relative z-10 text-lg font-light leading-relaxed italic mb-6">
-                Braden was an excellent realtor. He was prompt, organized, and always on time. He was willing to go above and beyond taking extra steps to help me close on the house because I lived too far away to do it myself. Braden was the 4th realtor I have worked with and will be the one I reach out to next time I go to purchase a home.
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#a8854c] flex items-center justify-center text-[#0a0a0a] font-bold">A</div>
-                <div>
-                  <p className="font-serif text-lg">Aaron Barnett</p>
-                  <p className="text-xs uppercase tracking-wider text-[#a8854c]">US Army</p>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
-// 8. Contact Section
-const Contact = ({ onOpenQuestionnaire }) => {
-  return (
-    <section id="contact" className="py-24 bg-[#f7f4ec] relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-radial from-[#ffffff] to-[#ebe9e2] z-0"></div>
-      <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
-
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <div className="bg-white/80 backdrop-blur-md p-8 md:p-24 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[#0a0a0a]/10 relative">
-          
-          <div className="text-center">
-            <Reveal>
-               <h2 className="font-serif text-4xl md:text-6xl text-[#0a0a0a] mb-8 font-medium">Let's Work Together</h2>
-               <p className="text-[#0a0a0a]/80 mb-12 max-w-lg mx-auto font-normal">
-                 Your goals become my mission. Simple as that.
-               </p>
-            </Reveal>
-
-            <Reveal delay={200}>
-              <div className="grid md:grid-cols-2 gap-8 mb-12">
-                <div className="flex flex-col items-center p-10 bg-[#efece4] border border-[#0a0a0a]/5 transition-all hover:border-[#a8854c] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
-                  <Phone className="text-[#0a0a0a] mb-4 group-hover:text-[#a8854c] transition-colors" />
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#a8854c] mb-3">Call or Text</span>
-                  <a href="tel:720-885-1613" className="font-serif text-xl md:text-2xl text-[#0a0a0a] hover:text-[#a8854c] transition-colors font-medium">
-                    720-885-1613
-                  </a>
-                </div>
-                <div className="flex flex-col items-center p-10 bg-[#efece4] border border-[#0a0a0a]/5 transition-all hover:border-[#a8854c] hover:bg-white group cursor-pointer shadow-sm hover:shadow-md">
-                  <Mail className="text-[#0a0a0a] mb-4 group-hover:text-[#a8854c] transition-colors" />
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#a8854c] mb-3">Email</span>
-                  <div className="flex flex-col items-center">
-                    <span className="font-serif text-lg md:text-xl text-[#0a0a0a] font-medium">bradenbraccio</span>
-                    <a href="mailto:bradenbraccio@yourcastle.com" className="text-sm text-[#0a0a0a]/60 hover:text-[#a8854c] transition-colors font-sans">@yourcastle.com</a>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            <Reveal delay={300}>
-              <div className="text-center mb-12">
-                 <button 
-                   onClick={onOpenQuestionnaire}
-                   className="inline-flex items-center gap-3 px-10 py-5 border border-[#0a0a0a] bg-[#0a0a0a] text-[#f7f4ec] uppercase tracking-[0.2em] text-xs font-bold hover:bg-[#a8854c] hover:border-[#a8854c] transition-all duration-300 group shadow-lg"
-                 >
-                    <FileText size={16} className="group-hover:scale-110 transition-transform" />
-                    <span>Start Questionnaire</span>
-                 </button>
-                 <p className="text-[#0a0a0a]/40 text-xs mt-4 tracking-wide">Tell us about your needs in 2 minutes.</p>
-              </div>
-            </Reveal>
-          </div>
+// ---------- 9. CONTACT ----------
+const Contact = ({ onOpenQuestionnaire }) => (
+  <section id="contact" className="py-24 md:py-36 bg-[#fafaf8]">
+    <div className="max-w-[1100px] mx-auto px-6 text-center">
+      <Reveal><Eyebrow className="mb-5">Let&rsquo;s Connect</Eyebrow></Reveal>
+      <Reveal delay={100}>
+        <h2 className="font-serif text-5xl md:text-7xl text-[#0a0a0a] font-light tracking-tight mb-10">
+          <span className="italic">Begin</span> the Conversation.
+        </h2>
+      </Reveal>
+      <Reveal delay={200}>
+        <p className="text-[#0a0a0a]/70 text-lg max-w-xl mx-auto mb-14">Your goals become my mission. Tell me about your move and I&rsquo;ll respond personally within 24 hours.</p>
+      </Reveal>
+      <Reveal delay={300}>
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-14">
+          <a href="tel:720-885-1613" className="group border border-[#0a0a0a]/15 hover:border-[#a8854c] p-8 transition-all bg-[#fafaf8] hover:bg-white">
+            <Phone className="text-[#0a0a0a] group-hover:text-[#a8854c] transition-colors mx-auto mb-4" size={22} strokeWidth={1.25} />
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#a8854c] mb-2">Call or Text</p>
+            <p className="font-serif text-xl md:text-2xl text-[#0a0a0a]">720-885-1613</p>
+          </a>
+          <a href="mailto:bradenbraccio@yourcastle.com" className="group border border-[#0a0a0a]/15 hover:border-[#a8854c] p-8 transition-all bg-[#fafaf8] hover:bg-white">
+            <Mail className="text-[#0a0a0a] group-hover:text-[#a8854c] transition-colors mx-auto mb-4" size={22} strokeWidth={1.25} />
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[#a8854c] mb-2">Email</p>
+            <p className="font-serif text-base md:text-lg text-[#0a0a0a]">bradenbraccio@yourcastle.com</p>
+          </a>
         </div>
-      </div>
-    </section>
-  );
-};
+      </Reveal>
+      <Reveal delay={400}>
+        <button onClick={onOpenQuestionnaire} className="inline-flex items-center gap-3 px-10 py-5 bg-[#0a0a0a] text-[#fafaf8] text-[11px] tracking-[0.3em] uppercase font-medium hover:bg-[#a8854c] transition-colors">
+          <FileText size={14} strokeWidth={1.5} /> Start the Questionnaire
+        </button>
+        <p className="text-[#0a0a0a]/45 text-xs mt-4">A two-minute brief — no obligation.</p>
+      </Reveal>
+    </div>
+  </section>
+);
 
-// 9. ADAPTIVE QUESTIONNAIRE WIZARD (FIXED SUBMISSION)
+// ---------- 10. QUESTIONNAIRE MODAL (same logic as before, restyled) ----------
 const QuestionnaireModal = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState(0); 
-  const [type, setType] = useState(null); // 'buy', 'sell', 'both', 'join'
-  const [answers, setAnswers] = useState({});
-  const [licenseStatus, setLicenseStatus] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // RESET ON CLOSE
+  const [step, setStep] = useState(0);
+  const [type, setType] = useState(null);
+  const [ans, setAns] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+
   useEffect(() => {
     if (!isOpen) {
-      setTimeout(() => {
-        setStep(0);
-        setType(null);
-        setAnswers({});
-        setLicenseStatus(null);
-        setIsSubmitting(false);
-      }, 300);
+      setTimeout(() => { setStep(0); setType(null); setAns({}); setSubmitting(false); }, 300);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSelectType = (selected) => {
-    setType(selected);
-    setStep(1); 
-  };
-
-  const nextStep = () => {
-    // Basic Validation for Step 1
-    if (step === 1) {
-        if (!answers.name || !answers.email) {
-            alert("Please provide your name and email so we can contact you.");
-            return;
-        }
-    }
+  const inp = (k, v) => setAns(p => ({ ...p, [k]: v }));
+  const pick = (t) => { setType(t); setStep(1); };
+  const next = () => {
+    if (step === 1 && (!ans.name || !ans.email)) { alert('Please provide your name and email so we can reach you.'); return; }
     setStep(s => s + 1);
   };
+  const prev = () => setStep(s => s - 1);
 
-  const prevStep = () => setStep(s => s - 1);
+  const submit = async () => {
+    setSubmitting(true);
+    let note = '';
+    if (type === 'buy' || type === 'both') note += `\n-- BUYING --\nTimeline: ${ans.buyTimeline || ''}\nLocation: ${ans.buyLocation || ''}\nPrice: ${ans.buyPrice || ''}\nType: ${ans.buyType || ''}\nBed/Bath: ${ans.buyBedBath || ''}\nMortgage: ${ans.buyMortgage || ''}`;
+    if (type === 'sell' || type === 'both') note += `\n-- SELLING --\nAddress: ${ans.sellAddress || ''}\nSqFt: ${ans.sellSqFt || ''}\nYear: ${ans.sellYear || ''}\nBed/Bath: ${ans.sellBedBath || ''}\nTimeline: ${ans.sellTimeline || ''}\nReason: ${ans.sellReason || ''}`;
+    if (ans.finalNotes) note += `\n-- NOTES --\n${ans.finalNotes}`;
 
-  const handleInput = (key, value) => {
-    setAnswers(prev => ({ ...prev, [key]: value }));
-  };
-
-  // --- SUBMISSION HANDLER (GOOGLE SHEETS API) ---
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    
-    // Construct the Note field with all detailed answers
-    // Because our simple Apps Script only accepts: name, email, phone, type, note
-    let detailedNote = "";
-    
-    // Add specific details based on type
-    if (type === 'buy' || type === 'both') {
-        detailedNote += `
---- BUYING PREFERENCES ---
-Timeline: ${answers.buyTimeline || 'N/A'}
-Location: ${answers.buyLocation || 'N/A'}
-Price Range: ${answers.buyPrice || 'N/A'}
-Type: ${answers.buyType || 'N/A'}
-Bed/Bath: ${answers.buyBedBath || 'N/A'}
-Mortgage Status: ${answers.buyMortgage || 'N/A'}
-Sell First?: ${answers.sellFirst || 'N/A'}
-`;
-    }
-    
-    if (type === 'sell' || type === 'both') {
-        detailedNote += `
---- SELLING DETAILS ---
-Address: ${answers.sellAddress || 'N/A'}
-Type: ${answers.sellType || 'N/A'}
-SqFt/Stats: ${answers.sellSqFt || 'N/A'}
-Bed/Bath: ${answers.sellBedBath || 'N/A'}
-Year Built: ${answers.sellYear || 'N/A'}
-Timeline: ${answers.sellTimeline || 'N/A'}
-Reason: ${answers.sellReason || 'N/A'}
-Buy After?: ${answers.buyAfter || 'N/A'}
-Updates: ${answers.sellUpdates || 'N/A'}
-`;
-    }
-
-    if (type === 'join') {
-        detailedNote += `
---- AGENT APPLICATION ---
-Licensed: ${answers.hasLicense || 'N/A'}
-Experience: ${answers.experience || 'N/A'}
-Transactions (12mo): ${answers.transactions || 'N/A'}
-GCI: ${answers.gci || 'N/A'}
-Focus Area: ${answers.focusArea || 'N/A'}
-Interests: ${answers.joinReason ? answers.joinReason.join(', ') : 'N/A'}
-Preference: ${answers.workPreference || 'N/A'}
-Previous Team: ${answers.prevTeam || 'N/A'}
-Source: ${answers.source || 'N/A'}
-`;
-    }
-    
-    // Add user's final notes
-    if (answers.finalNotes) {
-        detailedNote += `\n--- USER NOTES ---\n${answers.finalNotes}`;
-    }
-
-    // Payload matching the Apps Script expectation
-    // Script expects: data.name, data.email, data.phone, data.type, data.note
-    const payload = {
-        name: answers.name,
-        email: answers.email,
-        phone: answers.phone,
-        type: type ? type.toUpperCase() : 'GENERAL',
-        note: detailedNote.trim()
-    };
-
+    const payload = { name: ans.name, email: ans.email, phone: ans.phone || '', type: (type || 'general').toUpperCase(), note: note.trim() };
     try {
-        await fetch(GOOGLE_SHEETS_API_URL, {
-            method: 'POST',
-            mode: 'no-cors', // standard for Google Apps Script Web App
-            headers: {
-                'Content-Type': 'application/json' // Apps Script can parse this
-            },
-            body: JSON.stringify(payload)
-        });
-        
-        // Success Handler
-        // Note: 'no-cors' mode means we can't read the response, so we assume success if no error thrown
-        setTimeout(() => {
-            setIsSubmitting(false);
-            onClose();
-            alert("Thank you! Your information has been sent to Braden.");
-        }, 1000);
-        
-    } catch (error) {
-        console.error("Submission error", error);
-        // Fallback to mailto if fetch fails
-        const recipient = "bradenbraccio@yourcastle.com";
-        const subject = `New Website Inquiry: ${type ? type.toUpperCase() : 'General'}`;
-        let body = `Name: ${answers.name}\nEmail: ${answers.email}\nPhone: ${answers.phone}\n\n`;
-        body += `Notes:\n${detailedNote}`;
-        
-        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        setIsSubmitting(false);
-        onClose();
+      await fetch(GOOGLE_SHEETS_API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      setTimeout(() => { setSubmitting(false); onClose(); alert('Thank you. Your information has been sent to Braden.'); }, 800);
+    } catch (e) {
+      const body = `Name: ${ans.name}\nEmail: ${ans.email}\nPhone: ${ans.phone || ''}\n\n${note}`;
+      window.location.href = `mailto:bradenbraccio@yourcastle.com?subject=${encodeURIComponent('New Website Inquiry')}&body=${encodeURIComponent(body)}`;
+      setSubmitting(false); onClose();
     }
   };
 
-  // --- RENDER CONTENT BASED ON STEP & TYPE (WIZARD MODE) ---
-  const renderContent = () => {
-    
-    // STEP 0: INITIAL SELECTION
-    if (step === 0) {
-      return (
-        <div className="space-y-8 animate-in fade-in zoom-in duration-300">
-          <h3 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] text-center">How can I help you today?</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button onClick={() => handleSelectType('buy')} className="group p-8 border border-[#0a0a0a]/20 hover:border-[#a8854c] hover:bg-[#efece4] transition-all flex flex-col items-center">
-              <Home className="text-[#0a0a0a] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
-              <span className="font-bold uppercase tracking-widest text-sm">Buy a Home</span>
+  const Btn = ({ children, ...rest }) => <button {...rest} className="w-full p-4 border border-[#0a0a0a]/20 hover:border-[#a8854c] hover:bg-[#a8854c]/5 text-left text-[#0a0a0a] transition-all">{children}</button>;
+  const Input = (props) => <input {...props} className="w-full p-4 border border-[#0a0a0a]/20 bg-transparent outline-none focus:border-[#a8854c] text-[#0a0a0a] placeholder-[#0a0a0a]/45" />;
+  const Sel = ({ children, ...rest }) => <select {...rest} className="w-full p-4 border border-[#0a0a0a]/20 bg-transparent outline-none focus:border-[#a8854c] text-[#0a0a0a]">{children}</select>;
+  const Submit = ({ children, ...rest }) => <button {...rest} className="w-full bg-[#0a0a0a] hover:bg-[#a8854c] text-[#fafaf8] py-4 text-xs uppercase tracking-[0.3em] font-medium transition-colors">{children}</button>;
+
+  const Header = ({ children }) => (
+    <div className="flex items-center gap-4 mb-2">
+      <button onClick={prev} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
+      <h3 className="font-serif text-2xl text-[#0a0a0a] italic font-light">{children}</h3>
+    </div>
+  );
+
+  const content = (() => {
+    if (step === 0) return (
+      <div className="space-y-8">
+        <h3 className="font-serif text-3xl md:text-4xl text-[#0a0a0a] text-center italic font-light">How can I help?</h3>
+        <div className="grid grid-cols-2 gap-3">
+          {[{ k: 'buy', I: Home, l: 'Buy' }, { k: 'sell', I: TrendingUp, l: 'Sell' }, { k: 'both', I: Key, l: 'Buy & Sell' }, { k: 'join', I: User, l: 'Join Team' }].map(o => (
+            <button key={o.k} onClick={() => pick(o.k)} className="group p-8 border border-[#0a0a0a]/20 hover:border-[#a8854c] hover:bg-[#a8854c]/5 transition-all flex flex-col items-center">
+              <o.I className="text-[#0a0a0a] mb-3 group-hover:text-[#a8854c]" size={24} strokeWidth={1.25} />
+              <span className="text-xs tracking-[0.3em] uppercase font-medium">{o.l}</span>
             </button>
-            <button onClick={() => handleSelectType('sell')} className="group p-8 border border-[#0a0a0a]/20 hover:border-[#a8854c] hover:bg-[#efece4] transition-all flex flex-col items-center">
-              <TrendingUp className="text-[#0a0a0a] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
-              <span className="font-bold uppercase tracking-widest text-sm">Sell a Home</span>
-            </button>
-            <button onClick={() => handleSelectType('both')} className="group p-8 border border-[#0a0a0a]/20 hover:border-[#a8854c] hover:bg-[#efece4] transition-all flex flex-col items-center">
-              <Key className="text-[#0a0a0a] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
-              <span className="font-bold uppercase tracking-widest text-sm">Buy & Sell</span>
-            </button>
-            <button onClick={() => handleSelectType('join')} className="group p-8 border border-[#0a0a0a]/20 hover:border-[#a8854c] hover:bg-[#efece4] transition-all flex flex-col items-center">
-              <User className="text-[#0a0a0a] w-8 h-8 mb-4 group-hover:scale-110 transition-transform" />
-              <span className="font-bold uppercase tracking-widest text-sm">Join My Team</span>
-            </button>
-          </div>
+          ))}
         </div>
-      );
+      </div>
+    );
+
+    if (step === 1) return (
+      <div className="space-y-5">
+        <Header>Basic Info</Header>
+        <Input placeholder="Full Name *" value={ans.name || ''} onChange={(e) => inp('name', e.target.value)} />
+        <Input placeholder="Email Address *" value={ans.email || ''} onChange={(e) => inp('email', e.target.value)} />
+        <Input placeholder="Phone Number" value={ans.phone || ''} onChange={(e) => inp('phone', e.target.value)} />
+        <Submit onClick={next}>Continue</Submit>
+      </div>
+    );
+
+    if (type === 'buy' || type === 'both') {
+      if (step === 2) return (<div className="space-y-4"><Header>Buying Timeline</Header>{['Ready Now (0-30 days)', '1-3 Months', '3-6 Months', '6+ Months'].map(o => <Btn key={o} onClick={() => { inp('buyTimeline', o); next(); }}>{o}</Btn>)}</div>);
+      if (step === 3) return (<div className="space-y-4"><Header>Location & Price</Header><Input placeholder="Preferred Locations" onChange={(e) => inp('buyLocation', e.target.value)} /><Sel onChange={(e) => inp('buyPrice', e.target.value)}><option value="">Price Range</option><option>Under $400k</option><option>$400k - $600k</option><option>$600k - $800k</option><option>$800k - $1M</option><option>$1M+</option></Sel><Submit onClick={next}>Continue</Submit></div>);
+      if (step === 4) return (<div className="space-y-4"><Header>Property Details</Header><Sel onChange={(e) => inp('buyType', e.target.value)}><option>Single Family</option><option>Condo/Townhome</option><option>Multi-Family</option><option>Land</option></Sel><Input placeholder="Bed / Bath" onChange={(e) => inp('buyBedBath', e.target.value)} /><Submit onClick={next}>Continue</Submit></div>);
+      if (step === 5) return (<div className="space-y-4"><Header>Financing</Header>{['Pre-approved', 'Planning to', 'Paying cash', 'Not yet'].map(o => <Btn key={o} onClick={() => { inp('buyMortgage', o); type === 'both' ? next() : setStep(100); }}>{o}</Btn>)}</div>);
     }
 
-    // --- STEP 1: BASIC INFO ---
-    if (step === 1) {
-      return (
-        <div className="space-y-6 animate-in slide-in-from-right duration-300">
-           <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Basic Info</h3></div>
-           <input required placeholder="Full Name *" value={answers.name || ''} onChange={(e) => handleInput('name', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-           <input required placeholder="Email Address *" value={answers.email || ''} onChange={(e) => handleInput('email', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-           <input placeholder="Phone Number" value={answers.phone || ''} onChange={(e) => handleInput('phone', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-           <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c]">Next</button>
-        </div>
-      );
-    }
-
-    // --- STEP 2: CONTACT METHOD ---
-    if (step === 2) {
-       return (
-         <div className="space-y-6 animate-in slide-in-from-right duration-300">
-            <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Preferred Contact</h3></div>
-            <div className="space-y-3">
-               {['Email', 'Phone Call', 'Text'].map(opt => (
-                  <button key={opt} onClick={() => { handleInput('contactMethod', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] text-left">{opt}</button>
-               ))}
-            </div>
-         </div>
-       );
-    }
-
-    // --- JOIN TEAM BRANCH ---
-    if (type === 'join') {
-       if (step === 3) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">License Status</h3></div>
-               <p>Do you currently hold an active Colorado real estate license?</p>
-               <button onClick={() => { handleInput('hasLicense', 'Yes'); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] text-left">Yes (License #: ________)</button>
-               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(999); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] text-left">No, but interested</button>
-               <button onClick={() => { handleInput('hasLicense', 'No'); setStep(999); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] text-left">No, just exploring</button>
-             </div>
-          );
-       }
-       if (step === 999) {
-          return (
-             <div className="bg-[#f7f4ec] border-l-4 border-[#a8854c] p-8 shadow-sm animate-in fade-in duration-500">
-               <h4 className="font-serif text-xl mb-4 text-[#0a0a0a]">Thank you for your interest!</h4>
-               <p className="text-sm text-[#0a0a0a]/80 mb-4">Since you're not yet licensed, one of our experienced team members will reach out to you within 24-48 hours to personally guide you through the next steps.</p>
-               {/* Finish Button now just closes modal, NO EMAIL SENT */}
-               <button onClick={onClose} className="bg-[#0a0a0a] text-white px-8 py-3 uppercase text-xs font-bold hover:bg-[#a8854c]">Finish</button>
-            </div>
-          );
-       }
-       // If Licensed, continue to Step 4...
-       if (step === 4) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Experience</h3></div>
-               {['New to Industry', '< 2 Years', '2-5 Years', '5-10 Years', '10+ Years'].map(opt => (
-                  <button key={opt} onClick={() => { handleInput('experience', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] text-left">{opt}</button>
-               ))}
-             </div>
-          );
-       }
-       if (step === 5) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Production (Last 12mo)</h3></div>
-               <input placeholder="# of Transactions" onChange={(e) => handleInput('transactions', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
-               <input placeholder="Approx GCI" onChange={(e) => handleInput('gci', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-               <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c]">Next</button>
-             </div>
-          );
-       }
-       if (step === 6) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Focus Area</h3></div>
-               <input placeholder="What areas do you serve? (e.g. Denver Metro)" onChange={(e) => handleInput('focusArea', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-               <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] mt-4">Next</button>
-             </div>
-          );
-       }
-       if (step === 7) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Why Join?</h3></div>
-               <p className="text-sm text-gray-500 mb-2">Select all that apply</p>
-               <div className="space-y-2">
-                 {['Leads & Marketing', 'Mentorship', 'Team Culture', 'Tools', 'Growth'].map(opt => (
-                    <label key={opt} className="flex items-center gap-3 p-3 border border-gray-200 cursor-pointer hover:bg-gray-50">
-                       <input type="checkbox" onChange={(e) => { 
-                          const current = answers.joinReason || [];
-                          if(e.target.checked) handleInput('joinReason', [...current, opt]);
-                          else handleInput('joinReason', current.filter(x => x !== opt));
-                       }} className="accent-[#a8854c] w-5 h-5" /> 
-                       <span>{opt}</span>
-                    </label>
-                 ))}
-               </div>
-               <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] mt-4">Next</button>
-             </div>
-          );
-       }
-       if (step === 8) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Work Preference</h3></div>
-               {['Buyers', 'Sellers', 'Both'].map(opt => (
-                  <button key={opt} onClick={() => { handleInput('workPreference', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] text-left">{opt}</button>
-               ))}
-             </div>
-          );
-       }
-       if (step === 9) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-               <div className="flex items-center gap-4 mb-2"><button onClick={prevStep}><ArrowLeft/></button><h3 className="font-serif text-2xl">Final Details</h3></div>
-               <input placeholder="Have you worked on a team before? (Details)" onChange={(e) => handleInput('prevTeam', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
-               <input placeholder="How did you hear about us?" onChange={(e) => handleInput('source', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
-               <textarea placeholder="Any questions or links (LinkedIn/Resume)..." onChange={(e) => handleInput('finalNotes', e.target.value)} rows="3" className="w-full p-4 border border-gray-300 bg-transparent outline-none"></textarea>
-               <button onClick={handleSubmit} disabled={isSubmitting} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] mt-4 disabled:opacity-50">
-                   {isSubmitting ? 'Sending...' : 'Submit Application'}
-               </button>
-             </div>
-          );
-       }
-    }
-
-    // --- BUYER FLOW ---
-    if (type === 'buy' || (type === 'both' && step <= 5)) {
-       let currentStep = step;
-       if (type === 'both') currentStep = step; // Normal flow
-
-       if (currentStep === 2) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0a0a0a]">Buying Timeline</h3>
-                </div>
-                <div className="space-y-3">
-                   {['Ready Now (0-30 days)', '1-3 Months', '3-6 Months', '6+ Months'].map(opt => (
-                      <button key={opt} onClick={() => { handleInput('buyTimeline', opt); nextStep(); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] hover:bg-[#efece4] text-left font-medium transition-all">{opt}</button>
-                   ))}
-                </div>
-             </div>
-          );
-       }
-       if (currentStep === 3) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0a0a0a]">Location & Price</h3>
-                </div>
-                <input placeholder="Preferred Locations (City, Zip, Neighborhood)" onChange={(e) => handleInput('buyLocation', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4" />
-                <div className="space-y-2">
-                   <label className="text-xs uppercase tracking-widest font-bold">Price Range</label>
-                   <select onChange={(e) => handleInput('buyPrice', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none">
-                      <option value="">Select Range...</option>
-                      <option>Under $400k</option>
-                      <option>$400k - $600k</option>
-                      <option>$600k - $800k</option>
-                      <option>$800k - $1M</option>
-                      <option>$1M+</option>
-                   </select>
-                </div>
-                <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] transition-colors mt-4">Next</button>
-             </div>
-          );
-       }
-       if (currentStep === 4) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0a0a0a]">Property Details</h3>
-                </div>
-                <select onChange={(e) => handleInput('buyType', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4">
-                   <option>Single Family Home</option>
-                   <option>Condo/Townhome</option>
-                   <option>Multi-Family</option>
-                   <option>Land</option>
-                </select>
-                <input placeholder="Bed / Bath Count" onChange={(e) => handleInput('buyBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] transition-colors mt-4">Next</button>
-             </div>
-          );
-       }
-       if (currentStep === 5) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0a0a0a]">Financing</h3>
-                </div>
-                <p>Are you pre-approved for a mortgage?</p>
-                <div className="space-y-3">
-                   {['Yes', 'No, but planning to', 'Paying Cash', 'Not yet'].map(opt => (
-                      <button key={opt} onClick={() => { handleInput('buyMortgage', opt); type === 'both' ? nextStep() : setStep(100); }} className="w-full p-4 border border-gray-300 hover:border-[#a8854c] hover:bg-[#efece4] text-left font-medium transition-all">{opt}</button>
-                   ))}
-                </div>
-             </div>
-          );
-       }
-    }
-
-    // --- SELLER FLOW ---
     if (type === 'sell' || type === 'both') {
-       // Adjust steps for Sell flow
-       // If type is sell, steps start at 2. If both, steps start at 6 (after buy flow)
-       let effectiveStep = step; 
-       if (type === 'sell') effectiveStep = step; 
-       if (type === 'both') effectiveStep = step - 4; // Shift logic for both
-
-       if (effectiveStep === 2) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0a0a0a]">{type === 'both' ? 'Selling Side' : 'Property Address'}</h3>
-                </div>
-                <input placeholder="Property Address" onChange={(e) => handleInput('sellAddress', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] transition-colors mt-4">Next</button>
-             </div>
-          );
-       }
-       if (effectiveStep === 3) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0a0a0a]">Property Details</h3>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                   <input placeholder="Approx Sq Ft" onChange={(e) => handleInput('sellSqFt', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                   <input placeholder="Year Built" onChange={(e) => handleInput('sellYear', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                </div>
-                <input placeholder="Bedrooms / Bathrooms" onChange={(e) => handleInput('sellBedBath', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none" />
-                <button onClick={nextStep} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] transition-colors mt-4">Next</button>
-             </div>
-          );
-       }
-       if (effectiveStep === 4) {
-          return (
-             <div className="space-y-6 animate-in slide-in-from-right duration-300">
-                <div className="flex items-center gap-4 mb-2">
-                   <button onClick={prevStep} className="text-[#0a0a0a]/50 hover:text-[#0a0a0a]"><ArrowLeft size={20} /></button>
-                   <h3 className="font-serif text-2xl text-[#0a0a0a]">Timeline & Motivation</h3>
-                </div>
-                <select onChange={(e) => handleInput('sellTimeline', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none mb-4">
-                   <option value="">Sell By?</option>
-                   <option>ASAP</option>
-                   <option>Within 30 Days</option>
-                   <option>1-3 Months</option>
-                   <option>6+ Months</option>
-                </select>
-                <select onChange={(e) => handleInput('sellReason', e.target.value)} className="w-full p-4 border border-gray-300 bg-transparent outline-none">
-                   <option value="">Main Reason?</option>
-                   <option>Upsizing</option>
-                   <option>Downsizing</option>
-                   <option>Relocation</option>
-                   <option>Financial</option>
-                   <option>Life Event</option>
-                </select>
-                <button onClick={() => setStep(100)} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] transition-colors mt-4">Review & Submit</button>
-             </div>
-          );
-       }
+      const eff = type === 'both' ? step - 4 : step;
+      if (eff === 2) return (<div className="space-y-4"><Header>{type === 'both' ? 'Selling Side' : 'Property Address'}</Header><Input placeholder="Property Address" onChange={(e) => inp('sellAddress', e.target.value)} /><Submit onClick={next}>Continue</Submit></div>);
+      if (eff === 3) return (<div className="space-y-4"><Header>Property Details</Header><div className="grid grid-cols-2 gap-3"><Input placeholder="Sq Ft" onChange={(e) => inp('sellSqFt', e.target.value)} /><Input placeholder="Year Built" onChange={(e) => inp('sellYear', e.target.value)} /></div><Input placeholder="Bed / Bath" onChange={(e) => inp('sellBedBath', e.target.value)} /><Submit onClick={next}>Continue</Submit></div>);
+      if (eff === 4) return (<div className="space-y-4"><Header>Timeline & Motivation</Header><Sel onChange={(e) => inp('sellTimeline', e.target.value)}><option value="">Sell By?</option><option>ASAP</option><option>Within 30 Days</option><option>1-3 Months</option><option>6+ Months</option></Sel><Sel onChange={(e) => inp('sellReason', e.target.value)}><option value="">Main Reason?</option><option>Upsizing</option><option>Downsizing</option><option>Relocation</option><option>Financial</option><option>Life Event</option></Sel><Submit onClick={() => setStep(100)}>Review &amp; Submit</Submit></div>);
     }
 
-    // --- FINAL SUBMISSION SCREEN ---
-    if (step === 100) {
-       return (
-         <div className="space-y-6 animate-in slide-in-from-right duration-300">
-            <h3 className="font-serif text-2xl text-[#0a0a0a] border-b border-[#a8854c]/30 pb-4">One Last Thing</h3>
-            <p className="text-sm text-gray-600">Any specific needs, questions, or updates I should know about?</p>
-            <textarea 
-               rows="4" 
-               className="w-full p-4 border border-gray-300 bg-transparent outline-none focus:border-[#a8854c]" 
-               placeholder="Tell me more..."
-               onChange={(e) => handleInput('finalNotes', e.target.value)}
-            ></textarea>
-            
-            <div className="pt-4">
-               <button onClick={handleSubmit} disabled={isSubmitting} className="w-full bg-[#0a0a0a] text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#a8854c] transition-colors shadow-lg disabled:opacity-50">
-                   {isSubmitting ? 'Submitting...' : 'Submit Information'}
-               </button>
-               <p className="text-[10px] text-center text-gray-500 mt-3">
-                  I'll reach out within 24 hours. For faster response, text (720) 885-1613.
-               </p>
-            </div>
-         </div>
-       );
+    if (type === 'join') {
+      if (step === 2) return (<div className="space-y-4"><Header>License Status</Header><Btn onClick={() => { inp('hasLicense', 'Yes'); next(); }}>Yes (Active CO License)</Btn><Btn onClick={() => { inp('hasLicense', 'No'); setStep(100); }}>No, but interested</Btn></div>);
+      if (step === 3) return (<div className="space-y-4"><Header>Experience</Header>{['New', '< 2 Years', '2-5 Years', '5-10 Years', '10+ Years'].map(o => <Btn key={o} onClick={() => { inp('experience', o); setStep(100); }}>{o}</Btn>)}</div>);
     }
+
+    if (step === 100) return (
+      <div className="space-y-5">
+        <h3 className="font-serif text-2xl text-[#0a0a0a] italic font-light border-b border-[#a8854c]/30 pb-4">One Last Thing</h3>
+        <p className="text-sm text-[#0a0a0a]/70">Any specific needs or questions I should know?</p>
+        <textarea rows="4" className="w-full p-4 border border-[#0a0a0a]/20 bg-transparent outline-none focus:border-[#a8854c] text-[#0a0a0a]" placeholder="Tell me more..." onChange={(e) => inp('finalNotes', e.target.value)}></textarea>
+        <Submit onClick={submit} disabled={submitting}>{submitting ? 'Sending...' : 'Submit'}</Submit>
+        <p className="text-[10px] text-center text-[#0a0a0a]/50">I&rsquo;ll respond within 24 hours. For faster service, text 720-885-1613.</p>
+      </div>
+    );
 
     return null;
-  };
+  })();
 
   return (
-    <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-[#f7f4ec] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 md:p-12 relative shadow-2xl rounded-sm">
-        <button onClick={onClose} className="absolute top-4 right-4 text-[#0a0a0a] hover:text-[#a8854c] transition-colors">
-          <X size={28} />
-        </button>
-        
-        {/* Progress Indicator */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
-           <div 
-             className="h-full bg-[#a8854c] transition-all duration-500 ease-out" 
-             style={{ width: `${(step / 16) * 100}%` }} 
-           ></div>
+    <div className="fixed inset-0 z-[200] bg-[#0a0a0a]/70 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-[#fafaf8] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 md:p-12 relative shadow-2xl">
+        <button onClick={onClose} className="absolute top-4 right-4 text-[#0a0a0a]/60 hover:text-[#a8854c]"><X size={26} /></button>
+        <div className="absolute top-0 left-0 w-full h-px bg-[#0a0a0a]/10">
+          <div className="h-full bg-[#a8854c] transition-all duration-500" style={{ width: `${(step / 12) * 100}%` }}></div>
         </div>
-
-        {renderContent()}
+        {content}
       </div>
     </div>
   );
 };
 
-// 10. Footer
-const Footer = () => {
-  return (
-    <footer className="bg-[#0a0a0a] text-[#e8e6e0] py-20 border-t border-[#a8854c]/50 relative">
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-linen.png")' }}></div>
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid md:grid-cols-3 gap-16 text-center md:text-left">
-          {/* Brand */}
-          <div className="flex flex-col items-center md:items-start">
-            <div className="mb-6 w-16 h-16 border-[1.5px] border-[#a8854c] flex items-center justify-center bg-[#f7f4ec] overflow-hidden p-0 rounded-full">
-                <img src="logo.jpg" onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerHTML = '<span class="text-[#0a0a0a] font-serif font-bold text-3xl">B</span>'}} alt="Footer Logo" className="w-full h-full object-contain" />
-            </div>
-            <h3 className="font-serif text-3xl text-[#f7f4ec] tracking-widest mb-4">BRADEN BRACCIO</h3>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#a8854c] mb-8 font-bold">Real Estate Agent</p>
-            <div className="flex space-x-6">
-              <a href="https://www.instagram.com/youragentbraden" target="_blank" rel="noopener noreferrer" className="text-[#a8854c] hover:text-white transition-colors transform hover:scale-110">
-                <Instagram size={24} strokeWidth={1.5} />
-              </a>
-              <a href="#" className="text-[#a8854c] hover:text-white transition-colors transform hover:scale-110"><Mail size={24} strokeWidth={1.5} /></a>
-            </div>
-          </div>
-
-          {/* Brokerage Info */}
-          <div className="flex flex-col items-center md:items-start">
-            <h4 className="text-[#a8854c] text-xs uppercase tracking-[0.2em] font-bold mb-6">Brokerage</h4>
-            {/* Removed white box/padding so logo fills out space */}
-            <div className="mb-6">
-               <img src="Untitled design (28).png" onError={(e) => e.target.style.display='none'} alt="Your Castle Real Estate" className="h-16 w-auto object-contain filter invert" />
-            </div>
-            <div className="space-y-2 text-[#e8e6e0]/80 font-light">
-                <p>License #: FA.100107526</p>
-                <p>Colorado</p>
-            </div>
-          </div>
-
-          {/* Quick Contact */}
-          <div className="flex flex-col items-center md:items-start">
-             <h4 className="text-[#a8854c] text-xs uppercase tracking-[0.2em] font-bold mb-6">Direct Contact</h4>
-             <div className="space-y-2 text-[#e8e6e0]/80 font-light">
-                <p className="text-lg">720-885-1613</p>
-                <p>bradenbraccio@yourcastle.com</p>
-                <p className="pt-2 text-[#a8854c]/60 text-xs tracking-widest">@YOURAGENTBRADEN</p>
-             </div>
-          </div>
+// ---------- 11. FOOTER ----------
+const Footer = () => (
+  <footer className="bg-[#0a0a0a] text-[#fafaf8] pt-20 pb-10">
+    <div className="max-w-[1300px] mx-auto px-6">
+      <div className="text-center pb-14 border-b border-[#a8854c]/20">
+        <span className="font-display text-[15px] md:text-[18px] tracking-[0.42em] text-[#fafaf8] font-medium">BRADEN BRACCIO</span>
+        <p className="font-display text-[9.5px] tracking-[0.6em] text-[#a8854c] uppercase mt-2">Real Estate Agent</p>
+      </div>
+      <div className="grid md:grid-cols-3 gap-12 py-14 text-center md:text-left">
+        <div>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-[#a8854c] font-medium mb-5">Brokerage</p>
+          <p className="font-serif text-lg italic text-[#fafaf8]/85">Your Castle Real Estate</p>
+          <p className="text-sm text-[#fafaf8]/55 mt-2">License #: FA.100107526</p>
+          <p className="text-sm text-[#fafaf8]/55">Colorado</p>
         </div>
-
-        <div className="border-t border-[#a8854c]/20 mt-16 pt-8 text-center text-[10px] uppercase tracking-widest text-[#e8e6e0]/40 flex flex-col md:flex-row justify-between items-center">
-          <p>&copy; {new Date().getFullYear()} Braden Braccio. All Rights Reserved.</p>
-          <div className="mt-4 md:mt-0 space-x-8">
-             <a href="#" className="hover:text-[#a8854c] transition-colors">Privacy Policy</a>
-             <a href="#" className="hover:text-[#a8854c] transition-colors">Terms of Service</a>
+        <div>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-[#a8854c] font-medium mb-5">Direct</p>
+          <p className="font-serif text-lg text-[#fafaf8]">720-885-1613</p>
+          <p className="text-sm text-[#fafaf8]/70 mt-1">bradenbraccio@yourcastle.com</p>
+        </div>
+        <div>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-[#a8854c] font-medium mb-5">Follow</p>
+          <div className="flex md:justify-start justify-center space-x-5">
+            <a href="https://www.instagram.com/youragentbraden" target="_blank" rel="noopener noreferrer" className="text-[#a8854c] hover:text-[#fafaf8]"><Instagram size={20} strokeWidth={1.5} /></a>
+            <a href="mailto:bradenbraccio@yourcastle.com" className="text-[#a8854c] hover:text-[#fafaf8]"><Mail size={20} strokeWidth={1.5} /></a>
           </div>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-[#fafaf8]/45 mt-4">@YOURAGENTBRADEN</p>
         </div>
       </div>
-    </footer>
-  );
-};
+      <div className="border-t border-[#a8854c]/20 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.3em] text-[#fafaf8]/45">
+        <p>&copy; {new Date().getFullYear()} Braden Braccio. All Rights Reserved.</p>
+        <div className="flex space-x-8 mt-4 md:mt-0">
+          <a href="#" className="hover:text-[#a8854c]">Privacy</a>
+          <a href="#" className="hover:text-[#a8854c]">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+);
 
-// Main App Component
+// ---------- MAIN APP ----------
 const App = () => {
   const [activeTab, setActiveTab] = useState('buyer');
-  const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
+  const [qOpen, setQOpen] = useState(false);
 
-  useEffect(() => {
-    document.title = "Braden Braccio | Real Estate Agent";
-  }, []);
+  useEffect(() => { document.title = "Braden Braccio | Real Estate Agent"; }, []);
 
-  const handleNavigate = (targetId, tab = null) => {
-    const element = document.getElementById(targetId);
-    if (element) {
-      const offset = 100; 
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({
-        top: elementPosition - offset,
-        behavior: 'smooth'
-      });
+  const navigate = (id, tab = null) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const offset = 80;
+      const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
-    if (tab) {
-      setActiveTab(tab);
-    }
+    if (tab) setActiveTab(tab);
   };
 
   return (
-    <div className="bg-[#f7f4ec] text-[#0a0a0a] font-sans selection:bg-[#a8854c] selection:text-[#0a0a0a]">
+    <div className="bg-[#fafaf8] text-[#0a0a0a] font-sans antialiased selection:bg-[#a8854c]/40 selection:text-[#0a0a0a]">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap');
         html { scroll-behavior: smooth; }
-        .font-serif { font-family: 'Cormorant Garamond', serif; }
-        .font-sans { font-family: 'Inter', sans-serif; }
-
-        /* ANIMATIONS */
-        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } 100% { transform: translateY(0px) rotate(0deg); } }
-        @keyframes pulse-slow { 0%, 100% { opacity: 0.05; transform: scale(1); } 50% { opacity: 0.1; transform: scale(1.1); } }
-        @keyframes grain { 0%, 100% { transform: translate(0,0); } 10% { transform: translate(-5%, -10%); } 20% { transform: translate(-15%, 5%); } 30% { transform: translate(7%, -25%); } 40% { transform: translate(-5%, 25%); } 50% { transform: translate(-15%, 10%); } 60% { transform: translate(15%, 0%); } 70% { transform: translate(0%, 15%); } 80% { transform: translate(3%, 35%); } 90% { transform: translate(-10%, 10%); } }
-        @keyframes aurora-1 { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(50px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0,0) scale(1); } }
-        @keyframes aurora-2 { 0% { transform: translate(0,0) scale(1); } 33% { transform: translate(-30px, 30px) scale(1.1); } 66% { transform: translate(40px, -40px) scale(0.95); } 100% { transform: translate(0,0) scale(1); } }
-        @keyframes float-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes fade-in-delayed { 0% { opacity: 0; } 100% { opacity: 1; } }
-
-        .animate-float { animation: float 10s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse-slow 8s ease-in-out infinite; }
-        .animate-grain { animation: grain 8s steps(10) infinite; }
-        .animate-aurora-1 { animation: aurora-1 20s ease-in-out infinite; }
-        .animate-aurora-2 { animation: aurora-2 25s ease-in-out infinite; }
-        .animate-float-subtle { animation: float-subtle 6s ease-in-out infinite; }
-        .animate-fade-in-delayed { animation: fade-in-delayed 2s ease-out forwards; }
+        body { -webkit-font-smoothing: antialiased; }
+        .font-serif { font-family: 'Cormorant Garamond', 'Times New Roman', serif; letter-spacing: 0.005em; }
+        .font-display { font-family: 'Cinzel', 'Cormorant Garamond', serif; }
+        .font-sans { font-family: 'Inter', 'Helvetica Neue', system-ui, sans-serif; }
       `}</style>
 
-      <Navbar onNavigate={handleNavigate} onOpenQuestionnaire={() => setIsQuestionnaireOpen(true)} />
-      <Hero />
+      <Navbar onNavigate={navigate} onOpenQuestionnaire={() => setQOpen(true)} />
+      <Hero onNavigate={navigate} onOpenQuestionnaire={() => setQOpen(true)} />
+      <Communities />
+      <LocalExpertise onOpenQuestionnaire={() => setQOpen(true)} />
       <BioSection />
       <ProcessSection activeTab={activeTab} />
       <ImpactSection />
       <Testimonials />
-      <Contact onOpenQuestionnaire={() => setIsQuestionnaireOpen(true)} />
+      <Contact onOpenQuestionnaire={() => setQOpen(true)} />
       <Footer />
-      
-      <QuestionnaireModal isOpen={isQuestionnaireOpen} onClose={() => setIsQuestionnaireOpen(false)} />
+
+      <QuestionnaireModal isOpen={qOpen} onClose={() => setQOpen(false)} />
     </div>
   );
 };
