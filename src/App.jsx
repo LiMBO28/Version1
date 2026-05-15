@@ -5,6 +5,9 @@ import {
   Shield, Award, Clock, ChevronDown, ChevronLeft, ChevronRight,
   FileText, Heart, User
 } from 'lucide-react';
+import HeroSlideshow from './HeroSlideshow.jsx';
+import HomeSearch from './HomeSearch.jsx';
+import JoinMyTeam from './JoinMyTeam.jsx';
 
 /**
  * BRADEN BRACCIO REAL ESTATE — LIV SOTHEBY'S-INSPIRED EDITION
@@ -55,7 +58,7 @@ const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
         <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-3 items-center">
           {/* Left: search */}
           <div className="flex items-center">
-            <button onClick={() => go('contact')} aria-label="Search" className="text-[#0a0a0a] hover:text-[#a8854c] transition-colors">
+            <button onClick={() => go('search')} aria-label="Search" className="text-[#0a0a0a] hover:text-[#a8854c] transition-colors">
               <Search size={20} strokeWidth={1.5} />
             </button>
           </div>
@@ -87,6 +90,8 @@ const Navbar = ({ onNavigate, onOpenQuestionnaire }) => {
             <button onClick={() => go('philosophy')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">About</button>
             <button onClick={() => go('process', 'buyer')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Buying</button>
             <button onClick={() => go('process', 'seller')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Selling</button>
+            <button onClick={() => go('search')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Search Homes</button>
+            <button onClick={() => go('join')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Join My Team</button>
             <button onClick={() => go('impact')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Community Impact</button>
             <button onClick={() => go('contact')} className="font-serif text-3xl md:text-4xl text-[#fafaf8] hover:text-[#a8854c] transition-colors italic font-light">Connect</button>
           </div>
@@ -143,7 +148,7 @@ const Hero = ({ onNavigate, onOpenQuestionnaire }) => {
         {/* Search bar */}
         <Reveal delay={400}>
           <div className="max-w-3xl mx-auto mb-12 md:mb-16">
-            <form onSubmit={(e) => { e.preventDefault(); onOpenQuestionnaire(); }} className="flex items-center border-b border-[#0a0a0a]/30 focus-within:border-[#a8854c] transition-colors py-3">
+            <form onSubmit={(e) => { e.preventDefault(); document.getElementById('search')?.scrollIntoView({ behavior: 'smooth' }); }} className="flex items-center border-b border-[#0a0a0a]/30 focus-within:border-[#a8854c] transition-colors py-3">
               <Search size={18} strokeWidth={1.5} className="text-[#0a0a0a]/60 mr-4" />
               <input type="text" placeholder={placeholderForTab[tab]} className="flex-1 bg-transparent outline-none font-serif italic text-lg md:text-xl text-[#0a0a0a] placeholder-[#0a0a0a]/40" />
               <button type="submit" aria-label="Continue" className="text-[#0a0a0a] hover:text-[#a8854c] transition-colors">
@@ -154,21 +159,9 @@ const Hero = ({ onNavigate, onOpenQuestionnaire }) => {
         </Reveal>
       </div>
 
-      {/* Full-bleed feature image */}
+      {/* LIV-style slideshow of featured Colorado luxury listings */}
       <Reveal delay={500}>
-        <div className="relative w-full h-[55vh] md:h-[72vh] overflow-hidden bg-[#0a0a0a]">
-          <img src="agent.jpg"
-            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2000'; }}
-            alt="Featured" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/60 via-transparent to-transparent"></div>
-          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-16 text-[#fafaf8]">
-            <Eyebrow className="text-[#fafaf8]/70 mb-2">Colorado</Eyebrow>
-            <h3 className="font-serif text-2xl md:text-4xl text-[#fafaf8] italic font-light">Front Range · Mountains · Foothills</h3>
-            <button onClick={() => onNavigate('communities')} className="inline-flex items-center gap-3 text-[11px] tracking-[0.28em] uppercase text-[#fafaf8] mt-4 hover:text-[#a8854c] transition-colors">
-              Explore Communities <ArrowRight size={14} strokeWidth={1.5} />
-            </button>
-          </div>
-        </div>
+        <HeroSlideshow onNavigate={onNavigate} />
       </Reveal>
     </div>
   );
@@ -699,10 +692,12 @@ const App = () => {
 
       <Navbar onNavigate={navigate} onOpenQuestionnaire={() => setQOpen(true)} />
       <Hero onNavigate={navigate} onOpenQuestionnaire={() => setQOpen(true)} />
+      <HomeSearch />
       <Communities />
       <LocalExpertise onOpenQuestionnaire={() => setQOpen(true)} />
       <BioSection />
       <ProcessSection activeTab={activeTab} />
+      <JoinMyTeam onOpenQuestionnaire={() => setQOpen(true)} />
       <ImpactSection />
       <Testimonials />
       <Contact onOpenQuestionnaire={() => setQOpen(true)} />
