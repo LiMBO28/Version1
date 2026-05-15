@@ -262,7 +262,7 @@ const LocalExpertise = ({ onOpenQuestionnaire }) => (
     {/* Full-bleed image */}
     <Reveal>
       <div className="relative w-full h-[50vh] md:h-[70vh] overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1633684977180-eef79da66c12?auto=format&fit=crop&q=80&w=2000" alt="Colorado mountains" className="absolute inset-0 w-full h-full object-cover" />
+        <img src="https://images.unsplash.com/photo-1677219810381-b6b63ecb0354?auto=format&fit=crop&q=80&w=2000" alt="Colorado mountains" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/30 to-transparent"></div>
       </div>
     </Reveal>
