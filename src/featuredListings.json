@@ -1,13 +1,13 @@
 {
   "_meta": {
     "lastUpdated": "2026-05-15",
-    "source": "Curated luxury Colorado listings — Unsplash placeholders. Replace with your own listing photos or wire to an IDX feed when ready.",
+    "source": "Colorado-styled luxury home photos (Unsplash). Replace with your own listing photos or wire to an IDX feed when ready.",
     "instructions": "Edit this file to swap photos. Each listing needs: image (URL), address, city, price, beds, baths, sqft, link (where 'View Listing' goes)."
   },
   "listings": [
     {
       "id": "1",
-      "image": "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=2400",
+      "image": "https://images.unsplash.com/photo-1596162021552-47af26d68797?auto=format&fit=crop&q=80&w=2400",
       "address": "Cherry Hills Village Estate",
       "city": "Cherry Hills Village, CO",
       "price": "$4,850,000",
@@ -19,7 +19,7 @@
     },
     {
       "id": "2",
-      "image": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2400",
+      "image": "https://images.unsplash.com/photo-1767950470198-c9cd97f8ed87?auto=format&fit=crop&q=80&w=2400",
       "address": "Mountain Modern Retreat",
       "city": "Aspen, CO",
       "price": "$12,750,000",
@@ -31,7 +31,7 @@
     },
     {
       "id": "3",
-      "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2400",
+      "image": "https://images.unsplash.com/photo-1767634854859-db8255389e64?auto=format&fit=crop&q=80&w=2400",
       "address": "Boulder Foothills Contemporary",
       "city": "Boulder, CO",
       "price": "$3,295,000",
@@ -43,7 +43,7 @@
     },
     {
       "id": "4",
-      "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2400",
+      "image": "https://images.unsplash.com/photo-1759281944533-a9eea164ffe3?auto=format&fit=crop&q=80&w=2400",
       "address": "Vail Valley Alpine Estate",
       "city": "Vail, CO",
       "price": "$8,995,000",
@@ -55,7 +55,7 @@
     },
     {
       "id": "5",
-      "image": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=2400",
+      "image": "https://images.unsplash.com/photo-1633637352832-2a1e222ae323?auto=format&fit=crop&q=80&w=2400",
       "address": "Castle Pines Master Estate",
       "city": "Castle Pines, CO",
       "price": "$2,795,000",
@@ -67,7 +67,7 @@
     },
     {
       "id": "6",
-      "image": "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=2400",
+      "image": "https://images.unsplash.com/photo-1759281944287-9173dc7018e7?auto=format&fit=crop&q=80&w=2400",
       "address": "Telluride Mountain Residence",
       "city": "Telluride, CO",
       "price": "$6,450,000",
