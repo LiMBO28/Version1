@@ -169,24 +169,24 @@ const Hero = ({ onNavigate, onOpenQuestionnaire }) => {
 
 // ---------- 3. FEATURED COMMUNITIES (LIV-style category cards) ----------
 const Communities = () => {
-  const cats = ['FRONT RANGE', 'MOUNTAINS', 'METRO DENVER', 'LUXURY'];
-  const [cat, setCat] = useState('FRONT RANGE');
+  const cats = ['METRO DENVER', 'FRONT RANGE', 'MOUNTAINS', 'LUXURY'];
+  const [cat, setCat] = useState('METRO DENVER');
   const data = {
+    'METRO DENVER': [
+      { name: 'Cherry Creek', area: 'Denver', desc: 'Walkable luxury at Denver\'s most refined shopping address.', image: 'https://images.unsplash.com/photo-1617246405400-462cb1ab98ab?auto=format&fit=crop&q=80&w=1600' },
+      { name: 'Washington Park', area: 'Denver', desc: 'Historic bungalows and tree-lined streets around the park.', image: 'https://images.unsplash.com/photo-1648441095877-90406e6ba04d?auto=format&fit=crop&q=80&w=1600' },
+    ],
     'FRONT RANGE': [
-      { name: 'Highlands Ranch', area: 'Douglas County', desc: 'Estate-style living with trails and award-winning schools.' },
-      { name: 'Castle Rock', area: 'Douglas County', desc: 'Mountain views, master-planned communities, and small-town charm.' },
+      { name: 'Highlands Ranch', area: 'Douglas County', desc: 'Estate-style living with trails and award-winning schools.', image: 'https://images.unsplash.com/photo-1701601766841-89adcbbd0f6b?auto=format&fit=crop&q=80&w=1600' },
+      { name: 'Castle Rock', area: 'Douglas County', desc: 'Mountain views, master-planned communities, and small-town charm.', image: 'https://images.unsplash.com/photo-1583542225309-65f4b63b7116?auto=format&fit=crop&q=80&w=1600' },
     ],
     'MOUNTAINS': [
-      { name: 'Evergreen', area: 'Jefferson County', desc: 'Pine-shaded retreats minutes from Denver yet a world away.' },
-      { name: 'Vail Valley', area: 'Eagle County', desc: 'World-class skiing, alpine architecture, year-round living.' },
-    ],
-    'METRO DENVER': [
-      { name: 'Cherry Creek', area: 'Denver', desc: 'Walkable luxury at Denver\'s most refined shopping address.' },
-      { name: 'Washington Park', area: 'Denver', desc: 'Historic bungalows and tree-lined streets around the park.' },
+      { name: 'Evergreen', area: 'Jefferson County', desc: 'Pine-shaded retreats minutes from Denver yet a world away.', image: 'https://images.unsplash.com/photo-1524429656589-6633a470097c?auto=format&fit=crop&q=80&w=1600' },
+      { name: 'Vail Valley', area: 'Eagle County', desc: 'World-class skiing, alpine architecture, year-round living.', image: 'https://images.unsplash.com/photo-1610865383566-6469eedeb76f?auto=format&fit=crop&q=80&w=1600' },
     ],
     'LUXURY': [
-      { name: 'Cherry Hills Village', area: 'Arapahoe County', desc: 'Estate properties and equestrian land minutes from downtown.' },
-      { name: 'Boulder Foothills', area: 'Boulder County', desc: 'Mountain-front homes overlooking the Flatirons.' },
+      { name: 'Cherry Hills Village', area: 'Arapahoe County', desc: 'Estate properties and equestrian land minutes from downtown.', image: 'https://images.unsplash.com/photo-1596162021552-47af26d68797?auto=format&fit=crop&q=80&w=1600' },
+      { name: 'Boulder Foothills', area: 'Boulder County', desc: 'Mountain-front homes overlooking the Flatirons.', image: 'https://images.unsplash.com/photo-1597383005212-f795fd8242e9?auto=format&fit=crop&q=80&w=1600' },
     ],
   };
 
@@ -219,11 +219,9 @@ const Communities = () => {
           {data[cat].map((p, i) => (
             <Reveal key={p.name} delay={i * 120}>
               <div className="group cursor-pointer">
-                <div className="relative aspect-[4/3] overflow-hidden bg-[#ebe9e2]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#0a0a0a] to-[#2a2a2a]"></div>
-                  <div className="absolute inset-0 flex items-center justify-center text-[#a8854c]/30">
-                    <Home size={96} strokeWidth={0.75} />
-                  </div>
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#0a0a0a]">
+                  <img src={p.image} alt={p.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105" onError={(e) => { e.target.style.display = 'none'; }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/40 via-transparent to-transparent"></div>
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="px-3 py-1 text-[9px] tracking-[0.25em] uppercase bg-[#fafaf8]/95 text-[#0a0a0a] font-medium">Featured</span>
                   </div>
