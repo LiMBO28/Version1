@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Star, ArrowRight } from 'lucide-react';
 
 /**
- * REVIEWS â Leave a Review section
+ * REVIEWS — Leave a Review section
  * Matches the existing site palette: ivory #fafaf8, ink #0a0a0a, gold #a8854c
  * Three platform cards: Zillow, Realtor.com, Google
  */
@@ -49,14 +49,14 @@ const Reviews = () => {
     {
       name: 'Zillow',
       desc:
-        "Zillow reviews are weighted heavily in agent rankings â they're often the first place buyers look when researching an agent.",
+        "Zillow reviews are weighted heavily in agent rankings. They're often the first place buyers look when researching an agent.",
       url: 'https://www.zillow.com/reviews/write/?s=X1-ZUqh6ffpvwyq6h_61q4w',
       cta: 'Leave a Zillow Review',
     },
     {
       name: 'Realtor.com',
       desc:
-        "A recommendation here shows up alongside my listings â the difference between a click and a call.",
+        "A recommendation here shows up alongside my listings. It can be the difference between a click and a call.",
       url: 'https://www.realtor.com/realestateagents/686fb39b0a01aebdc18819c0',
       cta: 'Leave a Realtor.com Review',
     },
